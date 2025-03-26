@@ -1,32 +1,44 @@
-import AppDataSource, {initializeConnection} from '../database/Connection.js';
-import Consumible from '../entities/Consumible.js';
+import { connection } from '../database/Connection.js';
+import { ConsumibleSchema } from '../entities/Consumible.js';
 
 class GestionarInventarioRepository {
-    constructor() {
-        this.initialize();
+    
+    constructor(){
+        this.repo = connection.getRepository(ConsumibleSchema);
     }
 
-    async initialize() {
-        if (!AppDataSource.isInitialized) {
-            await initializeConnection();
-        }
-        this.consumibleRepository = AppDataSource.getRepository(Consumible);
-    }
-
-    async guardarConsumible(consumibleData) {
+    async guardarConsumible(consumible) {
         try {
-            // Si consumibleData es un JSON, lo parseamos a objeto
-            const consumible = consumibleData instanceof Consumible 
-                ? consumibleData 
-                : new Consumible().crearConsumible(JSON.stringify(consumibleData));
-            
-            const resultado = await this.consumibleRepository.save(consumible);
-            return resultado;
+            await this.repo.save(consumible);
         } catch (error) {
-            console.error('Error al guardar consumible:', error);
+            console.error("Error al guardar consumible:", error);
             throw error;
         }
     }
+
+    /**
+        async guardarConsumible(consumibleData) {
+            try {    
+                // Verificamos si el consumible ya existe por nombre
+                const consumibleExistente = await this.obtenerConsumiblePorNombre(consumibleData.nombre);
+                
+                if (consumibleExistente) {
+                    throw new Error('El consumible ya existe');
+                }
+    
+                // Si consumibleData es un JSON, lo parseamos a objeto
+                const consumible = consumibleData instanceof Consumible 
+                    ? consumibleData 
+                    : new Consumible().crearConsumible(JSON.stringify(consumibleData));
+                
+                const resultado = await repoConsumibles.save(consumible);
+                return resultado;
+            } catch (error) {
+                console.error('Error al guardar consumible:', error);
+                throw error;
+            }
+        }
+    */
 
     async editarConsumible(id, consumibleData) {
         try {
@@ -66,10 +78,19 @@ class GestionarInventarioRepository {
 
     async obtenerTodosLosConsumibles() {
         try {
-            const consumibles = await this.consumibleRepository.find();
+            const consumibles = await this.repo.find();
             return consumibles;
         } catch (error) {
             console.error('Error al obtener todos los consumibles:', error);
+            throw error;
+        }
+    }
+
+    async obtenerConsumiblePorNombre(nombre) {
+        try {
+            return await this.repo.findOne({ where: { nombre } });
+        } catch (error) {
+            console.error("Error al obtener consumible por nombre:", error);
             throw error;
         }
     }

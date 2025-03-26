@@ -1,22 +1,17 @@
+import "reflect-metadata"; // Permite almacenar y recuperar metadatos en tiempo de ejecución.
+import "dotenv/config";
 import { DataSource } from "typeorm";
-import Consumible from '../entities/Consumible';
-import { DATABASE } from "../utils/Config";
+import {ConsumibleSchema } from '../entities/Consumible.js';
+import { DATABASE } from "../utils/Config.js";
 
-const AppDataSource = new DataSource({
+
+export const connection = new DataSource({
     type: "sqlite",
     database: DATABASE,
-    entities: [Consumible],
+    entities: [ConsumibleSchema],
     synchronize: true,
-    logging: false
+    logging: true,
+    
 });
 
-export const initializeConnection = async () => {
-    try {
-        await AppDataSource.initialize();
-        console.log("Conexion a Wendy's iniciada");
-    } catch (error) {
-        console.error("Error al conectar la DB", error);
-    }
-}
-
-export default AppDataSource;
+await connection.initialize();
