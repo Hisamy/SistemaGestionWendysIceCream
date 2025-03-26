@@ -1,9 +1,9 @@
 import "dotenv/config";
-import path from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
-// Use import.meta.url to get the current file's URL
-const __filename = new URL(import.meta.url).pathname;
-const __dirname = path.dirname(__filename);
-
-export const publicPath = path.join(__dirname, "../../public");
-export const DATABASE = process.env.DATABASE_URL;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+    
+export const publicPath = join(__dirname, "../../public");
+export const DATABASE = process.env.DATABASE_URL || join(__dirname, "../../wendysicecream.db");
