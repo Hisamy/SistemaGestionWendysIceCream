@@ -6,7 +6,7 @@ class Consumible {
         this.cantidad = cantidad;
     }
 
-    crearConsumible(json) {
+    static crearConsumible(json) {
         const obj = JSON.parse(json);
         const consumible = new Consumible(obj.nombre, obj.cantidad); 
         consumible.validarCampos();
