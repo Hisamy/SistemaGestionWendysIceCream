@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
-import Consumible from './entities/Consumible';
-import { DATABASE } from "./utils/Config";
+import Consumible from '../entities/Consumible';
+import { DATABASE } from "../utils/Config";
 
 const AppDataSource = new DataSource({
     type: "sqlite",
