@@ -89,11 +89,10 @@ class GestionarInventarioRepository {
     //HECHO
     async eliminarConsumible(id) {
         try {
-            const consumible = await this.repo.findOneBy({ id });
-            if (!consumible) {
+            if (!id) {
                 throw new Error('Consumible no encontrado');
             }
-            return await this.repo.delete(consumible);
+            return await this.repo.delete({ id });
         } catch (error) {
             console.error('Error al eliminar consumible:', error);
             throw error;
