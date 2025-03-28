@@ -2,13 +2,19 @@ import "reflect-metadata"; // Permite almacenar y recuperar metadatos en tiempo 
 import "dotenv/config";
 import { DataSource } from "typeorm";
 import {ConsumibleSchema } from '../entities/Consumible.js';
+import { ProductoSchema } from "../entities/Producto.js";
+import { VarianteProductoSchema } from "../entities/VarianteProducto.js";
 import { DATABASE } from "../utils/Config.js";
 
 
 export const connection = new DataSource({
     type: "sqlite",
     database: DATABASE,
-    entities: [ConsumibleSchema],
+    entities: [
+        ConsumibleSchema,
+        ProductoSchema,
+        VarianteProductoSchema
+    ],
     synchronize: true,
     logging: true,
     
