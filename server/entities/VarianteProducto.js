@@ -38,18 +38,10 @@ export const VarianteProductoSchema = new EntitySchema({
             eager: true
         },
         consumibles: {
+            type: "one-to-many",
             target: "Consumible",
-            type: "many-to-many",
-            joinTable: {
-                name: "variante_consumibles",
-                joinColumn: {
-                    name: "variante_id",
-                    referencedColumnName: "id"
-                },
-                inverseJoinColumn: {
-                    name: "consumible_id",
-                    referencedColumnName: "id"
-                }
+            joinColumn: {
+                name: "variante_id"
             }
         }
     }
