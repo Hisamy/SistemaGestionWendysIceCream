@@ -39,10 +39,7 @@ export const VarianteProductoSchema = new EntitySchema({
         },
         consumibles: {
             type: "one-to-many",
-            target: "Consumible",
-            joinColumn: {
-                name: "variante_id"
-            }
+            target: "Consumible"
         }
     }
 });

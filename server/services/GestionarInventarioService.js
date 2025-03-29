@@ -1,3 +1,5 @@
+import Consumible from "../entities/Consumible.js";
+import { BusinessError } from "../errors/BusinessError.js";
 import GestionarInventarioRepository from "../repositories/GestionarInventarioRepository.js";
 
 class GestionarInventarioService {
@@ -6,12 +8,19 @@ class GestionarInventarioService {
         this.repository = new GestionarInventarioRepository();
     }
 
-    async registrarConsumible(consumible){
+    async registrarConsumible(datosConsumible){
         try {
+            const consumible = Consumible.crearConsumible(JSON.stringify(datosConsumible));
+
+            const consumibleExistente = await this.repository.obtenerConsumiblePorNombre(consumible.nombre);
+            if(consumibleExistente){
+                throw new ValidationError('Ya existe un consumible con ese nombre');
+            }  
+
             const registroConsumible = await this.repository.guardarConsumible(consumible);
             return registroConsumible;
         } catch (error) {
-            console.error("Error del servicio al registrar los datos", error);
+            throw new BusinessError("Error del servicio al registrar los datos", error);
         }
     }
 
@@ -20,34 +29,63 @@ class GestionarInventarioService {
             const consumiblesObtenidos = await this.repository.obtenerTodosLosConsumibles();
             return consumiblesObtenidos;
         } catch (error) {
-            console.error("Error del servicio al obtener los datos", error);
+            throw new BusinessError("Error del servicio al obtener los datos", error);
         }
     }
 
-    async obtenerConsumible(id){
+    async obtenerConsumible(id) {
         try {
             const consumibleObtenido = await this.repository.obtenerConsumiblePorId(id);
+            if (!consumibleObtenido) {
+                throw new ValidationError('Consumible no encontrado');
+            }
             return consumibleObtenido;
         } catch (error) {
-            console.error("Error del servicio al obtener los datos", error);
+            throw new BusinessError("Error del servicio al obtener los datos", error);
         }
     }
 
-    async editarConsumible(id, consumible){
+    async editarConsumible(id, datosConsumible ){
         try {
-            const consumibleObtenido = await this.repository.editarConsumible(id,consumible);
-            return consumibleObtenido;
+            const consumibleExistente = await this.repository.obtenerConsumiblePorId(id);                            
+            if (!consumibleExistente) {
+                throw new ValidationError('Consumible no encontrado');
+            }
+                
+            this.#validarDatosConsumible(datosConsumible, consumibleExistente);
+
+            const consumibleActualizado = Consumible.crearConsumible(JSON.stringify({
+                ...consumibleExistente,
+                ...datosConsumible
+            }))
+
+            await this.repository.guardarConsumible(consumibleActualizado);
+            return consumibleActualizado;
         } catch (error) {
-            console.error("Error del servicio al modificar datos", error);
+            throw new BusinessError("Error del servicio al modificar datos", error);
+        }
+    }
+
+    // Metodo auxiliar
+    #validarDatosConsumible(datosConsumible, consumibleExistente) {
+        if (!datosConsumible.nombre && !datosConsumible.cantidad) {
+            throw new ValidationError('Debe proporcionar al menos un dato para actualizar el consumible');
+        }
+
+        if (datosConsumible.nombre === consumibleExistente.nombre && 
+            datosConsumible.cantidad === consumibleExistente.cantidad) {
+            throw new ValidationError('No se realizaron cambios en los datos del consumible');
         }
     }
 
     async eliminarConsumible(id){
         try {
-            const consumibleEliminado = await this.repository.eliminarConsumible(id);
-            return consumibleEliminado;
+            if (!id) {
+                throw new ValidationError('Consumible no encontrado');
+            }
+            return await this.repository.eliminarConsumible(id);
         } catch (error) {
-            console.error("Error del servicio al modificar datos", error);
+            throw new BusinessError("Error del servicio al eliminar datos", error);
         }
     }
 

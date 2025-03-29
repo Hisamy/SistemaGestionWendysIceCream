@@ -6,7 +6,7 @@ import { connection } from '../database/Connection.js';
 async function init() {
     try {
 
-        const serv = new GestionarInventarioService();
+        //const serv = new GestionarInventarioService();
         /**
             const consumiblePrueba = new Consumible('Roblox', 5);
     
@@ -17,9 +17,11 @@ async function init() {
         */
         
 
-        const obtenidos = await serv.obtenerConsumibles();
-        console.log("Estos son los consumibles obtenidos del servicio");
-        console.log(obtenidos.map(consumible => consumible.nombre));
+        /**
+            const obtenidos = await serv.obtenerConsumibles();
+            console.log("Estos son los consumibles obtenidos del servicio");
+            console.log(obtenidos.map(consumible => consumible.nombre));
+        */
 
         /**
             const obtenido = await serv.obtenerConsumible(2);
@@ -33,10 +35,12 @@ async function init() {
             console.log(obtenidosNuevos.map(consumible => consumible.nombre));
         */
 
-        await serv.eliminarConsumible(3);
-        const obtenidosFinal = await serv.obtenerConsumibles();
-        console.log("Estos son los consumibles obtenidos del servicio");
-        console.log(obtenidosFinal.map(consumible => consumible.nombre));
+        /**
+            await serv.eliminarConsumible(3);
+            const obtenidosFinal = await serv.obtenerConsumibles();
+            console.log("Estos son los consumibles obtenidos del servicio");
+            console.log(obtenidosFinal.map(consumible => consumible.nombre));
+        */
 
 
         //const repo = new GestionarInventarioRepository();
