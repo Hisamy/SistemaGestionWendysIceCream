@@ -9,15 +9,9 @@ class Consumible {
     static crearConsumible(json) {
         const obj = JSON.parse(json);
         const consumible = new Consumible(obj.nombre, obj.cantidad); 
-        consumible.validarCampos();
         return consumible;
     }
 
-    validarCampos() {
-        if (!this.nombre || !this.cantidad) {
-            throw new Error('Faltan campos obligatorios');
-        }
-    }
 }
 
 export const ConsumibleSchema = new EntitySchema({

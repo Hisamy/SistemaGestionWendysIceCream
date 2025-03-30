@@ -57,6 +57,14 @@ class GestionarInventarioRepository {
         }
     }
 
+    async actualizarConsumible(id, consumibleActualizado){
+        try {
+            return await this.repo.update(id, consumibleActualizado);
+        } catch (error) {
+            throw new DatabaseError('Error al actualizar consumible:', error);
+        }
+    }
+
 }
 
 export default GestionarInventarioRepository;

@@ -52,10 +52,10 @@ gestionarInventarioRouter.get("/consumible/:id", async (req, res) => {
 });
 
 gestionarInventarioRouter.put("/editar/:id", async (req, res) => {
-    const id = req.params.id;
-    const datosConsumible  = req.body;
     try {
-        await service.editarConsumible(id, datosConsumible );
+        const id = req.params.id;
+        const datosEntrantes = req.body;
+        await service.editarConsumible(id, datosEntrantes);
         res.status(200).send("Consumible editado correctamente");
     } catch (error) {
         if(error instanceof BusinessError){
