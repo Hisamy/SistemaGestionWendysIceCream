@@ -4,14 +4,14 @@ import { ConsumibleSchema } from '../entities/Consumible.js';
 import { DatabaseError } from '../errors/DataBaseError.js';
 
 class GestionarInventarioRepository {
-    
-    constructor(){
+
+    constructor() {
         this.repo = connection.getRepository(ConsumibleSchema);
     }
 
     //HECHO
     async guardarConsumible(consumible) {
-        try {  
+        try {
             return await this.repo.save(consumible);
         } catch (error) {
             throw new DatabaseError('Error al guardar consumible', error);
@@ -27,7 +27,7 @@ class GestionarInventarioRepository {
             throw new DatabaseError('Error al obtener consumible', error);
         }
     }
-   
+
 
     //HECHO    
     async obtenerTodosLosConsumibles() {
@@ -57,7 +57,8 @@ class GestionarInventarioRepository {
         }
     }
 
-    async actualizarConsumible(id, consumibleActualizado){
+    //HECHO
+    async actualizarConsumible(id, consumibleActualizado) {
         try {
             return await this.repo.update(id, consumibleActualizado);
         } catch (error) {
