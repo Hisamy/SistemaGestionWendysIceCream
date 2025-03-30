@@ -1,5 +1,5 @@
 import express from 'express';
-import gestionarInventarioRouter from './routers/GestionarInventarioRouter.js';
+import gestionarInventarioRouter from '../routers/GestionarInventarioRouter.js';
 
 const app = express();
 const PORT = 3000;
