@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
-import Header from './components/header/Header';
-import GestionarInventario from './pages/GestionarInventario';
-import { GestionarProducto } from './pages/GestionarProducto';
+import Header from './components/header/Header.jsx';
+import GestionarInventario from './pages/GestionarInventario.jsx';
+import { GestionarProducto } from './pages/GestionarProducto.jsx';
 
 
 function App() {
