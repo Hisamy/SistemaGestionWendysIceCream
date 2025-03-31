@@ -11,13 +11,13 @@ class GestionarInventarioService {
 
     async registrarConsumible(datosConsumible) {
         try {
-            const consumible = Consumible.crearConsumible(JSON.stringify(datosConsumible));
+            const consumible = new Consumible(datosConsumible.nombre, datosConsumible.cantidad);
 
             if (!consumible.nombre || !consumible.cantidad) {
                 throw new ValidationError('Faltan campos obligatorios');
             }
-            if (typeof consumible.cantidad !== 'number' || isNaN(consumible.cantidad)) {
-                throw new ValidationError('La cantidad debe ser un número válido');
+            if (typeof consumible.cantidad !== 'number' || isNaN(consumible.cantidad) || !Number.isInteger(consumible.cantidad)) {
+                throw new ValidationError('La cantidad debe ser un número entero válido');
             }
             const consumibleExistente = await this.repository.obtenerConsumiblePorNombre(consumible.nombre);
             if (consumibleExistente) {
@@ -76,11 +76,13 @@ class GestionarInventarioService {
 
             const cantidadActualizada = this.#calcularCantidadActualizada(consumibleExistente.cantidad, datosEntrantes.cantidad);
 
-            const consumibleActualizado = Consumible.crearConsumible(JSON.stringify({
+            const datosCombinados = {
                 ...consumibleExistente,
                 ...datosEntrantes,
                 cantidad: cantidadActualizada
-            }));
+            };
+
+            const consumibleActualizado = new Consumible(datosCombinados.nombre, datosCombinados.cantidad);
 
             return await this.repository.actualizarConsumible(id, consumibleActualizado);
         } catch (error) {
@@ -101,8 +103,8 @@ class GestionarInventarioService {
     }
 
     #validarCantidad(cantidad) {
-        if (typeof cantidad !== 'number' || cantidad <= 0) {
-            throw new ValidationError('La cantidad debe ser un número mayor a cero');
+        if (typeof cantidad !== 'number' || cantidad <= 0 || !Number.isInteger(cantidad)) {
+            throw new ValidationError('La cantidad debe ser un número valido mayor a cero');
         }
     }
 

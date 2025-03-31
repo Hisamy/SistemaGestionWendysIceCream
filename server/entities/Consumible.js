@@ -5,13 +5,6 @@ class Consumible {
         this.nombre = nombre;
         this.cantidad = cantidad;
     }
-
-    static crearConsumible(json) {
-        const obj = JSON.parse(json);
-        const consumible = new Consumible(obj.nombre, obj.cantidad); 
-        return consumible;
-    }
-
 }
 
 export const ConsumibleSchema = new EntitySchema({
