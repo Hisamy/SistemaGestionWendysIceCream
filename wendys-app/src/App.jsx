@@ -1,8 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/header/Header.jsx';
 import GestionarInventario from './pages/GestionarInventario.jsx';
-import { GestionarProducto } from './pages/GestionarProducto.jsx';
-
+import GestionarProducto from './pages/GestionarProducto.jsx';
 
 function App() {
   return (
@@ -10,12 +9,10 @@ function App() {
       <Header /> 
       <main className="content">
         <Routes>
-          <Route path="/" element={<div>Página Principal</div>} />
           <Route path="/gestionar-producto" element={<GestionarProducto />} />
           <Route path="/registrar-venta" element={<div>Registrar Venta (En desarrollo)</div>} />
           <Route path="/gestionar-inventario" element={<GestionarInventario />} />
           <Route path="/gestionar-venta" element={<div>Gestionar Venta (En desarrollo)</div>} />
-          <Route path="*" element={<div>Página no encontrada</div>} />
         </Routes>
       </main>
     </>
