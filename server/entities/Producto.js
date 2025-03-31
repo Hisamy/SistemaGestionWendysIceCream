@@ -1,9 +1,8 @@
 import { EntitySchema } from "typeorm";
 
 class Producto {
-    constructor(nombre, descripcion){
+    constructor(nombre){
         this.nombre = nombre;
-        this.descripcion = descripcion;
     }
 }
 export const ProductoSchema = new EntitySchema({
@@ -19,17 +18,15 @@ export const ProductoSchema = new EntitySchema({
         nombre: {
             type: "varchar",
             length: 100
-        },
-        descripcion: {
-            type: "text",
-            nullable: true
         }
     },
     relations: {
         variantes: {
             target: "VarianteProducto",
             type: "one-to-many",
-            inverseSide: "producto"
+            inverseSide: "producto",
+            cascade: true,
+            eager: true
         }
     }
 });

@@ -2,11 +2,10 @@ import Tamanio from "./Tamanio.js";
 import { EntitySchema } from "typeorm";
 
 class VarianteProducto {
-    constructor(precio, tamanio, producto, consumibles) {
+    constructor(precio, tamanio, producto) {
         this.precio = precio;
         this.tamanio = tamanio;
         this.producto = producto;
-        this.consumibles = consumibles;
     }
 }
 
@@ -35,11 +34,13 @@ export const VarianteProductoSchema = new EntitySchema({
             type: "many-to-one",
             target: "Producto",
             joinColumn: true,
-            eager: true
+            eager: true,
+            onDelete: "CASCADE"
         },
-        consumibles: {
+        varianteJoinConsumible: {
+            target: "VarianteJoinConsumible",
             type: "one-to-many",
-            target: "Consumible"
+            inverseSide: "VarianteProducto"
         }
     }
 });

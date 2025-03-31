@@ -3,7 +3,7 @@ import { connection } from '../database/Connection.js';
 import { ProductoSchema } from '../entities/Producto.js';
 import { DatabaseError } from '../errors/DatabaseError.js';
 
-class GestionarInventarioRepository {
+class ProductoRepository {
 
     constructor() {
         this.repo = connection.getRepository(ProductoSchema);
@@ -35,9 +35,18 @@ class GestionarInventarioRepository {
         }
     }
 
-    async obtenerProductosPorNombre(nombre) {
+    async obtenerProductosPorNombreSimilar(nombre) {
         try {
             const productos = await this.repo.find({ where: {nombre: ILike(`%${nombre}%`) } }) || [];
+            return productos;
+        } catch (error) {
+            throw new DatabaseError(`Error al obtener productos con nombre similar a "${nombre}": ${error.message}`, error);
+        }
+    }
+
+    async obtenerProductosPorNombre(nombre) {
+        try {
+            const productos = await this.repo.findOneBy({ nombre });
             return productos;
         } catch (error) {
             throw new DatabaseError(`Error al obtener productos con nombre similar a "${nombre}": ${error.message}`, error);
@@ -48,7 +57,7 @@ class GestionarInventarioRepository {
         try {
             return await this.repo.update(id, productoActualizado);
         } catch (error) {
-            throw new DatabaseError(`Error al intentar actualizar el producto con ID ${id}: ${error}`, error);
+            throw new DatabaseError(`Error al intentar actualizar el producto con ID ${id}: ${error.message}`, error);
         }
     }
 
@@ -56,7 +65,9 @@ class GestionarInventarioRepository {
         try {
             return await this.repo.delete({ id });
         } catch (error) {
-            throw new DatabaseError(`Error al intentar eliminar el producto con ID ${id}: ${error}`, error);
+            throw new DatabaseError(`Error al intentar eliminar el producto con ID ${id}: ${error.message}`, error);
         }
     }
 }
+
+export default ProductoRepository;

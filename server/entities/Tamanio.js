@@ -1,8 +1,8 @@
-export const Tamanio = {
+export const TAMANIOS = {
     UNICO: 'UNICO',
     PEQUEÑO: 'PEQUEÑO',
     MEDIANO: 'MEDIANO',
     GRANDE: 'GRANDE',
 };
 
-export default Tamanio;
+export default TAMANIOS;
