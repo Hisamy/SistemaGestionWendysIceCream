@@ -1,7 +1,7 @@
 import { ILike, Not } from 'typeorm';
 import { connection } from '../database/Connection.js';
 import { ProductoSchema } from '../entities/Producto.js';
-import { DatabaseError} from '../errors/DatabaseError.js';
+import { DatabaseError } from '../errors/DatabaseError.js';
 
 class GestionarInventarioRepository {
 
@@ -41,6 +41,22 @@ class GestionarInventarioRepository {
             return productos;
         } catch (error) {
             throw new DatabaseError(`Error al obtener productos con nombre similar a "${nombre}": ${error.message}`, error);
+        }
+    }
+
+    async actualizarProducto(id, productoActualizado) {
+        try {
+            return await this.repo.update(id, productoActualizado);
+        } catch (error) {
+            throw new DatabaseError(`Error al intentar actualizar el producto con ID ${id}: ${error}`, error);
+        }
+    }
+
+    async eliminarProducto(id) {
+        try {
+            return await this.repo.delete({ id });
+        } catch (error) {
+            throw new DatabaseError(`Error al intentar eliminar el producto con ID ${id}: ${error}`, error);
         }
     }
 }

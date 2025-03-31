@@ -1,7 +1,7 @@
 import { Not } from 'typeorm';
 import { connection } from '../database/Connection.js';
 import { ConsumibleSchema } from '../entities/Consumible.js';
-import { DatabaseError } from '../errors/DataBaseError.js';
+import { DatabaseError } from '../errors/DatabaseError.js';
 
 class GestionarInventarioRepository {
 
