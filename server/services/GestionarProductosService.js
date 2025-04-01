@@ -102,3 +102,5 @@ class GestionarProductosService {
         }
     }
 }
+
+export default GestionarProductosService;
