@@ -1,0 +1,22 @@
+.nav-left{
+    align-items: center;
+    
+}
+.nav-buttons{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.6em;
+}
+.nav-button{
+    background-color: var(--buttonYellow);
+    font-family: 'Champie';
+    padding: 0.5em  1em;
+    color: var(--lightYellow);
+    border-radius: 50px;
+}
+
+.nav-instruction p{
+    color: var(--darkPink);
+    font-family: 'AmiriQuran';
+    width: 12em;
+}

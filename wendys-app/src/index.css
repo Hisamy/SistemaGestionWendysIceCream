@@ -2,12 +2,20 @@
   font-family: 'Champie';
   src: url('./assets/Fonts/ChampieTrial-Regular.ttf') format('truetype');
 }
+@font-face {
+  font-family: 'AmiriQuran';
+  src: url('./assets/Fonts/AmiriQuran-Regular.ttf') format('truetype');
+}
 
 :root {
   --background: #fdf7e4;
   --foreground: #4a3f35;
   --pinkColorHeader: #E989A4;
+  --lightYellow: #FFFDEA;
   --darkPink: #A2576C;
+  --buttonYellow: rgb(251, 210, 117);
+
+  padding: 2em 1em;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

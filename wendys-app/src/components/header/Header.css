@@ -1,18 +1,19 @@
 
 header {
-    position: absolute;
+    position: sticky;
     gap: 2em;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1em 2em;
     box-sizing: border-box;
+    background-color: var(--background);
   }
   
   .header-logo {
     height: 5em;
     width: auto;
+    margin-left: 2em;
   }
   
   .header-nav ul {
