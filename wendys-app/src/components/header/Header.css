@@ -47,16 +47,15 @@ header {
     font-weight: bold;
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 764px) {
     .header {
       flex-direction: column;
       padding: 1rem;
     }
     
     .header-nav-list {
-      flex-direction: column;
+      flex-direction: row;
       width: 100%;
-      margin-top: 1rem;
       gap: 0.5rem;
     }
     

@@ -4,7 +4,7 @@
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
-  padding: 0;
+  padding: 1em;
 }
 
 /* Header fijo en la parte superior */

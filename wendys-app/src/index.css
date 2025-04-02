@@ -28,10 +28,9 @@ body {
   margin: 0;
   font-family: 'Champie', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
   color: #1a1a1a;
   background-color: var(--background);
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 /* Estilos base para elementos HTML */

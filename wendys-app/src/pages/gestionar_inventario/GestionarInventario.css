@@ -1,6 +1,9 @@
 .inventario-container {
     display: flex;
-    height:100%; 
+    gap: 5em;
+    display: flex;
+    justify-content: space-between;
+
   }
   
 .inventario-content {
@@ -10,5 +13,13 @@
 .fit-parent {
   width: 100em;
   display: flex;
-  justify-content: end;
+
+}
+
+.nav-left{
+    width: fit-content;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+
 }

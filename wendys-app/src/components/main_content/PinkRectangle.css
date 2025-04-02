@@ -1,12 +1,23 @@
-.pink-rectangle{
-    background-color: var(--lightPink);
-    border-radius: 40px;
-    padding: 2em 5em;
-    width: fit-content;
+
+.pink-rectangle {
+  background-color: var(--lightPink);
+  border-radius: 40px;
+  padding: 2em 5em;
+  width: 90%;
+  max-width: 100%; 
+  min-width: 300px; 
+  box-sizing: border-box; 
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden; 
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .rectangle-title {
     font-family: 'Champie',Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 24px;
+    font-size: 2em;
     font-weight: 600;
     color: var(--darkPink);
     margin-bottom: 0.5em;
