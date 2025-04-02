@@ -1,7 +1,7 @@
 .pink-rectangle{
     background-color: var(--lightPink);
     border-radius: 40px;
-    padding: 2em 3em;
+    padding: 2em 5em;
     width: fit-content;
 }
 .rectangle-title {
