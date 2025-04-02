@@ -1,0 +1,15 @@
+.consumible-button{
+    background-color: var(--background);
+    font-family: 'AmiriQuran';
+    border-radius: 30px;
+    padding: 2em 1em;
+    max-width: 7em;
+    height: 7.5em;
+    min-width: 8em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    color: var(--darkPink);
+    
+}

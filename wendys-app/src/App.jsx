@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/header/Header.jsx';
-import GestionarInventario from './pages/GestionarInventario.jsx';
+import GestionarInventario from './pages/gestionar_inventario/GestionarInventario.jsx';
 import GestionarProducto from './pages/GestionarProducto.jsx';
 
 function App() {

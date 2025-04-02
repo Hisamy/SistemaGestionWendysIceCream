@@ -1,0 +1,9 @@
+.inventario-container {
+    display: flex;
+    height:100%; 
+  }
+  
+  .inventario-content {
+    align-items: end;
+  }
+  
