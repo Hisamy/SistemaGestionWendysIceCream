@@ -3,7 +3,12 @@
     height:100%; 
   }
   
-  .inventario-content {
-    align-items: end;
-  }
+.inventario-content {
+    /* width: 70cap; */
+}
   
+.fit-parent {
+  width: 100em;
+  display: flex;
+  justify-content: end;
+}

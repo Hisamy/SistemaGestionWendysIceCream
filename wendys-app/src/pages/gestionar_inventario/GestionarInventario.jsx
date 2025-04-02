@@ -4,7 +4,7 @@ import ConsumiblesGrid from './ConsumiblesGrid.jsx';
 import ActionButton from '../../components/main_content/ActionButton.jsx';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import './GestionarInventario.css';
- 
+
 const CONSUMIBLES_MOCK = [
   { id: 1, name: 'Cuchara mini' },
   { id: 2, name: 'Cuchara mediana' },
@@ -50,36 +50,26 @@ function GestionarInventario() {
   return (
     <div className="inventario-container">
       <div className='nav-left'>
-      <NavLeft 
-        instruction="Selecciona el consumible a gestionar."
-        buttons={buttons}
-      />
-      </div>
-    
-    <div className="inventario-content">
-      
-      <PinkRectangle searchable={true}>
-        <ConsumiblesGrid 
-          consumibles={CONSUMIBLES_MOCK}
-          onConsumibleClick={handleConsumibleClick}
-          selectedId={selectedConsumible}
+        <NavLeft
+          instruction="Selecciona el consumible a gestionar."
+          buttons={buttons}
         />
-      </PinkRectangle>
-      
-      <div className="action-buttons-container">
-        {buttons.map((button, index) => (
-          <ActionButton
-            key={index}
-
-            onClick={button.onClick}
-            variant={button.variant}
-          >
-            {button.label}
-          </ActionButton>
-        ))}
       </div>
+      <div className="fit-parent">
+        <div className="inventario-content">
+
+          <PinkRectangle searchable={true}>
+            <ConsumiblesGrid
+              consumibles={CONSUMIBLES_MOCK}
+              onConsumibleClick={handleConsumibleClick}
+              selectedId={selectedConsumible}
+            />
+          </PinkRectangle>
+
+        </div>
+      </div>
+
     </div>
-  </div>
-);
+  );
 }
 export default GestionarInventario;
