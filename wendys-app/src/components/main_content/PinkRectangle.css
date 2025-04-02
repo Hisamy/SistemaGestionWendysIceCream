@@ -15,6 +15,10 @@
   
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+label{
+    color: var(--darkPink);
+    font-size: 2em;
+}
 .rectangle-title {
     font-family: 'Champie',Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2em;

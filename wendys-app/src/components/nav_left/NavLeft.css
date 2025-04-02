@@ -7,6 +7,7 @@
 .nav-buttons{
     display: inline-flex;
     flex-direction: column;
+    
     gap: 0.6em;
 }
 .nav-button{
@@ -21,4 +22,10 @@
     color: var(--darkPink);
     font-family: 'AmiriQuran';
     width: 12em;
+}
+
+.nav-left{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

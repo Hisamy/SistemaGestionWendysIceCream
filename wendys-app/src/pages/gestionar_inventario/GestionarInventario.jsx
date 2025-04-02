@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
 import ConsumiblesGrid from './ConsumiblesGrid.jsx';
-import ActionButton from '../../components/main_content/ActionButton.jsx';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import './GestionarInventario.css';
 
@@ -19,6 +19,7 @@ const CONSUMIBLES_MOCK = [
 
 function GestionarInventario() {
 
+  const navigate = useNavigate();
   const [selectedConsumible, setSelectedConsumible] = useState(null);
 
   const handleConsumibleClick = useCallback((id) => {
@@ -28,7 +29,8 @@ function GestionarInventario() {
 
   const handleRegistrarConsumible = useCallback(() => {
     console.log('Registrando consumible...');
-  }, []);
+    navigate('/registrar-consumible');
+  }, [navigate]);
 
   const handleGenerarReporte = useCallback(() => {
     console.log('Generando reporte...');

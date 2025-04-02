@@ -1,0 +1,19 @@
+input{
+    background-color: var(--background);
+    border-style: none;
+    border-radius: 15px;
+    height: 3em;
+    width: 100%;
+}
+.registrar-container{
+    display: flex;
+    flex-direction: row;
+    gap: 5em;
+}
+.form-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+}
+
