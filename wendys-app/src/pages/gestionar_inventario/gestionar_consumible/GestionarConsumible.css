@@ -1,0 +1,38 @@
+.consumible-info p{
+    font-family: 'AmiriQuran','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+.consumible-info h3{
+    color: var(--darkPink);
+}
+.consumible-info {
+    display: flex;
+    flex-direction: column;
+}
+.consumible-info-container{
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+    margin-top: 2em;
+
+}
+.consumible-info h3,
+.consumible-info p {
+    margin: 0;
+    padding: 0;
+}
+.inventario-content {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100%;
+    padding: 2em; 
+    box-sizing: border-box;
+}
+
+.consumible-details {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5em;
+}

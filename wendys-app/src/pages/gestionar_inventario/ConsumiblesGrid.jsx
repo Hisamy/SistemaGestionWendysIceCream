@@ -11,7 +11,7 @@ const ConsumiblesGrid = ({ consumibles, onConsumibleClick, selectedId = null }) 
         <ConsumibleButton
           key={consumible.id}
           label={consumible.name}
-          onClick={() => onConsumibleClick(consumible.id)}
+          onClick={() => onConsumibleClick(consumible)} 
           selected={selectedId === consumible.id}
         />
       ))}

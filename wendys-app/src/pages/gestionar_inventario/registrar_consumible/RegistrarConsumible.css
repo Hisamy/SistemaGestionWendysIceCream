@@ -5,10 +5,13 @@ input{
     height: 3em;
     width: 100%;
 }
-.registrar-container{
+.registrar-container {
     display: flex;
     flex-direction: row;
     gap: 5em;
+    justify-content: center; 
+    align-items: center;
+    width: 100%;
 }
 .form-container{
     display: flex;
@@ -17,3 +20,23 @@ input{
     gap: 1em;
 }
 
+.registrar-content {
+    display: flex;
+    justify-content: start; 
+    width: 100%;
+    padding: 0 2em; 
+    box-sizing: border-box;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+}
+.content-container{
+    width: 100%;
+}
+.consumible-form{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}

@@ -2,16 +2,16 @@
 .pink-rectangle {
   background-color: var(--lightPink);
   border-radius: 40px;
-  padding: 2em 5em;
+  padding: 2em 3em;
   width: 90%;
   max-width: 100%; 
   min-width: 300px; 
-  box-sizing: border-box; 
-  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden; 
+
+  display: inherit;
+  flex-direction: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+  text-align: inherit;
   
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }

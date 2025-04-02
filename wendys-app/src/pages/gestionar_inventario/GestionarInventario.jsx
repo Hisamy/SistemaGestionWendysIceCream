@@ -6,15 +6,15 @@ import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import './GestionarInventario.css';
 
 const CONSUMIBLES_MOCK = [
-  { id: 1, name: 'Cuchara mini' },
-  { id: 2, name: 'Cuchara mediana' },
-  { id: 3, name: 'Cuchara grande' },
-  { id: 4, name: 'Popote' },
-  { id: 5, name: 'Servilletas' },
-  { id: 6, name: 'Cono' },
-  { id: 7, name: 'Canasta' },
-  { id: 8, name: 'Vaso litro' },
-  { id: 9, name: 'Vaso #201' },
+  { id: 1, name: 'Cuchara mini', cantidad: 7, merma: 0 },
+  { id: 2, name: 'Cuchara mediana', cantidad: 15, merma: 3  },
+  { id: 3, name: 'Cuchara grande', cantidad: 25, merma: 2  },
+  { id: 4, name: 'Popote', cantidad: 30, merma: 1  },
+  { id: 5, name: 'Servilletas', cantidad: 100, merma: 0  },
+  { id: 6, name: 'Cono', cantidad: 15, merma: 0  },
+  { id: 7, name: 'Canasta', cantidad: 5, merma: 5  },
+  { id: 8, name: 'Vaso litro', cantidad: 50, merma: 2  },
+  { id: 9, name: 'Vaso #201', cantidad: 20, merma: 0  },
 ];
 
 function GestionarInventario() {
@@ -22,10 +22,10 @@ function GestionarInventario() {
   const navigate = useNavigate();
   const [selectedConsumible, setSelectedConsumible] = useState(null);
 
-  const handleConsumibleClick = useCallback((id) => {
-    setSelectedConsumible(id);
-    console.log(`Consumible seleccionado: ${id}`);
-  }, []);
+  const handleConsumibleClick = useCallback((consumible) => {
+    setSelectedConsumible(consumible.id);
+    navigate('/gestionar-consumible', { state: { consumibleData: consumible } });
+  }, [navigate]);
 
   const handleRegistrarConsumible = useCallback(() => {
     console.log('Registrando consumible...');
@@ -64,7 +64,7 @@ function GestionarInventario() {
             <ConsumiblesGrid
               consumibles={CONSUMIBLES_MOCK}
               onConsumibleClick={handleConsumibleClick}
-              selectedId={selectedConsumible}
+              selectedId={selectedConsumible?.id}
             />
           </PinkRectangle>
 
