@@ -34,7 +34,6 @@ export const VarianteProductoSchema = new EntitySchema({
             type: "many-to-one",
             target: "Producto",
             joinColumn: true,
-            eager: true,
             onDelete: "CASCADE"
         },
         varianteJoinConsumible: {

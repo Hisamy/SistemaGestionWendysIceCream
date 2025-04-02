@@ -19,23 +19,24 @@ export const VarianteJoinConsumibleSchema = new EntitySchema({
             generated: true
         },
         variante_id: {
-            type: "int",
-            primary: true
+            type: "int"
         },
         consumible_id: {
-            type: "int",
-            primary: true
+            type: "int"
         },
         cantidad_consumible: {
             type: "int",
             nullable: false
         }
     },
+    uniques: [
+        { columns: ["variante_id", "consumible_id"] } // garantiza que la combinación sea unica
+    ],
     relations: {
         varianteProducto: {
             target: "VarianteProducto",
             type: "many-to-one",
-            JoinColumn: {
+            joinColumn: {
                 name: "variante_id",
                 referencedColumnName: "id"
             }
@@ -43,7 +44,7 @@ export const VarianteJoinConsumibleSchema = new EntitySchema({
         consumible: {
             target: "Consumible",
             type: "many-to-one",
-            JoinColumn: {
+            joinColumn: {
                 name: "consumible_id",
                 referencedColumnName: "id"
             }

@@ -71,3 +71,5 @@ const mandarRespuestaError = (error, res) => {
         res.status(500).send(`Error con la conexión: ${error.message}`);
     }
 }
+
+export default gestionarProductosRouter;
