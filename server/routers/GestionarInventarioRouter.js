@@ -12,13 +12,7 @@ gestionarInventarioRouter.post("/registrar", async (req, res) => {
         await service.registrarConsumible(datosConsumible);
         res.status(201).send("Consumible registrado correctamente");
     } catch (error) {
-        if(error instanceof BusinessError){
-            res.status(400).send(error.message);
-        } else if(error instanceof ValidationError){
-            res.status(400).send(error.message);
-        } else {
-            res.status(400).send("Error con la conexión");
-        }
+        mandarRespuestaError(error, res);
     }
 });
 
@@ -27,11 +21,7 @@ gestionarInventarioRouter.get("/consumibles", async (req, res) => {
         const consumibles = await service.obtenerConsumibles();
         res.status(200).json(consumibles);
     } catch (error) {
-        if(error instanceof BusinessError){
-            res.status(400).send(error.message);
-        } else {
-            res.status(400).send("Error con la conexión");
-        }
+        mandarRespuestaError(error, res);
     }
 });
 
@@ -41,13 +31,7 @@ gestionarInventarioRouter.get("/consumible/:id", async (req, res) => {
         const consumible = await service.obtenerConsumible(id);
         res.status(200).json(consumible);
     } catch (error) {
-        if(error instanceof BusinessError){
-            res.status(400).send(error.message);
-        } else if(error instanceof ValidationError){
-            res.status(400).send(error.message);
-        } else {
-            res.status(400).send("Error con la conexión");
-        }
+        mandarRespuestaError(error, res);
     }
 });
 
@@ -58,13 +42,7 @@ gestionarInventarioRouter.put("/editar/:id", async (req, res) => {
         await service.editarConsumible(id, datosEntrantes);
         res.status(200).send("Consumible editado correctamente");
     } catch (error) {
-        if(error instanceof BusinessError){
-            res.status(400).send(error.message);
-        } else if(error instanceof ValidationError){
-            res.status(400).send(error.message);
-        } else {
-            res.status(400).send("Error con la conexión");
-        }
+        mandarRespuestaError(error, res);
     }
 });
 
@@ -74,14 +52,18 @@ gestionarInventarioRouter.delete("/eliminar/:id", async (req, res) => {
         await service.eliminarConsumible(id);
         res.status(200).send("Consumible eliminado correctamente");
     } catch (error) {
-        if(error instanceof BusinessError){
-            res.status(400).send(error.message);
-        } else if(error instanceof ValidationError){
-            res.status(400).send(error.message);
-        } else {
-            res.status(400).send("Error con la conexión");
-        }
+        mandarRespuestaError(error, res);
     }
 });
+
+const mandarRespuestaError = (error, res) => {
+    if(error instanceof BusinessError){
+        res.status(500).send(error.message);
+    } else if(error instanceof ValidationError){
+        res.status(400).send(error.message);
+    } else {
+        res.status(500).send(`Error con la conexión: ${error.message}`);
+    }
+}
 
 export default gestionarInventarioRouter;
