@@ -12,7 +12,7 @@ class VarianteProductoRepository {
 
     async guardarVarianteProducto(VarianteProducto) {
         try {
-            const variante = await this.VarianteProductoRepo.save(VarianteProducto)
+            const variante = await this.varianteProductoRepo.save(VarianteProducto)
             return variante;
         } catch (error) {
             throw new DatabaseError(`Error al guardar la variante: ${error.message}`, error);
@@ -46,7 +46,7 @@ class VarianteProductoRepository {
 
     async obtenerVariantesPorIdDelProducto(idProducto) {
         try {
-            return await this.VarianteProductoRepo.find({ where: {producto: { id: idProducto } } });
+            return await this.varianteProductoRepo.find({ where: {producto: { id: idProducto } } });
         } catch (error) {
             throw new DatabaseError(`Error al obtener variantes del producto con ID ${idProducto}: ${error.message}`, error);
         }
@@ -54,15 +54,23 @@ class VarianteProductoRepository {
 
     async obtenerVariantePorId(id) {
         try {
-            return await this.VarianteProductoRepo.findOneBy({ id });
+            return await this.varianteProductoRepo.findOneBy({ id });
         } catch (error) {
             throw new DatabaseError(`Error al obtener VarianteProducto con ID ${id}: ${error.message}`, error);
         }
     }
 
+    async obtenerRelacionesConsumiblesPorIdVariante(idVariante) {
+        try {
+            return await this.varianteJoinConsumibleRepo.find({ where: { varianteProducto: { id: idVariante } } });
+        } catch (error) {
+            throw new DatabaseError(`Error al obtener relaciones de consumibles para VarianteProducto con ID ${idVariante}: ${error.message}`, error);
+        }
+    }
+
     async actualizarVariante(id, varianteActualizada) {
         try {
-            return await this.VarianteProductoRepo.update(id, varianteActualizada);
+            return await this.varianteProductoRepo.update(id, varianteActualizada);
         } catch (error) {
             throw new DatabaseError(`Error al intentar actualizar VarianteProducto con ID ${id}: ${error.message}`, error);
         }
@@ -70,7 +78,7 @@ class VarianteProductoRepository {
 
     async eliminarVariante(id) {
         try {
-            return await this.VarianteProductoRepo.delete({ id });
+            return await this.varianteProductoRepo.delete({ id });
         } catch (error) {
             throw new DatabaseError(`Error al intentar eliminar VarianteProducto con ID ${id}: ${error.message}`, error);
         }

@@ -58,7 +58,7 @@ class GestionarProductosService {
             }
 
             // Guarda el producto
-            const productoGuardado = this.ProductoRepo.guardarProducto(nuevoProducto);
+            const productoGuardado = await this.ProductoRepo.guardarProducto(nuevoProducto);
 
             // Asigna el producto padre a cada variante de producto
             const variantesProducto = datosProducto.variantes.map(vp => {
@@ -66,8 +66,11 @@ class GestionarProductosService {
                 const tamanio = vp.tamanio;
                 if(!precio) throw new ValidationError(`Faltan campos obligatorios, debe ingresarse el precio de todas las variantes.`);
                 if(!tamanio) throw new ValidationError(`Faltan campos obligatorios, debe ingresarse el tamaño de todas las variantes.`);
-                return new VarianteProducto(precio, tamanio, productoGuardado, vp.consumibles);
-            });;
+                
+                // Asegúrate de que consumibles siempre sea un array
+                const consumibles = Array.isArray(vp.consumibles) ? vp.consumibles : [];
+                return new VarianteProducto(precio, tamanio, productoGuardado, consumibles);
+            });
 
             const tamaniosSet = new Set();
             // Verifica que no haya tamaños repetidos
@@ -84,14 +87,19 @@ class GestionarProductosService {
             }
 
             // Guarda las variantes con sus consumibles asignados
-            for(const vp of variantesProducto) {
+            for (const vp of variantesProducto) {
                 const varianteGuardada = await this.VarianteProductoRepo.guardarVarianteProducto(vp);
+            
 
-                const joinsVarianteConsumible = vp.consumibles.map(consumibleRequerido => {
-
-                    const consumibleEncontrado = this.GestionarInventarioRepo.obtenerConsumiblePorId(consumibleRequerido.id);
-                    return new VarianteJoinConsumible(varianteGuardada, consumibleEncontrado, consumibleRequerido.cantidad);
-                });
+                if (vp.consumibles && Array.isArray(vp.consumibles) && vp.consumibles.length > 0) {
+                    const joinsVarianteConsumible = await Promise.all(
+                        vp.consumibles.map(async (consumibleRequerido) => {
+                            const consumibleEncontrado = await this.GestionarInventarioRepo.obtenerConsumiblePorId(consumibleRequerido.id);
+                            const join = new VarianteJoinConsumible(varianteGuardada, consumibleEncontrado, consumibleRequerido.cantidad);
+                            return await this.VarianteProductoRepo.agregarConsumibleAVarianteProducto(join);
+                        })
+                    );
+                }
             }
 
         } catch (error) {
@@ -99,6 +107,15 @@ class GestionarProductosService {
                 throw error;
             }
             throw new BusinessError(`Error del servicio al intentar registrar el producto: ${error.message}`, error);
+        }
+    }
+
+    async obtenerTodosLosProductos() {
+        try {
+            const productos = await this.ProductoRepo.obtenerTodosLosProductos();
+            return productos;
+        } catch (error) {
+            throw new BusinessError(`Error del servicio al obtener todos los productos: ${error.message}`, error);
         }
     }
 }

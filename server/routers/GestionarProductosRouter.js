@@ -60,7 +60,16 @@ gestionarProductosRouter.post('/registrar', async (req, res) => {
     } catch (error) {
         mandarRespuestaError(error, res);
     }
-})
+});
+
+gestionarProductosRouter.get('/productos', async (req, res) => {
+    try {
+        const productos = await service.obtenerTodosLosProductos();
+        res.status(200).json(productos);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+});
 
 const mandarRespuestaError = (error, res) => {
     if(error instanceof BusinessError){

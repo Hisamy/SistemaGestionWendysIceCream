@@ -11,7 +11,7 @@ class ProductoRepository {
 
     async guardarProducto(producto) {
         try {
-            return await this.repo.save(producto)
+            return await this.repo.save(producto);
         } catch (error) {
             throw new DatabaseError(`Error al guardar consumible: ${error.message}`, error);
         }
