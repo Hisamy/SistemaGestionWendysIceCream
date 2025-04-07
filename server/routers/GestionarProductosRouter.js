@@ -38,7 +38,7 @@ gestionarProductosRouter.get('/tamanios/default', async (req, res) => {
     }
 });
 
-gestionarProductosRouter.get('/variantesUsadas', async (req, res) => {
+gestionarProductosRouter.get('/quedanTamanios', async (req, res) => {
     const variantesAgregadas = req.query.variantesAgregadas;
     try {
         const variantesDisponibles = await service.sePuedeAgregarMasVariantes();
@@ -56,7 +56,7 @@ gestionarProductosRouter.post('/registrar', async (req, res) => {
     const producto = req.body;
     try {
         await service.registrarProducto(producto);
-        res.send(201).send(`El producto "${producto.nombre}" fué registrado correctamente.`);
+        res.status(201).send(`El producto "${producto.nombre}" fué registrado correctamente.`);
     } catch (error) {
         mandarRespuestaError(error, res);
     }
@@ -71,6 +71,25 @@ gestionarProductosRouter.get('/productos', async (req, res) => {
     }
 });
 
+gestionarProductosRouter.get('/variantesProducto', async (req, res) => {
+    const {idProducto} = req.query;
+
+    // Convertir el idProducto a un número entero
+    const idProductoInt = parseInt(idProducto, 10);
+
+    // Verificar si la conversión fue exitosa
+    if (isNaN(idProductoInt)) {
+        return res.status(400).json({ error: 'El parámetro idProducto debe ser un número entero válido' });
+    }
+
+    try {
+        const variantesProducto = await service.obtenerVariantesPorIdDelProducto(idProductoInt);
+        res.status(200).json(variantesProducto);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+});
+
 const mandarRespuestaError = (error, res) => {
     if(error instanceof BusinessError){
         res.status(500).send(error.message);
@@ -78,7 +97,7 @@ const mandarRespuestaError = (error, res) => {
         res.status(400).send(error.message);
     } else {
         res.status(500).send(`Error con la conexión: ${error.message}`);
-    }
+    }   
 }
 
 export default gestionarProductosRouter;
