@@ -45,8 +45,12 @@ class VarianteProductoRepository {
     }
 
     async obtenerVariantesPorIdDelProducto(idProducto) {
+        if (idProducto === undefined || idProducto === null) {
+            throw new Error("El idProducto no puede ser nulo ni indefinido.");
+        }
         try {
-            return await this.varianteProductoRepo.find({ where: {producto: { id: idProducto } } });
+            const variantesProductoEncontrados = await this.varianteProductoRepo.find({ where: { producto: { id: idProducto } } }) || [];
+            return variantesProductoEncontrados;
         } catch (error) {
             throw new DatabaseError(`Error al obtener variantes del producto con ID ${idProducto}: ${error.message}`, error);
         }
@@ -84,17 +88,6 @@ class VarianteProductoRepository {
         }
     }
 
-    async obtenerVariantesPorIdDelProducto(idProducto) {
-        if (idProducto === undefined || idProducto === null) {
-            throw new Error("El idProducto no puede ser nulo ni indefinido.");
-        }
-        try {
-            const variantesProductoEncontrados = await this.varianteProductoRepo.find({ where: { producto: { id: idProducto } } }) || [];
-            return variantesProductoEncontrados;
-        } catch (error) {
-            throw new DatabaseError(`\nError en VarianteProductoRepository: Falló al intentar encontrar las variantes del producto con id ${idProducto}: ${error.message}`, error);
-        }
-    }
 }
 
 export default VarianteProductoRepository;
