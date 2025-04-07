@@ -14,6 +14,5 @@ app.use('/gestionarProductos', gestionarProductosRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor activo en puerto ${PORT}`);
-  console.log(`Puedes entrar clicleando http://localhost:${PORT}`);
-  
+  console.log(`Puedes entrar clickeando http://localhost:${PORT}`);
 });

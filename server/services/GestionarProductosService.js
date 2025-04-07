@@ -118,6 +118,15 @@ class GestionarProductosService {
             throw new BusinessError(`Error del servicio al obtener todos los productos: ${error.message}`, error);
         }
     }
+
+    async obtenerVariantesPorIdDelProducto(idProducto) {
+        try {
+            const variantesProducto = await this.VarianteProductoRepo.obtenerVariantesPorIdDelProducto(idProducto);
+            return variantesProducto;
+        } catch (error) {
+            throw new BusinessError(`Error del servicio al obtener las variantes del producto con id ${idProducto}: ${error.message}`, error);
+        }
+    }
 }
 
 export default GestionarProductosService;

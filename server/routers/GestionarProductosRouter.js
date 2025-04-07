@@ -1,20 +1,24 @@
+/**
+ * @module gestionarProductosRouter
+ * Router que maneja las solicitudes HTTP relacionadas con la gestión de productos.
+ */
+
 import { Router } from "express";
 import GestionarProductosService from '../services/GestionarProductosService.js';
 import { BusinessError } from '../errors/BusinessError.js';
 import { ValidationError } from '../errors/ValidationError.js';
 
+// Instancia del enrutador y del servicio de gestión de productos
 const gestionarProductosRouter = Router();
 const service = new GestionarProductosService();
-const mandarRespuestaError = (error, res) => {
-    if(error instanceof BusinessError){
-        res.status(500).send(error.message);
-    } else if(error instanceof ValidationError){
-        res.status(400).send(error.message);
-    } else {
-        res.status(500).send(`Error con la conexión: ${error.message}`);
-    }
-}
 
+/**
+ * Ruta GET para verificar si un producto con el nombre proporcionado ya existe.
+ * 
+ * @name GET /existe
+ * @param {string} nombre - Nombre del producto a verificar.
+ * @returns {string} - Mensaje indicando si el producto existe o está disponible.
+ */
 gestionarProductosRouter.get('/existe', async (req, res) => {
     const nombre = req.query.nombre;
     try {
@@ -29,6 +33,12 @@ gestionarProductosRouter.get('/existe', async (req, res) => {
     }
 });
 
+/**
+ * Ruta GET para obtener todos los tamaños disponibles de productos.
+ * 
+ * @name GET /tamanios
+ * @returns {array} - Lista de tamaños disponibles.
+ */
 gestionarProductosRouter.get('/tamanios', async (req, res) => {
     try {
         const tamanios = await service.obtenerTodosLosTamanios();
@@ -38,6 +48,12 @@ gestionarProductosRouter.get('/tamanios', async (req, res) => {
     }
 });
 
+/**
+ * Ruta GET para obtener el tamaño predeterminado de un producto.
+ * 
+ * @name GET /tamanios/default
+ * @returns {string} - Tamaño predeterminado del producto.
+ */
 gestionarProductosRouter.get('/tamanios/default', async (req, res) => {
     try {
         const tamanioDefault = await service.obtenerTamanioDefault();
@@ -47,7 +63,14 @@ gestionarProductosRouter.get('/tamanios/default', async (req, res) => {
     }
 });
 
-gestionarProductosRouter.get('/variantesUsadas', async (req, res) => {
+/**
+ * Ruta GET para verificar si quedan tamaños disponibles para agregar más variantes.
+ * 
+ * @name GET /quedanTamanios
+ * @param {string} variantesAgregadas - Variantes que ya han sido agregadas.
+ * @returns {string} - Mensaje indicando si hay espacio suficiente para agregar más variantes.
+ */
+gestionarProductosRouter.get('/quedanTamanios', async (req, res) => {
     const variantesAgregadas = req.query.variantesAgregadas;
     try {
         const variantesDisponibles = await service.sePuedeAgregarMasVariantes();
@@ -61,16 +84,29 @@ gestionarProductosRouter.get('/variantesUsadas', async (req, res) => {
     }
 });
 
+/**
+ * Ruta POST para registrar un nuevo producto.
+ * 
+ * @name POST /registrar
+ * @param {object} producto - Información del producto a registrar.
+ * @returns {string} - Mensaje indicando si el producto fue registrado correctamente.
+ */
 gestionarProductosRouter.post('/registrar', async (req, res) => {
     const producto = req.body;
     try {
         await service.registrarProducto(producto);
-        res.status(201).send(`El producto "${producto.nombre}" fué registrado correctamente.`);
+        res.status(201).send(`El producto "${producto.nombre}" fue registrado correctamente.`);
     } catch (error) {
         mandarRespuestaError(error, res);
     }
 });
 
+/**
+ * Ruta GET para obtener todos los productos registrados.
+ * 
+ * @name GET /productos
+ * @returns {array} - Lista de productos registrados.
+ */
 gestionarProductosRouter.get('/productos', async (req, res) => {
     try {
         const productos = await service.obtenerTodosLosProductos();
@@ -80,6 +116,46 @@ gestionarProductosRouter.get('/productos', async (req, res) => {
     }
 });
 
+/**
+ * Ruta GET para obtener las variantes de un producto dado su ID.
+ * 
+ * @name GET /variantesProducto
+ * @param {number} idProducto - ID del producto para obtener sus variantes.
+ * @returns {array} - Lista de variantes del producto.
+ */
+gestionarProductosRouter.get('/variantesProducto', async (req, res) => {
+    const {idProducto} = req.query;
 
+    // Convertir el idProducto a un número entero
+    const idProductoInt = parseInt(idProducto, 10);
+
+    // Verificar si la conversión fue exitosa
+    if (isNaN(idProductoInt)) {
+        return res.status(400).json({ error: 'El parámetro idProducto debe ser un número entero válido' });
+    }
+
+    try {
+        const variantesProducto = await service.obtenerVariantesPorIdDelProducto(idProductoInt);
+        res.status(200).json(variantesProducto);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+});
+
+/**
+ * Función para manejar los errores y enviar una respuesta adecuada al cliente.
+ * 
+ * @param {Error} error - El error que ocurrió.
+ * @param {Response} res - Objeto de respuesta HTTP.
+ */
+const mandarRespuestaError = (error, res) => {
+    if(error instanceof BusinessError){
+        res.status(500).send(error.message);
+    } else if(error instanceof ValidationError){
+        res.status(400).send(error.message);
+    } else {
+        res.status(500).send(`Error con la conexión: ${error.message}`);
+    }   
+}
 
 export default gestionarProductosRouter;
