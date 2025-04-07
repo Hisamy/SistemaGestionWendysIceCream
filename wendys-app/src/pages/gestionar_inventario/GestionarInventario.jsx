@@ -1,26 +1,37 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
 import ConsumiblesGrid from './ConsumiblesGrid.jsx';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import './GestionarInventario.css';
-
-const CONSUMIBLES_MOCK = [
-  { id: 1, name: 'Cuchara mini', cantidad: 7, merma: 0 },
-  { id: 2, name: 'Cuchara mediana', cantidad: 15, merma: 3  },
-  { id: 3, name: 'Cuchara grande', cantidad: 25, merma: 2  },
-  { id: 4, name: 'Popote', cantidad: 30, merma: 1  },
-  { id: 5, name: 'Servilletas', cantidad: 100, merma: 0  },
-  { id: 6, name: 'Cono', cantidad: 15, merma: 0  },
-  { id: 7, name: 'Canasta', cantidad: 5, merma: 5  },
-  { id: 8, name: 'Vaso litro', cantidad: 50, merma: 2  },
-  { id: 9, name: 'Vaso #201', cantidad: 20, merma: 0  },
-];
+import inventarioController from '../../controllers/InventarioController.js';
 
 function GestionarInventario() {
 
   const navigate = useNavigate();
   const [selectedConsumible, setSelectedConsumible] = useState(null);
+  const [consumibles, setConsumibles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(()=> {
+    const cargarConsumibles = async () => {
+      try {
+        const data = await inventarioController.obtenerConsumibles();
+        const consumiblesMapeados = data.map(item => ({
+          id: item.id,
+          name: item.nombre,
+        }));
+        setConsumibles(consumiblesMapeados);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al cargar consumibles:", error);
+        setError("Error al cargar los consumibles. Por favor, intenta de nuevo.");
+        setLoading(false);
+      }
+    };
+    cargarConsumibles();
+  }, []);
 
   const handleConsumibleClick = useCallback((consumible) => {
     setSelectedConsumible(consumible.id);
@@ -60,12 +71,18 @@ function GestionarInventario() {
       <div className="fit-parent">
         <div className="inventario-content">
 
-          <PinkRectangle searchable={true}>
-            <ConsumiblesGrid
-              consumibles={CONSUMIBLES_MOCK}
-              onConsumibleClick={handleConsumibleClick}
-              selectedId={selectedConsumible?.id}
-            />
+        <PinkRectangle searchable={true}>
+            {loading ? (
+              <div className="loading-message">Cargando consumibles...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <ConsumiblesGrid
+                consumibles={consumibles}
+                onConsumibleClick={handleConsumibleClick}
+                selectedId={selectedConsumible}
+              />
+            )}
           </PinkRectangle>
 
         </div>
@@ -74,4 +91,5 @@ function GestionarInventario() {
     </div>
   );
 }
+
 export default GestionarInventario;
