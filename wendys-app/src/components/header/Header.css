@@ -11,14 +11,14 @@ header {
   }
   
   .header-logo {
-    height: 5em;
+    height: 7em;
     width: auto;
-    margin-left: 2em;
+    margin-left: 3em;
   }
   
   .header-nav ul {
     display: flex;
-    gap: 1.5em;
+    gap: 1.7em;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -32,7 +32,7 @@ header {
   .header-nav a {
     color: var(--pinkColorHeader);
     text-decoration: none;
-    font-size: 1.3em;
+    font-size: 1.7em;
     transition: color 0.3s ease-in-out;
     padding: 0.5em 0;
     position: relative;
@@ -46,12 +46,26 @@ header {
     color: var(--darkPink);
     font-weight: bold;
   }
+
+  @media screen and (max-width: 1024px) and (max-height: 768px) {
+    .header-nav a {
+      font-size: 1.3em;
+    }
+    .header-logo {
+      height: 5em;
+      width: auto;
+      margin-left: 3em;
+    }
+
+  }
+
   
-  @media (max-width: 764px) {
+  @media (max-width: 769px) {
     .header {
       flex-direction: column;
       padding: 1rem;
     }
+
     
     .header-nav-list {
       flex-direction: row;

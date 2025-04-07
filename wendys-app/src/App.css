@@ -22,6 +22,5 @@ header {
 /* Contenido principal */
 .main-content {
   margin-top: 100px; /* Ajusta según altura de tu header */
-  padding: 2rem;
   flex: 1;
 }
