@@ -5,6 +5,15 @@ import { ValidationError } from '../errors/ValidationError.js';
 
 const gestionarProductosRouter = Router();
 const service = new GestionarProductosService();
+const mandarRespuestaError = (error, res) => {
+    if(error instanceof BusinessError){
+        res.status(500).send(error.message);
+    } else if(error instanceof ValidationError){
+        res.status(400).send(error.message);
+    } else {
+        res.status(500).send(`Error con la conexión: ${error.message}`);
+    }
+}
 
 gestionarProductosRouter.get('/existe', async (req, res) => {
     const nombre = req.query.nombre;
@@ -56,7 +65,7 @@ gestionarProductosRouter.post('/registrar', async (req, res) => {
     const producto = req.body;
     try {
         await service.registrarProducto(producto);
-        res.send(201).send(`El producto "${producto.nombre}" fué registrado correctamente.`);
+        res.status(201).send(`El producto "${producto.nombre}" fué registrado correctamente.`);
     } catch (error) {
         mandarRespuestaError(error, res);
     }
@@ -71,14 +80,6 @@ gestionarProductosRouter.get('/productos', async (req, res) => {
     }
 });
 
-const mandarRespuestaError = (error, res) => {
-    if(error instanceof BusinessError){
-        res.status(500).send(error.message);
-    } else if(error instanceof ValidationError){
-        res.status(400).send(error.message);
-    } else {
-        res.status(500).send(`Error con la conexión: ${error.message}`);
-    }
-}
+
 
 export default gestionarProductosRouter;
