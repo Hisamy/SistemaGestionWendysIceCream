@@ -6,6 +6,7 @@ import NavigationItem from './NavigationItem';
 import './Header.css'; 
 
 const navigationItems = [
+  { path: '/', label: 'Inicio' },
   { path: '/gestionar-producto', label: 'Gestionar Producto' },
   { path: '/registrar-venta', label: 'Registrar venta' },
   { path: '/gestionar-inventario', label: 'Gestionar inventario' },

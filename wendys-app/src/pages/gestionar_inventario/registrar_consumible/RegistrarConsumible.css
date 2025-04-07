@@ -3,29 +3,21 @@ input{
     border-style: none;
     border-radius: 15px;
     height: 3em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     width: 100%;
 }
+input:focus {
+    outline: none;
+  }
 .registrar-container {
     display: flex;
     flex-direction: row;
-    gap: 5em;
-    justify-content: center; 
+    gap: 2em;
     align-items: center;
-    width: 100%;
-}
-.form-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1em;
-}
+    justify-content: center;
+    width: fit-content;
 
-.registrar-content {
-    display: flex;
-    justify-content: start; 
-    width: 100%;
-    padding: 0 2em; 
-    box-sizing: border-box;
+    
 }
 .form-group{
     display: flex;
@@ -37,6 +29,6 @@ input{
 .consumible-form{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    gap: 4em;
     width: 100%;
 }

@@ -1,0 +1,24 @@
+.consumibles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
+  }
+  
+  /* Media queries para hacer el grid responsivo */
+  @media (min-width: 768px) {
+    .consumibles-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, auto);
+        max-height: calc(3 * 8.5em); 
+        overflow-y: auto;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .consumibles-grid {
+      grid-template-columns: repeat(3, 2fr);
+      grid-template-rows: repeat(3, auto);
+      max-height: calc(3 * 8.5em); 
+      overflow-y: auto;
+    }
+  }
