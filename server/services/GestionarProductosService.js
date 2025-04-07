@@ -9,6 +9,8 @@ import { ValidationError } from '../errors/ValidationError.js';
 import VarianteProducto from '../entities/VarianteProducto.js';
 import VarianteJoinConsumible from '../entities/VarianteJoinConsumible.js';
 
+const errorEncabezado = "\nError de servicio en GestionarProductosService:";
+
 class GestionarProductosService {
     constructor() {
         this.ProductoRepo = new ProductoRepository()
@@ -21,7 +23,7 @@ class GestionarProductosService {
             const ProductoEncontrado = await this.ProductoRepo.obtenerProductosPorNombre(nombre);
             return Boolean(ProductoEncontrado);
         } catch (error) {
-            throw new BusinessError(`Error del servicio al buscar producto con nombre "${nombre}: ${error.message}"`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar buscar producto con nombre "${nombre}: ${error.message}"`, error);
         }
     }
 
@@ -29,7 +31,7 @@ class GestionarProductosService {
         try {
             return TAMANIOS;
         } catch (error) {
-            throw new BusinessError(`Error del servicio al obtener los tamaños para los VarianteProducto: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener los tamaños para los VarianteProducto: ${error.message}`, error);
         }
     }
 
@@ -37,7 +39,7 @@ class GestionarProductosService {
         try {
             return TAMANIOS.UNICO;
         } catch (error) {
-            throw new BusinessError(`Error del servicio al obtener el tamaño default para los VarianteProducto: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener el tamaño default para los VarianteProducto: ${error.message}`, error);
         }
     }
 
@@ -46,7 +48,7 @@ class GestionarProductosService {
             const cantidadTamanios = Object.keys(TAMANIOS).length;
             return Boolean((cantidadTamanios - cantidadVariantesProductoAgregados) > 1);
         } catch (error) {
-            throw new BusinessError(`Error del servicio al verificar si se pueden agregar más VarianteProducto: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar verificar si se pueden agregar más VarianteProducto: ${error.message}`, error);
         }
     }
 
@@ -106,7 +108,7 @@ class GestionarProductosService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError(`Error del servicio al intentar registrar el producto: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar registrar el producto: ${error.message}`, error);
         }
     }
 
@@ -115,7 +117,7 @@ class GestionarProductosService {
             const productos = await this.ProductoRepo.obtenerTodosLosProductos();
             return productos;
         } catch (error) {
-            throw new BusinessError(`Error del servicio al obtener todos los productos: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener todos los productos: ${error.message}`, error);
         }
     }
 
@@ -124,7 +126,16 @@ class GestionarProductosService {
             const variantesProducto = await this.VarianteProductoRepo.obtenerVariantesPorIdDelProducto(idProducto);
             return variantesProducto;
         } catch (error) {
-            throw new BusinessError(`Error del servicio al obtener las variantes del producto con id ${idProducto}: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener las variantes del producto con id ${idProducto}: ${error.message}`, error);
+        }
+    }
+
+    async obtenerVariantePorId(idVariante) {
+        try {
+            const varianteEncontrada = await this.VarianteProductoRepo.obtenerVariantePorId(idVariante);
+            return varianteEncontrada;
+        } catch (error) {
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener las variantes del producto con id ${idProducto}: ${error.message}`, error);
         }
     }
 }

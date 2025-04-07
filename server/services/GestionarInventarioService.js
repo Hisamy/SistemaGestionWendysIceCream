@@ -4,6 +4,8 @@ import GestionarInventarioRepository from "../repositories/GestionarInventarioRe
 import { ValidationError } from "../errors/ValidationError.js";
 import VarianteProductoRepository from "../repositories/VarianteProductoRepository.js";
 
+const errorEncabezado = "\nError de servicio en GestionarProductosService:";
+
 class GestionarInventarioService {
 
     constructor() {
@@ -32,7 +34,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al registrar los datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar registrar consumible: ${error.message}`, error);
         }
     }
 
@@ -41,7 +43,7 @@ class GestionarInventarioService {
             const consumiblesObtenidos = await this.consumibleRepo.obtenerTodosLosConsumibles();
             return consumiblesObtenidos;
         } catch (error) {
-            throw new BusinessError("Error del servicio al obtener los datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener consumibles: ${error.message}`, error);
         }
     }
 
@@ -56,7 +58,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al obtener los datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener consumible por id: ${error.message}`, error);
         }
     }
 
@@ -91,7 +93,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al modificar datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar modificar consumible: ${error.message}`, error);
         }
     }
 
@@ -120,7 +122,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al eliminar datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar eliminar consumible: ${error.message}`, error);
         }
     }
 
@@ -166,7 +168,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError(`Error al verificar consumibles suficientes: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar verificar consumibles suficientes: ${error.message}`, error);
         }
     }
 
