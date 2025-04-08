@@ -25,16 +25,16 @@ class GestionarVentaService {
             const productosPedido = [...pedido];
 
             const now = new Date();
-            const fecha = now.toISOString().split('T')[0]; 
+            const fecha = now.toISOString().split('T')[0];
             const hora = `${now.getHours().toString().padStart(2, '0')}:` +
                 `${now.getMinutes().toString().padStart(2, '0')}:` +
                 `${now.getSeconds().toString().padStart(2, '0')}`;
-                
+
             const venta = new Venta(fecha, hora, null, null);
             const ventaGuardada = await this.ventaRepo.guardarVenta(venta);
 
             for (const productoPedido of productosPedido) {
-                const idVariante = productoPedido.id_variante;
+                const idVariante = productoPedido.id;
 
                 // Verificar si se cuenta con suficientes consumibles
                 await this.verificarConsumiblesSuficientes(idVariante);
@@ -52,7 +52,17 @@ class GestionarVentaService {
                 });
             }
 
+            let precioTotal = 0;
+            for (const productoPedido of productosPedido) {
+                precioTotal += productoPedido.precio;
+            }
+            
+            // Actualizar el precio total en la venta guardada
+            ventaGuardada.precioTotal = precioTotal;
+            await this.ventaRepo.actualizarVenta(ventaGuardada.id, ventaGuardada);
+
             return ventaGuardada;
+
 
         } catch (error) {
             throw new BusinessError(`${errorEncabezado} Falló al intentar registrar una nueva venta: ${error.message}`, error);
@@ -74,29 +84,36 @@ class GestionarVentaService {
 
             // Obtener las relaciones de consumibles asociadas a la variante
             const relaciones = await this.varianteProductoRepo.obtenerRelacionesConsumiblesPorIdVariante(idVariante);
-            if (!relaciones || relaciones.length === 0) {
-                throw new ValidationError('No hay consumibles asociados a esta variante');
-            }
+            if (relaciones && relaciones.length > 0) {
+                // Verificar si hay suficientes consumibles para la cantidad solicitada
+                for (const relacion of relaciones) {
+                    const consumible = await this.consumibleRepo.obtenerConsumiblePorId(relacion.consumible_id);
+                    if (!consumible) {
+                        throw new ValidationError(`El consumible con ID ${relacion.consumible_id} no existe`);
+                    }
 
-            // Verificar si hay suficientes consumibles para la cantidad solicitada
-            for (const relacion of relaciones) {
-                const consumible = await this.consumibleRepo.obtenerConsumiblePorId(relacion.consumible_id);
-                if (!consumible) {
-                    throw new ValidationError(`El consumible con ID ${relacion.consumible_id} no existe`);
-                }
-
-                const cantidadRequerida = relacion.cantidad_consumible;
-                if (consumible.cantidad < cantidadRequerida) {
-                    throw new ValidationError(`No hay suficiente cantidad del consumible "${consumible.nombre}". Se requieren ${cantidadRequerida}, pero solo hay ${consumible.cantidad}`);
+                    const cantidadRequerida = relacion.cantidad_consumible;
+                    if (consumible.cantidad < cantidadRequerida) {
+                        throw new ValidationError(`No hay suficiente cantidad del consumible "${consumible.nombre}". Se requieren ${cantidadRequerida}, pero solo hay ${consumible.cantidad}`);
+                    }
                 }
             }
 
-            return true; // Consumibles suficientes
+            return true; // Consumibles suficientes o no hay relaciones
         } catch (error) {
             if (error instanceof ValidationError) {
                 throw error;
             }
             throw new BusinessError(`${errorEncabezado} Falló al intentar verificar consumibles suficientes: ${error.message}`, error);
+        }
+    }
+
+    async obtenerVentas() {
+        try {
+            const ventas = await this.ventaRepo.obtenerVentas();
+            return ventas;
+        } catch (error) {
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener las ventas: ${error.message}`, error);
         }
     }
 

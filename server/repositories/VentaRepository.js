@@ -25,7 +25,26 @@ class VentaRepository {
         }
     }
 
-    
+    async actualizarVenta(id, ventaActualizada) {
+            try {
+                verificarIdValido(id);
+                
+                const resultado = await this.ventaRepo.update({ id }, ventaActualizada);
+                return resultado;
+            } catch (error) {
+                throw new DatabaseError(`${errorEncabezado} Falló al intentar actualizar venta: ${error.message}`, error);
+            }
+        }
+
+    async obtenerVentas() {
+        try {
+            const ventas = await this.ventaRepo.find();
+            return ventas;
+        } catch (error) {
+            throw new DatabaseError(`${errorEncabezado} Falló al intentar obtener las ventas: ${error.message}`, error);
+        }
+    }
+
 }
 
 export default VentaRepository;
