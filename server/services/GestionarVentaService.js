@@ -4,6 +4,7 @@ import Venta from '../entities/Venta.js';
 import DetallesVenta from '../entities/DetallesVenta.js';
 import DetallesVentaRepository from '../repositories/DetallesVentaRepository.js';
 import ConsumibleRepository from '../repositories/GestionarInventarioRepository.js';
+import VarianteJoinConsumibleRepository from '../repositories/VarianteJoinRepository.js';
 import { ValidationError } from '../errors/ValidationError.js';
 import { BusinessError } from '../errors/BusinessError.js';
 
@@ -16,6 +17,7 @@ class GestionarVentaService {
         this.varianteProductoRepo = new VarianteProductoRepository();
         this.detallesVentaRepo = new DetallesVentaRepository();
         this.consumibleRepo = new ConsumibleRepository();
+        this.varianteJoinConsumibleRepo = new VarianteJoinConsumibleRepository();
     }
 
     async registrarVenta(pedido) {
@@ -40,6 +42,14 @@ class GestionarVentaService {
                 const varianteEncontrada = await this.varianteProductoRepo.obtenerVariantePorId(idVariante);
                 const detallesVenta = new DetallesVenta(productoPedido.precio, varianteEncontrada, ventaGuardada);
                 await this.detallesVentaRepo.guardarDetallesVenta(detallesVenta);
+
+                // Resta los consumibles del inventario
+                const joins = [...await this.varianteJoinConsumibleRepo.obtenerPorVarianteId(idVariante)];
+                joins.forEach(async join => {
+                    const consumible = await this.consumibleRepo.obtenerConsumiblePorId(join.consumible_id);
+                    consumible.cantidad -= join.cantidad_consumible;
+                    await this.consumibleRepo.actualizarConsumible(join.consumible_id, consumible);
+                });
             }
 
             return ventaGuardada;
