@@ -1,4 +1,6 @@
 import './ProductosGrid.css'
+import PropTypes from 'prop-types';
+import ProductoButton from './ProductoButton';
 
 const ProductosGrid = ({ productos, onProductoClick, selectedId = null }) => {
   return (
@@ -46,3 +48,5 @@ function ProductosRectanguloGrid({
     </PinkRectangle>
   );
 }
+
+export default ProductosGrid;
