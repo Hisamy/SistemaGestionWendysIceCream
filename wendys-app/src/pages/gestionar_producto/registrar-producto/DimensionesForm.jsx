@@ -32,10 +32,10 @@ const FormDimension = ({ onDelete, index }) => {
             onChange={handleTamanoChange}
             className="tamano-select"
           >
-            <option value="" disabled>Tamaño unico</option>
-            <option value="pequeño">Pequeño</option>
-            <option value="mediano">Mediano</option>
-            <option value="grande">Grande</option>
+            <option value="unico">Tamaño unico</option>
+            <option value="small">Pequeño</option>
+            <option value="medium">Mediano</option>
+            <option value="large">Grande</option>
           </select>
         </div>
         <div className="form-field ">
