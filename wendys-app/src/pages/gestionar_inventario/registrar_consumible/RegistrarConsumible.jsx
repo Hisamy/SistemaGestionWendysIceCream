@@ -11,7 +11,7 @@ function RegistrarConsumible() {
   const [formData, setFormData] = useState({
     nombre: '',
     cantidad: 0,
-    merma: 0
+
   });
 
   const [loading, setLoading] = useState(false);
