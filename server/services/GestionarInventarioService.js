@@ -126,21 +126,42 @@ class GestionarInventarioService {
 
     // RELACIONADO CON LA VENTA
 
-    async verificarConsumiblesSuficientes(idVariante, cantidad =1){
+    async verificarConsumiblesSuficientes(idVariante, cantidad) {
         try {
-            if(!idVariante) {
-                throw new ValidationError('Variante no encontrada');
+            // Validar parámetros de entrada
+            if (!idVariante) {
+                throw new ValidationError('El ID de la variante es obligatorio');
             }
-            if(cantidad <= 0 || !Number.isInteger(cantidad)) {
-                throw new ValidationError('La cantidad debe ser un número entero válido');
+            if (typeof cantidad !== 'number' || cantidad <= 0 || !Number.isInteger(cantidad)) {
+                throw new ValidationError('La cantidad debe ser un número entero válido y mayor a cero');
             }
 
+            // Obtener la variante del producto
             const variante = await this.varianteProductoRepo.obtenerVariantePorId(idVariante);
-            if(!variante){
-                throw new ValidationError('Variante no encontrada');
+            if (!variante) {
+                throw new ValidationError('La variante especificada no existe');
             }
 
+            // Obtener las relaciones de consumibles asociadas a la variante
             const relaciones = await this.varianteProductoRepo.obtenerRelacionesConsumiblesPorIdVariante(idVariante);
+            if (!relaciones || relaciones.length === 0) {
+                throw new ValidationError('No hay consumibles asociados a esta variante');
+            }
+
+            // Verificar si hay suficientes consumibles para la cantidad solicitada
+            for (const relacion of relaciones) {
+                const consumible = await this.consumibleRepo.obtenerConsumiblePorId(relacion.idConsumible);
+                if (!consumible) {
+                    throw new ValidationError(`El consumible con ID ${relacion.idConsumible} no existe`);
+                }
+
+                const cantidadRequerida = relacion.cantidadNecesaria * cantidad;
+                if (consumible.cantidad < cantidadRequerida) {
+                    throw new ValidationError(`No hay suficiente cantidad del consumible "${consumible.nombre}". Se requieren ${cantidadRequerida}, pero solo hay ${consumible.cantidad}`);
+                }
+            }
+
+            return true; // Consumibles suficientes
         } catch (error) {
             if (error instanceof ValidationError) {
                 throw error;

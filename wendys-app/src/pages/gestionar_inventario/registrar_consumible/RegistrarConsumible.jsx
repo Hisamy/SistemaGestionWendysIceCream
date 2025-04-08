@@ -4,26 +4,32 @@ import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import NavLeft from '../../../components/nav_left/NavLeft.jsx';
 import './RegistrarConsumible.module.css';
+import inventarioController from '../../../controllers/InventarioController.js';
 
 function RegistrarConsumible() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: '',
-    cantidad: ''
+    cantidad: 0,
+    merma: 0
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
-      [name]: value
+      [name]: name === 'nombre' ? value : Number(value)
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Datos enviados:', formData);
-    //logica para guardar
+    setLoading(true);
+    setError(null);
 
     Swal.fire({
         title: '¡Registro Exitoso!',

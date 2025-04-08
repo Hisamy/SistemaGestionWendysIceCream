@@ -68,6 +68,7 @@ class ProductoRepository {
             throw new DatabaseError(`Error al intentar eliminar el producto con ID ${id}: ${error.message}`, error);
         }
     }
+
 }
 
 export default ProductoRepository;
