@@ -29,15 +29,6 @@ class VarianteProductoRepository {
         }
     }
 
-    async agregarConsumibleAVarianteProducto(VarianteJoinConsumible) {
-        try {
-            const join = await this.varianteJoinConsumibleRepo.save(VarianteJoinConsumible);
-            return join;
-        } catch (error) {
-            throw new DatabaseError(`${errorEncabezado} Falló al agregar consumible a variante de producto: ${error.message}`, error)
-        }
-    }
-
     async editarConsumibleDeVarianteProducto(id, VarianteJoinConsumibleActualizado) {
         try {
             verificarIdValido(id);
@@ -73,7 +64,8 @@ class VarianteProductoRepository {
         try {
             verificarIdValido(id);
             
-            return await this.varianteProductoRepo.findOneBy({ id });
+            const variante = await this.varianteProductoRepo.findOneBy({ id });
+            return variante;
         } catch (error) {
             throw new DatabaseError(`${errorEncabezado} Falló al obtener VarianteProducto con ID ${id}: ${error.message}`, error);
         }
@@ -83,7 +75,12 @@ class VarianteProductoRepository {
         try {
             verificarIdValido(idVariante);
             
-            return await this.varianteJoinConsumibleRepo.find({ where: { varianteProducto: { id: idVariante } } });
+            const resultado = await this.varianteJoinConsumibleRepo.find({ 
+                where: { variante_id: idVariante }
+            });
+            
+            console.log('Relaciones encontradas:', resultado); // Para depuración
+            return resultado || [];
         } catch (error) {
             throw new DatabaseError(`${errorEncabezado} Falló al obtener relaciones de consumibles para VarianteProducto con ID ${idVariante}: ${error.message}`, error);
         }

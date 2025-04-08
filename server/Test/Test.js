@@ -2,9 +2,29 @@ import GestionarInventarioRepository from '../repositories/GestionarInventarioRe
 import Consumible from '../entities/Consumible.js';
 import GestionarInventarioService from '../services/GestionarInventarioService.js';
 import { connection } from '../database/Connection.js';
+import GestionarVentaService from '../services/GestionarVentaService.js';
 
 async function init() {
     try {
+
+        const serv = new GestionarVentaService();
+
+        const pedido = [
+            {
+                "precio": 23.5,
+                "tamanio": "CHICO",
+                "id": 1
+            },
+            {
+                "precio": 38.5,
+                "tamanio": "GRANDE",
+                "id": 2
+            }
+        ];
+
+        const resultado = await serv.registrarVenta(pedido);
+        console.log("Venta registrada correctamente:", resultado);
+
 
         //const serv = new GestionarInventarioService();
         /**

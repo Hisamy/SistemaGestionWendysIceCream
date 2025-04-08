@@ -28,7 +28,8 @@ export const VentaSchema = new EntitySchema({
         precioTotal: {
             type: "decimal",
             precision: 10,
-            scale: 2
+            scale: 2,
+            nullable: true
         },
         notas: {
             type: "text",

@@ -1,6 +1,6 @@
 import { connection } from '../database/Connection.js';
 import { VentaSchema } from '../entities/Venta.js';
-import { DetallesVentaSchema } from '../entities/DetallesVenta.js';
+import { DatabaseError } from '../errors/DatabaseError.js';
 
 const errorEncabezado = "\nError de acceso a datos en VentaRepository:";
 
