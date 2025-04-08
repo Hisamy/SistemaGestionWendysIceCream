@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './ProductoButton.css';
 
 const ProductoButton = ({ label, image, onClick, selected = false }) => {
   return (
     <div className="producto-button-container">
       <button 
         onClick={onClick}
-        className={`producto-button ${selected ? 'selected' : ''}`}
+        className='producto-button'
       >
         {image && <img src={image} alt={label} />}
       </button>

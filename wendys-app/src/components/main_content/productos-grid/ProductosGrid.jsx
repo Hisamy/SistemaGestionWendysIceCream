@@ -1,6 +1,6 @@
 import './ProductosGrid.css'
 import PropTypes from 'prop-types';
-import ProductoButton from './ProductoButton';
+import ProductoButton from './ProductoButton.jsx';
 
 const ProductosGrid = ({ productos, onProductoClick, selectedId = null }) => {
   return (

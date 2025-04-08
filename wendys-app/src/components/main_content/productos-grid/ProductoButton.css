@@ -4,5 +4,24 @@
     flex-direction: column;
     width: fit-content;
     align-items: center;
+    
 
+}
+
+.producto-button{
+    background-color: var(--background);
+    padding: 0.6em 1em;
+    width: 7.5em;
+    height: 7em;
+    border-radius: 30px;
+}
+
+button img{
+    height: 100%;
+    width: auto;
+
+}
+
+.producto-button-container p{
+    font-family: 'AmiriQuran','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
