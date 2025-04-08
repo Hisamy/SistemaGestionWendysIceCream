@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import NavLeft from '../../../components/nav_left/NavLeft.jsx';
-import './RegistrarConsumible.css';
+import './RegistrarConsumible.module.css';
 
 function RegistrarConsumible() {
   const navigate = useNavigate();

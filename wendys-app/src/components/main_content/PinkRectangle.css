@@ -55,11 +55,6 @@ label{
   box-shadow: 0 0 0 2px var(--lightYellow);
 }
 
-.content-container {
-  overflow-y: auto;
-  max-height: 70vh;
-  padding-right: 8px;
-}
 
 .content-container::-webkit-scrollbar {
   width: 8px;

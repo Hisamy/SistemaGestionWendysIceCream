@@ -23,9 +23,7 @@ input:focus {
     display: flex;
     flex-direction: column;
 }
-.content-container{
-    width: 100%;
-}
+
 .consumible-form{
     display: flex;
     flex-direction: row;

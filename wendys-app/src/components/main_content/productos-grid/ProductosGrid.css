@@ -1,24 +1,26 @@
-.consumibles-grid {
+.productos-grid {
     display: grid;
     grid-template-columns: 1fr;
+    justify-content: center;
     gap: 1em;
+    width: fit-content;
   }
   
   /* Media queries para hacer el grid responsivo */
   @media (min-width: 768px) {
-    .consumibles-grid {
+    .productos-grid {
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(3, auto);
-        max-height: calc(3 * 8.5em); 
+        max-height: calc(3 * 12em); 
         overflow-y: auto;
     }
   }
   
   @media (min-width: 1024px) {
-    .consumibles-grid {
-      grid-template-columns: repeat(3, 2fr);
-      grid-template-rows: repeat(3, auto);
-      max-height: calc(3 * 8.5em); 
+    .productos-grid {
+      grid-template-columns: repeat(3,auto);
+      grid-template-rows: repeat(2, auto);
+      max-height: calc(2 * 12em); 
       overflow-y: auto;
     }
   }
