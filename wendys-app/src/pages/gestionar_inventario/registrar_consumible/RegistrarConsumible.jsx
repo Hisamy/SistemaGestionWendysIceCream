@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import NavLeft from '../../../components/nav_left/NavLeft.jsx';
-import './RegistrarConsumible.module.css';
+import './RegistrarConsumible.css';
 import inventarioController from '../../../controllers/InventarioController.js';
 
 function RegistrarConsumible() {
@@ -35,7 +35,8 @@ function RegistrarConsumible() {
         title: '¡Registro Exitoso!',
         text: 'Consumible registrado correctamente.',
         icon: 'success',
-        confirmButtonText: 'Aceptar'
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#A2576C'
       }).then(() => {
         navigate('/gestionar-inventario'); 
       });

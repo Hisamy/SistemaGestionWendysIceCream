@@ -8,6 +8,7 @@ import fresasCrema from '../../assets/Images/productos/fresas-crema.png'
 import frappe from '../../assets/Images/productos/frappe.png'
 import iceCreamVaso from '../../assets/Images/productos/ice-cream-vaso.png'
 import sundae from '../../assets/Images/productos/sundae.png'
+import bananaSplit from '../../assets/Images/productos/banana-split.png'
 
 import './GestionarProducto.css'
 
@@ -18,7 +19,7 @@ const PRODUCTOS_MOCK = [
   { id: 3, name: 'Frappe',image: frappe  },
   { id: 4, name: 'Nieve vaso',image: iceCreamVaso },
   { id: 5, name: 'Sundae',image: sundae },
-  { id: 6, name: 'Banana Split'},
+  { id: 6, name: 'Banana Split',image: bananaSplit },
 ];
 
 function GestionarProducto() {
@@ -32,7 +33,7 @@ function GestionarProducto() {
 
   const handleRegistrarProducto = useCallback(() => {
     console.log('Registrando producto...');
-    navigate('/');
+    navigate('/registrar-producto');
   }, [navigate]);
 
   const navLeftButtons = [
