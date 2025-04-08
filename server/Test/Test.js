@@ -13,12 +13,12 @@ async function init() {
             {
                 "precio": 23.5,
                 "tamanio": "CHICO",
-                "id": 1
+                "id_variante": 1
             },
             {
                 "precio": 38.5,
                 "tamanio": "GRANDE",
-                "id": 2
+                "id_variante": 2
             }
         ];
 

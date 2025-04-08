@@ -11,15 +11,15 @@ class VarianteJoinConsumibleRepository {
 
     async agregarConsumibleAVarianteProducto(varianteJoinConsumible) {
         try {
-            if (!varianteJoinConsumible.varianteProducto) {
+            if (!varianteJoinConsumible.variante_id) {
                 throw new Error("El ID de la variante de producto no es válido");
             }
 
-            if (!varianteJoinConsumible.consumible) {
+            if (!varianteJoinConsumible.consumible_id) {
                 throw new Error("El ID del consumible no es válido");
             }
 
-            if (typeof varianteJoinConsumible.cantidadConsumible !== 'number' || varianteJoinConsumible.cantidadConsumible <= 0) {
+            if (typeof varianteJoinConsumible.cantidad_consumible !== 'number' || varianteJoinConsumible.cantidad_consumible <= 0) {
                 throw new Error("La cantidad de consumible debe ser un número mayor a cero");
             }
 

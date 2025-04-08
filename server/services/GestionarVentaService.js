@@ -34,7 +34,7 @@ class GestionarVentaService {
             const ventaGuardada = await this.ventaRepo.guardarVenta(venta);
 
             for (const productoPedido of productosPedido) {
-                const idVariante = productoPedido.id;
+                const idVariante = productoPedido.id_variante;
 
                 // Verificar si se cuenta con suficientes consumibles
                 await this.verificarConsumiblesSuficientes(idVariante);
