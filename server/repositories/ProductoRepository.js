@@ -23,7 +23,7 @@ class ProductoRepository {
         try {
             return await this.repo.save(producto);
         } catch (error) {
-            throw new DatabaseError(`${errorEncabezado} Falló al guardar consumible: ${error.message}`, error);
+            throw new DatabaseError(`${errorEncabezado} Falló al guardar producto: ${error.message}`, error);
         }
     }
 
@@ -34,7 +34,7 @@ class ProductoRepository {
             const producto = await this.repo.findOneBy({ id });
             return producto;
         } catch (error) {
-            throw new DatabaseError(`${errorEncabezado} Falló al obtener consumible con ID ${id}: ${error.message}`, error);
+            throw new DatabaseError(`${errorEncabezado} Falló al obtener producto con ID ${id}: ${error.message}`, error);
         }
     }
 

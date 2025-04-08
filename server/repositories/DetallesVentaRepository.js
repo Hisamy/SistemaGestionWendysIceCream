@@ -1,5 +1,4 @@
 import { connection } from '../database/Connection.js';
-import { VentaSchema } from '../entities/Venta.js';
 import { DetallesVentaSchema } from '../entities/DetallesVenta.js';
 
 const errorEncabezado = "\nError de acceso a datos en VentaRepository:";
@@ -12,20 +11,18 @@ const verificarIdValido = (id) => {
     }
 }
 
-class VentaRepository {
+class DetallesVentaRepository {
     constructor() {
-        this.ventaRepo = connection.getRepository(VentaSchema);
+        this.detallesRepo = connection.getRepository(DetallesVentaSchema);
     }
 
-    async guardarVenta(venta) {
+    async guardarDetallesVenta(detallesVenta) {
         try {
-            return await this.ventaRepo.save(venta);
+            return await this.detallesRepo.save(detallesVenta);
         } catch (error) {
-            throw new DatabaseError(`${errorEncabezado} Falló al intentar guardar la venta: ${error.message}`, error);
+            throw new DatabaseError(`${errorEncabezado} Falló al intentar guardar los detalles de la venta: ${error.message}`, error);
         }
     }
-
-    
 }
 
-export default VentaRepository;
+export default DetallesVentaRepository;
