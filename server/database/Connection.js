@@ -18,7 +18,7 @@ export const connection = new DataSource({
         VarianteJoinConsumibleSchema
     ],
     synchronize: true,
-    logging: true,
+    logging: false,
     
 });
 

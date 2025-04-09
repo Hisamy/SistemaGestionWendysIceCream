@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
@@ -7,13 +7,13 @@ import './RegistrarConsumible.css';
 import inventarioController from '../../../controllers/InventarioController.js';
 
 function RegistrarConsumible() {
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: '',
-    cantidad: 0,
+    cantidad: '',
 
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -31,16 +31,36 @@ function RegistrarConsumible() {
     setLoading(true);
     setError(null);
 
-    Swal.fire({
+    try {
+      const response = await inventarioController.registrarConsumible(formData);
+
+      Swal.fire({
         title: '¡Registro Exitoso!',
         text: 'Consumible registrado correctamente.',
         icon: 'success',
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#A2576C'
       }).then(() => {
-        navigate('/gestionar-inventario'); 
+        navigate('/gestionar-inventario');
       });
+  
+      setSuccess(true);
+
+    } catch (error) {
+      console.error("Error al registrar el consumible:", error);
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo registrar el consumible. Intenta de nuevo.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#A2576C'
+      });
+      setError(error.message || "Error inesperado.");
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   const handleCancel = () => {
     navigate('/gestionar-inventario'); // Regresar a la página de inventario
