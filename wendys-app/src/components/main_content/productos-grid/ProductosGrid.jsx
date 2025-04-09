@@ -1,3 +1,4 @@
+import React from 'react';
 import './ProductosGrid.css'
 import PropTypes from 'prop-types';
 import ProductoButton from './ProductoButton.jsx';
@@ -30,23 +31,5 @@ ProductosGrid.propTypes = {
   selectedId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
-function ProductosRectanguloGrid({
-  productos,
-  onProductoClick,
-  selectedId,
-  searchable = true,
-  children
-}) {
-  return (
-    <PinkRectangle searchable={searchable}>
-      <ProductosGrid
-        productos={productos}
-        onProductoClick={onProductoClick} // Ahora coherente
-        selectedId={selectedId}
-      />
-      {children}
-    </PinkRectangle>
-  );
-}
 
 export default ProductosGrid;

@@ -14,7 +14,7 @@ function ProductosRectanguloGrid({
     <PinkRectangle searchable={searchable}>
       <ProductosGrid
         productos={productos}
-        onProductosClick={onProductoClick}
+        onProductoClick={onProductoClick}
         selectedId={selectedId}
       />
       {children}
