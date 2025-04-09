@@ -202,10 +202,10 @@ function GestionarConsumible() {
     });
   }, []);
 
-  const handleCancelar = useCallback(() => {
+  const handleCancelar = () => {
     console.log('Cancelando...');
     navigate('/gestionar-inventario');
-  }, [navigate]);
+};
 
   const buttons = [
     {

@@ -1,0 +1,16 @@
+.button-detalles {
+    background-color: var(--darkPink);
+    border-radius: 50px;
+    color: var(--background);
+    font-size: medium;
+    margin: 0.1em;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button-detalles.selected {
+    background-color: var(--buttonSelectedPink);
+  }
+  
+  .button-detalles:focus {
+    outline: none;
+  }

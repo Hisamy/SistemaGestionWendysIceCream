@@ -7,7 +7,8 @@ import GestionarConsumible from './pages/gestionar_inventario/gestionar_consumib
 import RegistrarProducto from './pages/gestionar_producto/registrar-producto/RegistrarProducto.jsx';
 import ElegirConsumibles from './pages/gestionar_producto/registrar-producto/elegir-consumibles/ElegirConsumibles.jsx';
 import RegistrarVenta from './pages/registrar_venta/RegistrarVenta.jsx';
-import ProductosDetalles from './pages/registrar_venta/ProductoDetalles.jsx';
+import ProductoDetalles from './pages/registrar_venta/ProductoDetalles.jsx';
+import RegistrarVentaTotal from './pages/registrar_venta/RegistrarVentaTotal.jsx';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
           <Routes>
             <Route path="/gestionar-producto" element={<GestionarProducto />} />
             <Route path="/registrar-venta" element={<RegistrarVenta/>} />
-            <Route path="/producto-detalles" element={<ProductosDetalles/>} />
+            <Route path="/producto-detalles" element={<ProductoDetalles/>} />
+            <Route path="/registrar-venta-total" element={<RegistrarVentaTotal />} />
             <Route path="/gestionar-inventario" element={<GestionarInventario />} />
             <Route path="/gestionar-venta" element={<div>Gestionar Venta (En desarrollo)</div>} />
             <Route path="/registrar-consumible" element={<RegistrarConsumible />} />

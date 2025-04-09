@@ -1,0 +1,20 @@
+.form-detalles-map{
+    display: flex;
+    flex-direction: column;
+}
+.detalles{
+    display: flex;
+    flex-direction: column;
+}
+.input-text{
+    background-color: var(--background);
+    padding: 1em;
+    border-style: none;
+    border-radius: 15px;
+    
+}
+
+.input-text::placeholder {
+    color: transparent
+  }
+
