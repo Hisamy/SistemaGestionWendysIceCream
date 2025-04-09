@@ -1,8 +1,7 @@
 import { EntitySchema } from "typeorm";
 
 class DetallesVenta {
-    constructor(cantidad, importe, variante, venta) {
-        this.cantidad = cantidad;
+    constructor(importe, variante, venta) {
         this.importe = importe;
         this.variante = variante;
         this.venta = venta;
@@ -18,9 +17,6 @@ export const DetallesVentaSchema = new EntitySchema({
             primary: true,
             type: "int",
             generated: true
-        },
-        cantidad: {
-            type: "float"
         },
         importe: {
             type: "float"

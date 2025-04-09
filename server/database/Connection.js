@@ -6,6 +6,8 @@ import { ProductoSchema } from "../entities/Producto.js";
 import { VarianteProductoSchema } from "../entities/VarianteProducto.js";
 import { VarianteJoinConsumibleSchema } from "../entities/VarianteJoinConsumible.js";
 import { DATABASE } from "../utils/Config.js";
+import { VentaSchema } from "../entities/Venta.js";
+import { DetallesVentaSchema } from "../entities/DetallesVenta.js";
 
 
 export const connection = new DataSource({
@@ -15,7 +17,9 @@ export const connection = new DataSource({
         ConsumibleSchema,
         ProductoSchema,
         VarianteProductoSchema,
-        VarianteJoinConsumibleSchema
+        VarianteJoinConsumibleSchema,
+        VentaSchema,
+        DetallesVentaSchema
     ],
     synchronize: true,
     logging: false,
