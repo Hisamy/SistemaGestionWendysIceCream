@@ -1,0 +1,34 @@
+.container-amount{
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--darkPink);
+    color: var(--foreground);
+    border-radius: 30px;
+    height: fit-content;
+    padding: 0.5em 0em;
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bolder;
+}
+.amount{
+    margin: 0px;
+    
+}
+
+.button-increment, .button-decrement{
+    color: var(--foreground);
+    background-color: transparent;
+    width: fit-content;
+    padding: 0 1em;
+    height: fit-content;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bolder;
+}
+
+.button-increment:focus,
+.button-decrement:focus {
+  outline: none; 
+}

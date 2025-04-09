@@ -1,14 +1,14 @@
-.productos-container{
+.container{
     display: flex;
     flex-direction: row;
     gap: 10%;   
 }
-.productos-content{
+.content{
     display: flex;
     justify-content: center;
 
 }
-.productos-content-div{
+.fit-parent{
     display: flex;
     justify-content: center;
     align-items: center;

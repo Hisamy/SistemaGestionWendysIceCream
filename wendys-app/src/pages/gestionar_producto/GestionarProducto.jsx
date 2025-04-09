@@ -45,15 +45,15 @@ function GestionarProducto() {
   ];
 
   return (
-    <div className="productos-container">
+    <div className="container">
       <div className='nav-left'>
         <NavLeft
           instruction="Selecciona producto que se desee gestionar."
           buttons={navLeftButtons}
         />
       </div>
-      <div className="productos-content-div">
-      <div className="productos-content">
+      <div className="fit-parent">
+      <div className="content">
         <ProductosRectanguloGrid
           productos={PRODUCTOS_MOCK}
           onProductoClick={handleProductoClick}

@@ -17,7 +17,7 @@ const FormDimension = ({ onDelete, index }) => {
   };
 
   const handleConsumiblesClick = () => {
-    navigate('/consumibles');
+    navigate('/elegir-consumibles');
   };
 
   return (

@@ -5,6 +5,8 @@ import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import DimensionesForm from './DimensionesForm.jsx';
 import Swal from 'sweetalert2';
 
+import './RegistrarProducto.css'
+
 function RegistrarProducto(){
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -56,7 +58,7 @@ function RegistrarProducto(){
       ];
 
       return (
-        <div className="registrar-container">
+        <div className="registrar-container-form">
           <div className='nav-left'>
             <NavLeft
               instruction="Ingresar los datos del nuevo producto a registrar"
