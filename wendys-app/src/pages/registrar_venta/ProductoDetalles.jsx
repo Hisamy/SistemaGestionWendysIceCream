@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import NavLeft from '../../components/nav_left/NavLeft';
-import PinkRectangle from '../../components/main_content/PinkRectangle';
-import FormDetallesProducto from './form-especificaciones-producto/FormDetallesProducto';
+import NavLeft from '../../components/nav_left/NavLeft.jsx';
+import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
+import FormDetallesProducto from './form-especificaciones-producto/FormDetallesProducto.jsx';
+import {useProductosVenta } from './registrar-venta-contexto/ProductosVentaContext.jsx'
 import './ProductoDetalles.css'
 
 function ProductoDetalles() {
     const navigate = useNavigate();
     const location = useLocation();
     const [producto, setProducto] = useState(null);
+    const [formValues, setFormValues] = useState({});
+    const formRef = useRef();
+
+    const { addProducto } = useProductosVenta();
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-MX', {
@@ -16,6 +21,11 @@ function ProductoDetalles() {
           currency: 'MXN'
         }).format(price);
       };
+
+    // Manejar cambios en el formulario
+    const handleFormValuesChange = (values) => {
+        setFormValues(values);
+    };
 
     const formFields = [
         {
@@ -31,7 +41,7 @@ function ProductoDetalles() {
         },
       ];
 
-    useEffect(() => {
+      useEffect(() => {
         if (location.state?.productoData) {
             setProducto(location.state.productoData);
         } else {
@@ -44,7 +54,22 @@ function ProductoDetalles() {
     }
 
     const handleAceptar = () => {
-        navigate('/registrar-venta', { state: { showNextButton: true } });
+        // Obtener los valores del formulario
+        let detalles = {};
+        
+        if (formRef.current && formRef.current.getFormValues) {
+            detalles = formRef.current.getFormValues();
+        } else {
+            detalles = formValues;
+        }
+        
+        // Agregar el producto al contexto
+        addProducto(producto, detalles);
+        
+       
+        navigate('/registrar-venta', { 
+            state: { showNextButton: true }
+        });
     };
 
     const handleCancelar= () => {

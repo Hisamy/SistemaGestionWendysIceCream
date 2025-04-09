@@ -1,0 +1,23 @@
+.header-productos-costo, .producto, .recibido-total{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+.price-product, .total-text{
+    font-family: 'AmiriQuran','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.productos-costo{
+    width: 20em;
+}
+
+
+.header-productos-costo h3{
+    color: var(--darkPink);
+    font-size: 2em;
+}
+
+.productos p, .header-productos-costo h3, .recibido-total p{
+    margin: 0.3em 0;
+}

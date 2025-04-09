@@ -72,12 +72,7 @@ button {
   border-radius: 50px;
 }
 
-@media (max-width: 820px) {
-  .content {
-    flex-direction: column;
-  }
 
-}
 
 @media (prefers-color-scheme: light) {
   :root {

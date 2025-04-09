@@ -3,21 +3,25 @@ import PropTypes from 'prop-types';
 import DetallesButton from './DetallesButton';
 import './FormDetallesProducto.css';
 
-function FormDetallesProducto({ fields }) {
+function FormDetallesProducto({ fields, onValuesChange }) {
   const [formValues, setFormValues] = useState({});
 
   const handleInputChange = (fieldId, value) => {
-    setFormValues(prev => ({
-      ...prev,
+    const updatedValues = {
+      ...formValues,
       [fieldId]: value
-    }));
+    };
+
+    setFormValues(updatedValues);
+    
+    // Notificar al componente padre sobre los cambios
+    if (onValuesChange) {
+      onValuesChange(updatedValues);
+    }
   };
 
   const handleButtonSelection = (fieldId, option) => {
-    setFormValues(prev => ({
-      ...prev,
-      [fieldId]: option
-    }));
+    handleInputChange(fieldId, option);
   };
 
   const renderField = (field) => {
@@ -74,6 +78,16 @@ function FormDetallesProducto({ fields }) {
         return null;
     }
   };
+
+   // Método para obtener los valores actuales del formulario
+   const getFormValues = () => {
+    return formValues;
+  };
+
+  // Exponer el método getFormValues a través de la ref
+  React.useImperativeHandle(fields.formRef, () => ({
+    getFormValues
+  }), [formValues]);
 
   return (
       <form className='form-detalles-map'>

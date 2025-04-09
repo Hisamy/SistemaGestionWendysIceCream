@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { ProductosVentaProvider } from './pages/registrar_venta/registrar-venta-contexto/ProductosVentaContext.jsx';
 import Header from './components/header/Header.jsx';
 import GestionarInventario from './pages/gestionar_inventario/GestionarInventario.jsx';
 import GestionarProducto from './pages/gestionar_producto/GestionarProducto.jsx';
@@ -15,6 +16,7 @@ function App() {
     <>
         <Header />
         <main className="main-content">
+        <ProductosVentaProvider>
           <Routes>
             <Route path="/gestionar-producto" element={<GestionarProducto />} />
             <Route path="/registrar-venta" element={<RegistrarVenta/>} />
@@ -27,6 +29,7 @@ function App() {
             <Route path="/registrar-producto" element={<RegistrarProducto />} />
             <Route path="/elegir-consumibles" element={<ElegirConsumibles />} />
           </Routes>
+        </ProductosVentaProvider>
         </main> 
       
     </>

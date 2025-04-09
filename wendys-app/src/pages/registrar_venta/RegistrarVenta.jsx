@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback, useEffect } from 'react';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useProductosVenta } from './registrar-venta-contexto/ProductosVentaContext.jsx';
 
 import ProductosRectanguloGrid from '../../components/main_content/productos-grid/ProductosRectanguloGrid.jsx';
 import iceCreamCone from '../../assets/Images/productos/ice-cream-cone.png'
@@ -22,32 +23,47 @@ const PRODUCTOS_MOCK = [
 
 function RegistrarVenta() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedProductId, setSelectedProductId] = useState(null);
-    const showNextButton = location.state?.showNextButton;
+    const [showNextButton, setShowNextButton] = useState(false);
+    
+    // Obtener el contexto de productos de venta
+    const { productosVenta, hayProductos } = useProductosVenta();
+
+    useEffect(() => {
+        // Mostrar el botón siguiente si hay productos en la lista o si viene indicado en el estado
+        if (hayProductos || location.state?.showNextButton) {
+            setShowNextButton(true);
+        }
+    }, [hayProductos, location.state]);
     
     const handleNextClick = () => {
-        navigate('/registrar-venta-total');
+        navigate('/registrar-venta-total', { 
+            state: { productosVenta } 
+        });
     };
+
 
     const handleProductoClick = useCallback((producto) => {
         setSelectedProductId(producto.id);
         navigate('/producto-detalles', { state: { productoData: producto } });
     }, [navigate]);
   
-    const navLeftButtons = [
+    const navLeftButtons = showNextButton ? [
         {
             label: 'Siguiente', 
             onClick: handleNextClick, 
             variant: 'primary' 
-
         }
-    ];
+    ] : [];
+
+
     return (
         <div className="container">
             <div className='nav-left'>
                 <NavLeft
                     instruction="Selecciona producto a vender."
-                    buttons={showNextButton ? navLeftButtons : []}
+                    buttons={navLeftButtons}
                 />
             </div>
             <div className="fit-parent">
