@@ -34,13 +34,13 @@ class GestionarVentaService {
             const ventaGuardada = await this.ventaRepo.guardarVenta(venta);
 
             for (const productoPedido of productosPedido) {
-                const idVariante = productoPedido.id;
+                const idVariante = productoPedido.idVariante;
 
                 // Verificar si se cuenta con suficientes consumibles
                 await this.verificarConsumiblesSuficientes(idVariante);
 
                 const varianteEncontrada = await this.varianteProductoRepo.obtenerVariantePorId(idVariante);
-                const detallesVenta = new DetallesVenta(productoPedido.precio, varianteEncontrada, ventaGuardada);
+                const detallesVenta = new DetallesVenta(varianteEncontrada.precio, varianteEncontrada, ventaGuardada);
                 await this.detallesVentaRepo.guardarDetallesVenta(detallesVenta);
 
                 // Resta los consumibles del inventario
@@ -52,13 +52,22 @@ class GestionarVentaService {
                 });
             }
 
+
+            // Actualizar el precio total en la venta guardada y notas
             let precioTotal = 0;
+            let notas = "";
+            let contadorNotas = 0;
             for (const productoPedido of productosPedido) {
                 precioTotal += productoPedido.precio;
+                if(productoPedido.notas) {
+                    contadorNotas++;
+                    notas += `Nota No. ${contadorNotas} (${productoPedido.nombre} - ${productoPedido.tamanio}):\n${productoPedido.notas}.\n\n`;
+                }
             }
-            
-            // Actualizar el precio total en la venta guardada
             ventaGuardada.precioTotal = precioTotal;
+            ventaGuardada.notas = notas;
+
+            // Actualizar venta
             await this.ventaRepo.actualizarVenta(ventaGuardada.id, ventaGuardada);
 
             return ventaGuardada;
