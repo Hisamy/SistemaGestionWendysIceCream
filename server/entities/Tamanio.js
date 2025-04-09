@@ -1,6 +1,6 @@
 export const TAMANIOS = {
     UNICO: 'UNICO',
-    PEQUENO: 'PEQUENO',
+    CHICO: 'CHICO',
     MEDIANO: 'MEDIANO',
     GRANDE: 'GRANDE',
 };

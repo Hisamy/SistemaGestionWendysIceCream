@@ -1,10 +1,10 @@
 import { EntitySchema, JoinColumn } from "typeorm";
 
 class VarianteJoinConsumible {
-    constructor(varianteProducto, consumible, cantidad) {
-        this.varianteProducto = varianteProducto;
-        this.consumible = consumible;
-        this.cantidad = cantidad;
+    constructor(varianteProducto, consumible, cantidadConsumible) {
+        this.variante_id = varianteProducto;
+        this.consumible_id = consumible;
+        this.cantidad_consumible = cantidadConsumible;
     }
 }
 

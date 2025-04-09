@@ -69,7 +69,7 @@ function RegistrarProducto(){
             <div className="registrar-content"> 
               <PinkRectangle>
                 <div className="form-container">
-                  <form id="register-form" onSubmit={handleSubmitProducto} className="producto-form">
+                  <form id="register-form" className="producto-form">
                     <div className="form-group">
                       <label htmlFor="nombreProducto">Nombre Producto:</label>
                       <input

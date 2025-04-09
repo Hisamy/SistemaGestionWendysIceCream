@@ -4,6 +4,8 @@ import GestionarInventarioRepository from "../repositories/GestionarInventarioRe
 import { ValidationError } from "../errors/ValidationError.js";
 import VarianteProductoRepository from "../repositories/VarianteProductoRepository.js";
 
+const errorEncabezado = "\nError de servicio en GestionarProductosService:";
+
 class GestionarInventarioService {
 
     constructor() {
@@ -32,7 +34,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al registrar los datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar registrar consumible: ${error.message}`, error);
         }
     }
 
@@ -41,7 +43,7 @@ class GestionarInventarioService {
             const consumiblesObtenidos = await this.consumibleRepo.obtenerTodosLosConsumibles();
             return consumiblesObtenidos;
         } catch (error) {
-            throw new BusinessError("Error del servicio al obtener los datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener consumibles: ${error.message}`, error);
         }
     }
 
@@ -56,7 +58,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al obtener los datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener consumible por id: ${error.message}`, error);
         }
     }
 
@@ -91,7 +93,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al modificar datos", error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar modificar consumible: ${error.message}`, error);
         }
     }
 
@@ -120,53 +122,7 @@ class GestionarInventarioService {
             if (error instanceof ValidationError) {
                 throw error;
             }
-            throw new BusinessError("Error del servicio al eliminar datos", error);
-        }
-    }
-
-    // RELACIONADO CON LA VENTA
-
-    async verificarConsumiblesSuficientes(idVariante, cantidad) {
-        try {
-            // Validar parámetros de entrada
-            if (!idVariante) {
-                throw new ValidationError('El ID de la variante es obligatorio');
-            }
-            if (typeof cantidad !== 'number' || cantidad <= 0 || !Number.isInteger(cantidad)) {
-                throw new ValidationError('La cantidad debe ser un número entero válido y mayor a cero');
-            }
-
-            // Obtener la variante del producto
-            const variante = await this.varianteProductoRepo.obtenerVariantePorId(idVariante);
-            if (!variante) {
-                throw new ValidationError('La variante especificada no existe');
-            }
-
-            // Obtener las relaciones de consumibles asociadas a la variante
-            const relaciones = await this.varianteProductoRepo.obtenerRelacionesConsumiblesPorIdVariante(idVariante);
-            if (!relaciones || relaciones.length === 0) {
-                throw new ValidationError('No hay consumibles asociados a esta variante');
-            }
-
-            // Verificar si hay suficientes consumibles para la cantidad solicitada
-            for (const relacion of relaciones) {
-                const consumible = await this.consumibleRepo.obtenerConsumiblePorId(relacion.idConsumible);
-                if (!consumible) {
-                    throw new ValidationError(`El consumible con ID ${relacion.idConsumible} no existe`);
-                }
-
-                const cantidadRequerida = relacion.cantidadNecesaria * cantidad;
-                if (consumible.cantidad < cantidadRequerida) {
-                    throw new ValidationError(`No hay suficiente cantidad del consumible "${consumible.nombre}". Se requieren ${cantidadRequerida}, pero solo hay ${consumible.cantidad}`);
-                }
-            }
-
-            return true; // Consumibles suficientes
-        } catch (error) {
-            if (error instanceof ValidationError) {
-                throw error;
-            }
-            throw new BusinessError(`Error al verificar consumibles suficientes: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar eliminar consumible: ${error.message}`, error);
         }
     }
 

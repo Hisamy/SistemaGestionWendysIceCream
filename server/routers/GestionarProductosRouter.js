@@ -142,6 +142,17 @@ gestionarProductosRouter.get('/variantesProducto', async (req, res) => {
     }
 });
 
+gestionarProductosRouter.get("/variantejoinconsumibles/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+        const varianteJoinConsumible = await service.obtenerVarianteJoinConsumiblePorId(id);
+        res.status(200).json(varianteJoinConsumible);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+});
+
+
 /**
  * Función para manejar los errores y enviar una respuesta adecuada al cliente.
  * 
