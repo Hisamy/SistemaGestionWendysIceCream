@@ -48,12 +48,12 @@ function ElegirConsumibles(){
     const navLeftButtons = [
         {
             label: 'Aceptar',
-            onclick: handleAceptar,
+            onClick: handleAceptar,
             variant: 'primary'
         },
         {
             label: 'Cancelar',
-            onclick: handleCancelar,
+            onClick: handleCancelar,
             variant: 'primary'
         },
     ];
