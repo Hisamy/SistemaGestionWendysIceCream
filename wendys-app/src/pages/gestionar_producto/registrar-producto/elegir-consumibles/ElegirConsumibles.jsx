@@ -32,15 +32,17 @@ function ElegirConsumibles(){
             });
     };
 
+    
+
     const handleAceptar = () =>{
-        const consumiblesParaProducto = obtenerConsumiblesConCantidad();
+        const consumiblesParaProducto = getConsumiblesAmount();
         console.log('Consumibles seleccionados:', consumiblesParaProducto);
         localStorage.setItem('consumiblesSeleccionados', JSON.stringify(consumiblesParaProducto));
         navigate('/registrar-producto');
 
     }
     const handleCancelar = () =>{
-        navigate('/registrar-producto')
+        navigate('/registrar-producto');
     }
 
     const navLeftButtons = [
