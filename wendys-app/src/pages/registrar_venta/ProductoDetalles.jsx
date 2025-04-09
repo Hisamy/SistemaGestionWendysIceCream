@@ -10,6 +10,13 @@ function ProductoDetalles() {
     const location = useLocation();
     const [producto, setProducto] = useState(null);
 
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('es-MX', {
+          style: 'currency',
+          currency: 'MXN'
+        }).format(price);
+      };
+
     const formFields = [
         {
           id: 'tamano',
@@ -37,8 +44,9 @@ function ProductoDetalles() {
     }
 
     const handleAceptar = () => {
-        navigate('/registrar-venta-total');
+        navigate('/registrar-venta', { state: { showNextButton: true } });
     };
+
     const handleCancelar= () => {
         navigate('/registrar-venta');
     };
@@ -59,13 +67,20 @@ function ProductoDetalles() {
     ]
 
     return (
-        <div className='container' >
-            <div className='nav-left'>
-                <NavLeft 
-                    instruction='Agrega las especificaciones.'
-                    buttons={navLeftButtons}
-                />
-            </div>
+            <div className='container' >
+                <div className='left-container'>
+                    <div className='nav-left'>
+                        <NavLeft 
+                            instruction='Agrega las especificaciones.'
+                            buttons={navLeftButtons}
+                        />
+                    </div>
+                    <hr className="divider" />  
+                    <div className='costo-producto'>
+                        <h4>COSTO PRODUCTO</h4>
+                        <p>{formatPrice(producto.price)}</p>
+                    </div>
+                </div>       
             <div className='fit-parent'>
                 <div className="content">
                     <PinkRectangle>
@@ -94,9 +109,9 @@ function ProductoDetalles() {
                 </div>
 
             </div>
-
-              
-        </div>
+            </div>
+           
+        
     );
 }
 

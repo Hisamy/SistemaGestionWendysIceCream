@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
 import ConsumiblesGrid from './ConsumiblesGrid.jsx';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
-import './GestionarInventario.css';
 import inventarioController from '../../controllers/InventarioController.js';
 
 function GestionarInventario() {
@@ -61,7 +60,7 @@ function GestionarInventario() {
   ];
 
   return (
-    <div className="inventario-container">
+    <div className="container">
       <div className='nav-left'>
         <NavLeft
           instruction="Selecciona el consumible a gestionar."
@@ -69,7 +68,7 @@ function GestionarInventario() {
         />
       </div>
       <div className="fit-parent">
-        <div className="inventario-content">
+        <div className="content">
 
         <PinkRectangle searchable={true}>
             {loading ? (

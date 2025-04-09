@@ -12,28 +12,42 @@ import bananaSplit from '../../assets/Images/productos/banana-split.png'
 
 
 const PRODUCTOS_MOCK = [
-    { id: 1, name: 'Fresada', image: fresasCrema },
-    { id: 2, name: 'Nieve cono', image: iceCreamCone },
-    { id: 3, name: 'Frappe', image: frappe },
-    { id: 4, name: 'Nieve vaso', image: iceCreamVaso },
-    { id: 5, name: 'Sundae', image: sundae },
-    { id: 6, name: 'Banana Split', image: bananaSplit },
-];
+    { id: 1, name: 'Fresada', image: fresasCrema, price: 55 },
+    { id: 2, name: 'Nieve cono', image: iceCreamCone, price: 30 },
+    { id: 3, name: 'Frappe', image: frappe, price: 45 },
+    { id: 4, name: 'Nieve vaso', image: iceCreamVaso, price: 35 },
+    { id: 5, name: 'Sundae', image: sundae, price: 40 },
+    { id: 6, name: 'Banana Split', image: bananaSplit, price: 65 },
+  ];
 
 function RegistrarVenta() {
     const navigate = useNavigate();
     const [selectedProductId, setSelectedProductId] = useState(null);
+    const showNextButton = location.state?.showNextButton;
     
+    const handleNextClick = () => {
+        navigate('/registrar-venta-total');
+    };
+
     const handleProductoClick = useCallback((producto) => {
         setSelectedProductId(producto.id);
         navigate('/producto-detalles', { state: { productoData: producto } });
     }, [navigate]);
   
+    const navLeftButtons = [
+        {
+            label: 'Siguiente', 
+            onClick: handleNextClick, 
+            variant: 'primary' 
+
+        }
+    ];
     return (
         <div className="container">
             <div className='nav-left'>
                 <NavLeft
                     instruction="Selecciona producto a vender."
+                    buttons={showNextButton ? navLeftButtons : []}
                 />
             </div>
             <div className="fit-parent">

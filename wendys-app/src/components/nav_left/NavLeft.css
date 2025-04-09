@@ -1,10 +1,11 @@
-.nav-left{
+.nav-left-content{
     display: flex;
-    align-items: center;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    
+    gap: 1em;
+    max-width: 16em; 
+    height: auto;  
 }
 
 .nav-buttons{
@@ -13,19 +14,15 @@
     font-size: larger;
     gap: 0.6em;
 }
-.nav-button{
-    background-color: var(--buttonYellow);
-    font-family: 'Champie';
-    padding: 0.5em  1em;
-    color: var(--lightYellow);
-    border-radius: 50px;
-}
 
-.nav-instruction p{
+
+.nav-left-content .nav-instruction p{
     color: var(--darkPink);
     font-family: 'AmiriQuran';
     font-size: 1.5em;
-    width: 10em;
+    margin: 0;
+    width: fit-content;
+    max-width: 10em;
 }
 
 

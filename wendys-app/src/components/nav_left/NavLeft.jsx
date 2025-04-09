@@ -4,7 +4,7 @@ import './NavLeft.css';
 
 const NavLeft = ({ instruction, buttons = [] }) => {
     return (
-      <div className="nav-left">
+      <div className="nav-left-content">
         {instruction && (
           <div className="nav-instruction">
             <p>{instruction}</p>

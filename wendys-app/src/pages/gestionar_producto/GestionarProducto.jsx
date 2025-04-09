@@ -10,7 +10,6 @@ import iceCreamVaso from '../../assets/Images/productos/ice-cream-vaso.png'
 import sundae from '../../assets/Images/productos/sundae.png'
 import bananaSplit from '../../assets/Images/productos/banana-split.png'
 
-import './GestionarProducto.css'
 
 // Datos de ejemplo - podrías obtenerlos de una API o desde props
 const PRODUCTOS_MOCK = [
