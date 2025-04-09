@@ -20,7 +20,7 @@ function GestionarInventario() {
         const data = await inventarioController.obtenerConsumibles();
         const consumiblesMapeados = data.map(item => ({
           id: item.id,
-          name: item.nombre,
+          name: item.nombre
         }));
         setConsumibles(consumiblesMapeados);
         setLoading(false);
@@ -35,7 +35,7 @@ function GestionarInventario() {
 
   const handleConsumibleClick = useCallback((consumible) => {
     setSelectedConsumible(consumible.id);
-    navigate('/gestionar-consumible', { state: { consumibleData: consumible } });
+    navigate('/gestionar-consumible', { state: { id: consumible.id } });
   }, [navigate]);
 
   const handleRegistrarConsumible = useCallback(() => {

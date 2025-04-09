@@ -1,71 +1,182 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import NavLeft from '../../../components/nav_left/NavLeft.jsx';
 import ConsumibleButton from '../ConsumibleButton.jsx';
 import './GestionarConsumible.css';
+import inventarioController from '../../../controllers/InventarioController.js';
 
 function GestionarConsumible() {
-  const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [consumible, setConsumible] = useState(null);
+  const [consumible, setConsumible] = useState({});
 
   useEffect(() => {
-    if (location.state?.consumibleData) {
-      setConsumible(location.state.consumibleData);
-    } else {
-      navigate('/gestionar-inventario'); 
-    }
+    const datosConsumible = async () => {
+      try {
+          const consumibleObtenido = location.state?.id;
+          console.log(consumibleObtenido);
+          if(!consumibleObtenido){
+            navigate('/gestionar-inventario'); 
+            return;
+          }
+          const data = await inventarioController.obtenerConsumible(consumibleObtenido);
+          setConsumible(data);
+      } catch (error) {
+        console.error('Error al obtener el consumible:', error);
+      }
+    };
+
+    datosConsumible();
   }, [location.state, navigate]);
 
-  const handleEditarCantidad = useCallback(() => {
-    console.log('Editando cantidad...');
-    Swal.fire({
-      title: 'Editar Cantidad',
+  const handleEditarCantidad = useCallback(async () => {
+    console.log('Agregando cantidad...');
+    const { value: nuevaCantidad } = await Swal.fire({
+      title: 'Agregar Cantidad',
       input: 'number',
-      inputValue: consumible?.cantidad || 0,
+      inputValue: consumible.cantidad,
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
       background: '#FFFDEA',
       confirmButtonColor: '#FBD275', 
       cancelButtonColor: '#E989A4' 
-    }).then((result) => {
-      if (result.isConfirmed) {
-        console.log(`Nueva cantidad: ${result.value}`);
-        // Update state or API call here
-        setConsumible(prev => ({
-          ...prev,
-          cantidad: parseInt(result.value)
-        }));
-      }
     });
+    const cantidadNum = Number(nuevaCantidad);
+    if(cantidadNum){
+      try {
+
+        const diferencia = cantidadNum - consumible.cantidad;
+
+        const nuevoConsumible = {
+          nombre: consumible.nombre,
+          cantidad: diferencia
+        }
+
+        await inventarioController.editarConsumible(consumible.id, nuevoConsumible);
+
+        Swal.fire({
+          title: '¡Actualización Exitosa!',
+          text: `La cantidad ha sido actualizada.`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#A2576C'
+        });
+
+        const data = await inventarioController.obtenerConsumible(consumible.id);
+        setConsumible(data);
+
+      } catch (error) {
+        console.error("Error al actualizar la cantidad:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo actualizar la cantidad. Recuerda que aqui no se resta cantidad.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#A2576C'
+        });
+      }
+    }
+
   }, [consumible]);
 
-  const handleEliminarConsumible = useCallback(() => {
-    console.log('Eliminando consumible...');
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `¿Deseas eliminar ${consumible?.name}?`,
-      icon: 'warning',
+  const handleEditarNombre = useCallback(async () => {
+    console.log('Editando nombre...');
+    const {value: nuevoNombre} = await Swal.fire({
+      title: 'Editar Nombre',
+      input: 'text',
+      inputValue: consumible?.nombre,
       showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
       background: '#FFFDEA',
       confirmButtonColor: '#FBD275', 
       cancelButtonColor: '#E989A4' 
-    }).then((result) => {
-      if (result.isConfirmed) {
-        console.log('Consumible eliminado');
-        // Handle deletion here
-        navigate('/gestionar-inventario');
-      }
     });
-  }, [consumible, navigate]);
+    
+    if(nuevoNombre){
+      try {
+        const nuevoConsumible = {
+          cantidad: consumible.cantidad,
+          nombre: nuevoNombre
+        }
+        console.log(nuevoConsumible);
+        await inventarioController.editarConsumible(consumible.id, nuevoConsumible);
 
+        Swal.fire({
+          title: '¡Actualización Exitosa!',
+          text: `El nombre ha sido actualizado a ${nuevoNombre}.`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#A2576C'
+        });
+
+        // Actualizar el estado local del consumible
+        setConsumible(prev => ({
+          ...prev,
+          nombre: nuevoNombre
+        }));
+
+      } catch (error) {
+        console.error("Error al actualizar el nombre:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo actualizar el nombre. Intenta de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#A2576C'
+        });
+      }
+    }
+
+  }, [consumible]);
+
+  const handleEliminarConsumible = useCallback(() => {
+    console.log('Eliminando consumible...');
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: `¿Deseas eliminar ${consumible?.nombre}?`, // Cambiado de name a nombre para mantener consistencia
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    background: '#FFFDEA',
+    confirmButtonColor: '#FBD275', 
+    cancelButtonColor: '#E989A4' 
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        // Llamar al método del controlador para eliminar el consumible
+        await inventarioController.eliminarConsumible(consumible.id);
+        
+        // Mostrar mensaje de éxito
+        Swal.fire({
+          title: '¡Eliminación Exitosa!',
+          text: 'El consumible ha sido eliminado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#A2576C'
+        });
+        
+        // Navegar de vuelta a la página de inventario
+        navigate('/gestionar-inventario');
+      } catch (error) {
+        console.error("Error al eliminar el consumible:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar el consumible. Intenta de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#A2576C'
+        });
+      }
+    }
+  });
+}, [consumible, navigate, inventarioController]);
+
+  //ESTE NO SE ENCUENTRA EN ESTA ITERACION
   const handleRegistrarMerma = useCallback(() => {
     console.log('Registrando merma...');
     // Implement merma registration functionality
@@ -98,8 +209,13 @@ function GestionarConsumible() {
 
   const buttons = [
     {
-      label: 'Editar Cantidad',
+      label: 'Agregar Cantidad',
       onClick: handleEditarCantidad,
+      variant: 'primary'
+    },
+    {
+      label: 'Editar Nombre',
+      onClick: handleEditarNombre,
       variant: 'primary'
     },
     {
@@ -130,8 +246,8 @@ function GestionarConsumible() {
             <div className="consumible-details">
               <div className="consumible-name-container">
                 <ConsumibleButton 
-                  label={consumible.name} 
-                  onClick={() => {}} 
+                  label={consumible.nombre} 
+                  onClick={handleEditarNombre} 
                   selected={true}
                 />
               </div>
@@ -146,11 +262,8 @@ function GestionarConsumible() {
                 </div>
                 <div className="consumible-info">
                     <h3><strong>Merma</strong> </h3>
-                    <p>{consumible.merma}</p>
+                    <p>{consumible.merma || 0}</p>
                 </div>
-               
-                
-                
               </div>
             </div>
           )}
