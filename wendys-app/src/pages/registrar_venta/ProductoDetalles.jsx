@@ -68,7 +68,7 @@ function ProductoDetalles() {
         
        
         navigate('/registrar-venta', { 
-            state: { showNextButton: true }
+            state: { showNextButton: true, showProductosVenta:true }
         });
     };
 

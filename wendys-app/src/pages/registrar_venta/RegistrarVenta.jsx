@@ -2,6 +2,7 @@ import React, {useState, useCallback, useEffect } from 'react';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useProductosVenta } from './registrar-venta-contexto/ProductosVentaContext.jsx';
+import MostrarProductosVenta from './productos-venta/MostrarProductosVenta.jsx';
 
 import ProductosRectanguloGrid from '../../components/main_content/productos-grid/ProductosRectanguloGrid.jsx';
 import iceCreamCone from '../../assets/Images/productos/ice-cream-cone.png'
@@ -26,6 +27,7 @@ function RegistrarVenta() {
     const location = useLocation();
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [showNextButton, setShowNextButton] = useState(false);
+    const [showProductosVenta, setShowProductosVenta] = useState(false);
     
     // Obtener el contexto de productos de venta
     const { productosVenta, hayProductos } = useProductosVenta();
@@ -34,6 +36,7 @@ function RegistrarVenta() {
         // Mostrar el botón siguiente si hay productos en la lista o si viene indicado en el estado
         if (hayProductos || location.state?.showNextButton) {
             setShowNextButton(true);
+            setShowProductosVenta(true)
         }
     }, [hayProductos, location.state]);
     
@@ -57,6 +60,11 @@ function RegistrarVenta() {
         }
     ] : [];
 
+    const showComponentProductosVenta = showProductosVenta
+    ? () => <MostrarProductosVenta />
+    : () => null;
+
+
 
     return (
         <div className="container">
@@ -65,6 +73,9 @@ function RegistrarVenta() {
                     instruction="Selecciona producto a vender."
                     buttons={navLeftButtons}
                 />
+                <div className='producto-venta-tabla'>
+                    {showComponentProductosVenta()}
+                </div>
             </div>
             <div className="fit-parent">
                 <div className="content">

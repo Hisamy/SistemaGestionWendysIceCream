@@ -1,0 +1,53 @@
+.header-productos-venta, .recibido-total-venta{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.container-productos-venta{
+    padding: 1rem;
+    color: var(--darkPink);
+    max-width: 15rem;
+    margin-top: 1rem;
+
+
+}
+
+.recibido-total-venta{
+    gap: 6rem;
+}
+
+.container-productos-venta hr{
+    border-color: var(--darkPink) ;
+}
+
+.header-productos-venta h3, .producto-venta p, .recibido-total-venta p{
+    font-family: 'AmiriQuran';
+    margin: 0.3rem 0;
+}
+
+.button-eliminar {
+    height: 1rem;
+    margin-left: 1rem;
+    width: auto;
+}
+
+.producto-venta{
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+    width: 12rem;
+}
+.button-eliminar-container{
+    display: flex;
+    align-items: center;
+}
+.name-producto{
+    width: 5rem;
+}
+.producto-venta-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    
+}

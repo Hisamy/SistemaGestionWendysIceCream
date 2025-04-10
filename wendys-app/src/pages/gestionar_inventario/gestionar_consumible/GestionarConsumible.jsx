@@ -207,7 +207,7 @@ function GestionarConsumible() {
     navigate('/gestionar-inventario');
 };
 
-  const buttons = [
+  const navLeftButtons = [
     {
       label: 'Agregar Cantidad',
       onClick: handleEditarCantidad,
@@ -236,11 +236,14 @@ function GestionarConsumible() {
   ];
 
   return (
-    <div className="inventario-container">
-      <NavLeft 
-      instruction={"Agregar cambios."}
-      buttons={buttons} />
-      <div className="inventario-content">
+    <div className="container">
+      <div className='nav-left'>
+        <NavLeft 
+        instruction={"Agregar cambios."}
+        buttons={navLeftButtons} />
+
+      </div>
+      <div className="content">
         <PinkRectangle >
           {consumible && (
             <div className="consumible-details">

@@ -9,7 +9,7 @@ import './RegistrarVentaTotal.css'
 
 function RegistrarVentaTotal(){
     const navigate = useNavigate();
-    const { productosVenta, deleteProducto, calculateTotal, cleanProductos } = useProductosVenta();
+    const { productosVenta, calculateTotal, cleanProductos } = useProductosVenta();
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-MX', {
