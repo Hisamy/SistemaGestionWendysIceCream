@@ -243,6 +243,7 @@ function GestionarConsumible() {
         buttons={navLeftButtons} />
 
       </div>
+      <div className='fit-parent'>
       <div className="content">
         <PinkRectangle >
           {consumible && (
@@ -271,7 +272,10 @@ function GestionarConsumible() {
             </div>
           )}
         </PinkRectangle>
+      </div> 
+
       </div>
+      
     </div>
   );
 }
