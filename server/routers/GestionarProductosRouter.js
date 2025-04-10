@@ -19,8 +19,8 @@ const service = new GestionarProductosService();
  * @param {string} nombre - Nombre del producto a verificar.
  * @returns {string} - Mensaje indicando si el producto existe o está disponible.
  */
-gestionarProductosRouter.get('/existe', async (req, res) => {
-    const nombre = req.query.nombre;
+gestionarProductosRouter.get('/existe/:nombre', async (req, res) => {
+    const {nombre} = req.params;
     try {
         const existe = await service.buscarProductoExistentePorNombre(nombre);
         if(existe) {
@@ -67,14 +67,14 @@ gestionarProductosRouter.get('/tamanios/default', async (req, res) => {
  * Ruta GET para verificar si quedan tamaños disponibles para agregar más variantes.
  * 
  * @name GET /quedanTamanios
- * @param {string} variantesAgregadas - Variantes que ya han sido agregadas.
+ * @param {string} cantidadVariantesAgregadas - Cantidad de variantes que ya han sido agregadas.
  * @returns {string} - Mensaje indicando si hay espacio suficiente para agregar más variantes.
  */
-gestionarProductosRouter.get('/quedanTamanios', async (req, res) => {
-    const variantesAgregadas = req.query.variantesAgregadas;
+gestionarProductosRouter.get('/quedanTamanios/:cantidadVariantesAgregadas', async (req, res) => {
+    const {cantidadVariantesAgregadas} = req.params;
     try {
-        const variantesDisponibles = await service.sePuedeAgregarMasVariantes();
-        if(variantesDisponibles) {
+        const cantidadVariantesDisponibles = await service.sePuedeAgregarMasVariantes(cantidadVariantesAgregadas);
+        if(cantidadVariantesDisponibles) {
             res.status(200).send(`Quedan tamaños suficientes para agregar más variantes`);
         } else {
             res.status(409).send(`No quedan tamaños suficientes para agregar más variantes.`);
@@ -123,8 +123,8 @@ gestionarProductosRouter.get('/productos', async (req, res) => {
  * @param {number} idProducto - ID del producto para obtener sus variantes.
  * @returns {array} - Lista de variantes del producto.
  */
-gestionarProductosRouter.get('/variantesProducto', async (req, res) => {
-    const {idProducto} = req.query;
+gestionarProductosRouter.get('/variantesProducto/:idProducto', async (req, res) => {
+    const {idProducto} = req.params;
 
     // Convertir el idProducto a un número entero
     const idProductoInt = parseInt(idProducto, 10);
@@ -143,7 +143,7 @@ gestionarProductosRouter.get('/variantesProducto', async (req, res) => {
 });
 
 gestionarProductosRouter.get("/variantejoinconsumibles/:id", async (req, res) => {
-    const id = req.params.id;
+    const {id} = req.params;
     try {
         const varianteJoinConsumible = await service.obtenerVarianteJoinConsumiblePorId(id);
         res.status(200).json(varianteJoinConsumible);
