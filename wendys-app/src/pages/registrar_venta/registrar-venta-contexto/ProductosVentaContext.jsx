@@ -1,4 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
+import Swal from 'sweetalert2';
+
 
 const ProductosVentaContext = createContext();
 
@@ -42,6 +44,20 @@ export const ProductosVentaProvider = ({ children }) => {
         setProductosVenta(productosVenta.filter(item => item.idVenta !== idVenta));
     };
 
+    const calculateCambio = (dineroRecibido) => {
+      const total = calculateTotal();
+      const dineroNumerico = typeof dineroRecibido === 'string' 
+          ? parseFloat(dineroRecibido) 
+          : dineroRecibido;
+      
+      if (isNaN(dineroNumerico)) {
+          return 0;
+      }
+      
+      const cambio = dineroNumerico - total;
+      return cambio > 0 ? cambio : 0;
+  };
+
     // Limpiar la lista completa
     const cleanProductos = () => {
       setProductosVenta([]);
@@ -60,6 +76,7 @@ export const ProductosVentaProvider = ({ children }) => {
         deleteProducto, 
         cleanProductos,
         calculateTotal,
+        calculateCambio,
         hayProductos: productosVenta.length > 0
       }}
     >

@@ -1,10 +1,10 @@
-.header-productos-costo, .producto, .recibido-total{
+.header-productos-costo, .producto, .total-container, .cambio-cliente{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     
 }
-.price-product, .total-text{
+.price-product, .total-text, .cambio{
     font-family: 'AmiriQuran','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -15,9 +15,35 @@
 
 .header-productos-costo h3{
     color: var(--darkPink);
-    font-size: 2em;
+    font-size: 2.6rem;
 }
 
-.productos p, .header-productos-costo h3, .recibido-total p{
-    margin: 0.3em 0;
+.productos p, .header-productos-costo h3, .total-container p, .cambio-cliente p{
+    margin: 0;
+}
+
+.productos, .cambio-cliente{
+    color: var(--darkPink);
+    font-size: 1.6rem;
+}
+
+.recibido-total{
+    font-size: 1.6rem;
+}
+.separador-venta-total{
+    border-color: rgba(244, 255, 234, 0.49); 
+    background-color: rgba(244, 255, 234, 0.49);
+    height: 0.2rem; 
+    border: none; 
+}
+
+.dinero-recibido-input{
+    width: 4.7rem;
+    height: fit-content;
+    padding: 0 0.5rem;
+    text-align: end;
+    font-size: 1.6rem;
+    font-family: 'Times New Roman', Times, serif;
+}
+    
 }

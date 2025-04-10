@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
@@ -9,13 +9,26 @@ import './RegistrarVentaTotal.css'
 
 function RegistrarVentaTotal(){
     const navigate = useNavigate();
-    const { productosVenta, calculateTotal, cleanProductos } = useProductosVenta();
+    const { productosVenta, calculateTotal, cleanProductos, calculateCambio  } = useProductosVenta();
+    const [dineroRecibido, setDineroRecibido] = useState("");
+    const [cambioCalculado, setCambioCalculado] = useState(0);
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-MX', {
             style: 'currency',
             currency: 'MXN'
         }).format(price);
+    };
+
+    const handleDineroRecibidoChange = (e) => {
+        setDineroRecibido(e.target.value);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            const cambio = calculateCambio(dineroRecibido);
+            setCambioCalculado(cambio);
+        }
     };
 
     const handleAtrasClick = () => {
@@ -74,7 +87,7 @@ function RegistrarVentaTotal(){
                         instruction="No hay productos seleccionados."
                         buttons={[{
                             label: 'Volver',
-                            onClick: handleVolverClick,
+                            onClick: handleAtrasClick,
                             variant: 'primary',
                         }]}
                     />
@@ -113,20 +126,44 @@ function RegistrarVentaTotal(){
                             </div>
                             <div className='productos'>
                             {productosVenta.map((item) => (
-                                <div className='producto'>
+                                <div 
+                                className='producto'
+                                key={item.idVenta}>
                                     <p>{item.producto.name}</p>
                                     <p className='price-product'>{formatPrice(item.producto.price)}</p>
                                 </div>
                                 
                             ))}
                             </div>
-                            <hr/>
+                            <hr
+                            className='separador-venta-total'
+                            />
                             <div className='recibido-total'>
-
-                                <p>Total</p>
-                                <p className='total-text'>{formatPrice(total)}</p>
-
+                                <div className='total-container'>
+                                    <p>Dinero recibido</p>
+                                    <div className="input-container">
+                                        <input 
+                                            type="number"
+                                            value={dineroRecibido}
+                                            onChange={handleDineroRecibidoChange}
+                                            onKeyDown={handleKeyDown}
+                                            className="dinero-recibido-input"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                </div>
+                                <div className='total-container'>
+                                    <p>Total</p>
+                                    <p className='total-text'>{formatPrice(total)}</p>
+                                </div>
                             </div>
+                            <hr
+                            className='separador-venta-total'
+                            />
+                            <div className='cambio-cliente'>
+                                <p>Cambio</p>
+                                <p className='cambio'>{formatPrice(cambioCalculado)}</p>
+                                </div>
                         </div>
                     </PinkRectangle>
                 </div>
