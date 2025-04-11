@@ -9,6 +9,13 @@ import { ValidationError } from '../errors/ValidationError.js';
 import VarianteProducto from '../entities/VarianteProducto.js';
 import VarianteJoinConsumible from '../entities/VarianteJoinConsumible.js';
 import VarianteJoinConsumibleRepository from '../repositories/VarianteJoinRepository.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { promises as fsPromises } from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const errorEncabezado = "\nError de servicio en GestionarProductosService:";
 
@@ -18,6 +25,47 @@ class GestionarProductosService {
         this.VarianteProductoRepo = new VarianteProductoRepository();
         this.GestionarInventarioRepo = new GestionarInventarioRepository();
         this.varianteJoinConsumibleRepo = new VarianteJoinConsumibleRepository();
+
+        // Ruta a la carpeta de imágenes de productos
+        this.imagenesDir = path.join(__dirname, '../images/productos');
+        
+        // Asegurarse de que el directorio existe
+        this.crearDirectorioDeImagenesDeProductosSiNoExiste();
+    }
+
+    async crearDirectorioDeImagenesDeProductosSiNoExiste() {
+        try {
+            await fsPromises.access(this.imagenesDir);
+        } catch (error) {
+            // Si el directorio no existe, lo creamos
+            await fsPromises.mkdir(this.imagenesDir, { recursive: true });
+        }
+    }
+
+    async guardarImagen(imagenFile, nombreParaArchivo) {
+        try {
+            // Generar nombre único para el archivo
+            const nombreArchivo = this.generarNombreArchivo(imagenFile.originalname, nombreParaArchivo);
+            const rutaCompleta = path.join(this.imagenesDir, nombreArchivo);
+            
+            // Guardar el archivo en el sistema de archivos
+            await fsPromises.writeFile(rutaCompleta, imagenFile.buffer);
+            
+            // Retornar la ruta relativa para guardar en la base de datos
+            return `productos/${nombreArchivo}`;
+        } catch (error) {
+            throw new BusinessError(`Error al guardar la imagen: ${error.message}`, error);
+        }
+    }
+    
+    generarNombreArchivo(nombreOriginal, nombreNuevo) {
+        // Obtenemos la extensión del archivo original
+        const extension = path.extname(nombreOriginal);
+        
+        // Generamos un nombre único
+        const aleatorio = Math.round(Math.random() * 1E9);
+        
+        return `${nombreNuevo}-${aleatorio}${extension}`;
     }
 
     async buscarProductoExistentePorNombre(nombre) {
@@ -54,12 +102,18 @@ class GestionarProductosService {
         }
     }
 
-    async registrarProducto(datosProducto) {
+    async registrarProducto(datosProducto, imagenFile) {
         try {
-            const nuevoProducto = new Producto(datosProducto.nombre);
-            if (!nuevoProducto.nombre) {
+            if (!datosProducto.nombre) {
                 throw new ValidationError(`Faltan campos obligatorios, debe ingresarse el nombre del producto.`);
             }
+
+            // Si hay una imagen, la procesamos y guardamos
+            let imagenPath = '';
+            if (imagenFile) {
+                imagenPath = await this.guardarImagen(imagenFile, datosProducto.nombre);
+            }
+            const nuevoProducto = new Producto(datosProducto.nombre, imagenPath);
 
             // Guarda el producto
             const productoGuardado = await this.ProductoRepo.guardarProducto(nuevoProducto);

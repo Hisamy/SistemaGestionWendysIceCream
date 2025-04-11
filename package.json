@@ -5,7 +5,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"node server/api/server.js\" \"cd wendys-app && npm run dev\""
+    "dev": "concurrently \"nodemon server/api/server.js\" \"cd wendys-app && npm run dev\""
   },
   "keywords": [],
   "author": "",
