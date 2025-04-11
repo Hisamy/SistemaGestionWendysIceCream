@@ -1,8 +1,9 @@
 import { EntitySchema } from "typeorm";
 
 class Producto {
-    constructor(nombre){
+    constructor(nombre, imagenPath){
         this.nombre = nombre;
+        this.imagenPath = imagenPath;
     }
 }
 export const ProductoSchema = new EntitySchema({
@@ -18,6 +19,10 @@ export const ProductoSchema = new EntitySchema({
         nombre: {
             type: "varchar",
             length: 100
+        },
+        imagenPath: {
+            type: "varchar",
+            length: 150
         }
     },
     relations: {

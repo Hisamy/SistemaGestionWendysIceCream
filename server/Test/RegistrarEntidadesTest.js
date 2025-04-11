@@ -92,7 +92,7 @@ const gestionarVentaServ = new GestionarVentaService();
 async function init() {
     try {
         registrarConsumibles();
-        registrarProductos();
+        //registrarProductos();
     } catch (error) {
         console.log(error.message);
     }

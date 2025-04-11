@@ -4,9 +4,28 @@
  */
 
 import { Router } from "express";
+import multer from 'multer';
+import path from "path";
 import GestionarProductosService from '../services/GestionarProductosService.js';
 import { BusinessError } from '../errors/BusinessError.js';
 import { ValidationError } from '../errors/ValidationError.js';
+
+// Configuración básica de multer para recibir el archivo en memoria
+const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
+    fileFilter: function (req, file, cb) {
+        // Validar tipos de archivo
+        const filetypes = /jpeg|jpg|png|gif/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Solo se permiten imágenes (jpeg, jpg, png, gif)'));
+    }
+});
 
 // Instancia del enrutador y del servicio de gestión de productos
 const gestionarProductosRouter = Router();
@@ -88,14 +107,16 @@ gestionarProductosRouter.get('/quedanTamanios/:cantidadVariantesAgregadas', asyn
  * Ruta POST para registrar un nuevo producto.
  * 
  * @name POST /registrar
- * @param {object} producto - Información del producto a registrar.
+ * @param {object} datosProducto - Información del producto a registrar.
  * @returns {string} - Mensaje indicando si el producto fue registrado correctamente.
  */
-gestionarProductosRouter.post('/registrar', async (req, res) => {
-    const producto = req.body;
+gestionarProductosRouter.post('/registrar', upload.single('imagen'), async (req, res) => {
     try {
-        await service.registrarProducto(producto);
-        res.status(201).send(`El producto "${producto.nombre}" fue registrado correctamente.`);
+        const datosProducto = JSON.parse(req.body.datosProducto);
+        const imagenFile = req.file;
+
+        await service.registrarProducto(datosProducto, imagenFile);
+        res.status(201).send(`El producto "${datosProducto.nombre}" fue registrado correctamente.`);
     } catch (error) {
         mandarRespuestaError(error, res);
     }
