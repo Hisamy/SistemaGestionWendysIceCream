@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import DimensionesForm from './DimensionesForm.jsx';
 import Swal from 'sweetalert2';
+import './RegistrarProducto.css'
 
 function RegistrarProducto(){
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ function RegistrarProducto(){
       });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [nombreImagen, setNombreImagen] = useState('Seleccionar imagen');
     
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,6 +22,19 @@ function RegistrarProducto(){
           [name]: name === 'nombreProducto' ? value : Number(value)
         }));
       };
+
+      const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          //Gurdar el nombre del archivo o genera la url y asi
+          setNombreImagen(file.name);
+          setFormData({
+            ...formData,
+            imagenProducto: file, // Guarda el archivo
+          });
+        }
+      };
+      
         
       const handleSubmitProducto = async (e) => {
         e.preventDefault();
@@ -68,8 +83,9 @@ function RegistrarProducto(){
               <PinkRectangle>
                 <div className="form-container">
                   <form id="register-form" className="producto-form">
-                    <div className="form-group">
-                      <label htmlFor="nombreProducto">Nombre Producto:</label>
+                    <div className="form-group-producto">
+                    <div className='nombre-producto'>
+                      <label htmlFor="nombreProducto">Nombre Producto</label>
                       <input
                         type="text"
                         id="nombreProducto"
@@ -77,10 +93,28 @@ function RegistrarProducto(){
                         value={formData.nombreProducto}
                         onChange={handleChange}
                         required
-                        className="form-input"
+                        className="form-input-text"
                       />
-                    </div>
-                    <label>Dimensiones:</label>
+                      </div>
+                      <div className='imagen-producto'>
+                        <label htmlFor="imagenProducto">Subir imágen</label>
+                          <input
+                            type="file"
+                            id="imagenProducto"
+                            name="imagenProducto"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="form-input-image"
+                            style={{ display: 'none' }} // 🔹 Esto oculta el input nativo
+                          />
+                        <label htmlFor="imagenProducto" className="boton-subir">
+                          {nombreImagen}
+                        </label>
+                      </div>
+
+                      </div>
+                      
+                    <label>Dimensiones</label>
                     <DimensionesForm />
                   </form>
                 </div>
