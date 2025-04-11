@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import PinkRectangle from '../../../components/main_content/PinkRectangle.jsx';
 import DimensionesForm from './DimensionesForm.jsx';
 import Swal from 'sweetalert2';
+import './RegistrarProducto.css'
 import productoController from '../../../controllers/ProductoController.js'
 
 function RegistrarProducto() {
@@ -15,6 +16,7 @@ function RegistrarProducto() {
     ],
   });
   const [imagenProducto, setImagenProducto] = useState(null);
+  const [nombreImagen, setNombreImagen] = useState('Seleccionar imagen');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -27,7 +29,11 @@ function RegistrarProducto() {
   };
 
   const handleImagenProductoChange = async (e) => {
-    setImagenProducto(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setNombreImagen(file.name);
+      setImagenProducto(e.target.files[0]);
+    }
   }
 
   const handleSubmitProducto = async (e) => {
@@ -75,40 +81,59 @@ function RegistrarProducto() {
     },
   ];
 
-  return (
-    <div className="container">
-      <div className='nav-left'>
-        <NavLeft
-          instruction="Ingresar los datos del nuevo producto a registrar"
-          buttons={navLeftButtons}
-        />
-      </div>
-      <div className="fit-parent">
-        <div className="registrar-content">
-          <PinkRectangle>
-            <div className="form-container">
-              <form id="register-form" className="producto-form">
-                <div className="form-group">
-                  <label htmlFor="nombreProducto">Nombre Producto:</label>
-                  <input
-                    type="text"
-                    id="nombreProducto"
-                    name="nombreProducto"
-                    value={formData.nombreProducto}
-                    onChange={handleChange}
-                    required
-                    className="form-input"
-                  />
-                </div>
-                <label>Dimensiones:</label>
-                <DimensionesForm />
-              </form>
-            </div>
+      return (
+        <div className="container">
+          <div className='nav-left'>
+            <NavLeft
+              instruction="Ingresar los datos del nuevo producto a registrar"
+              buttons={navLeftButtons}
+            />
+          </div>
+          <div className="fit-parent">
+            <div className="registrar-content"> 
+              <PinkRectangle>
+                <div className="form-container">
+                  <form id="register-form" className="producto-form">
+                    <div className="form-group-producto">
+                    <div className='nombre-producto'>
+                      <label htmlFor="nombreProducto">Nombre Producto</label>
+                      <input
+                        type="text"
+                        id="nombreProducto"
+                        name="nombreProducto"
+                        value={formData.nombreProducto}
+                        onChange={handleChange}
+                        required
+                        className="form-input-text"
+                      />
+                      </div>
+                      <div className='imagen-producto'>
+                        <label htmlFor="imagenProducto">Subir imágen</label>
+                          <input
+                            type="file"
+                            id="imagenProducto"
+                            name="imagenProducto"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="form-input-image"
+                            style={{ display: 'none' }} // 🔹 Esto oculta el input nativo
+                          />
+                        <label htmlFor="imagenProducto" className="boton-subir">
+                          {nombreImagen}
+                        </label>
+                      </div>
 
-          </PinkRectangle>
+                      </div>
+                      
+                    <label>Dimensiones</label>
+                    <DimensionesForm />
+                  </form>
+                </div>
+                
+              </PinkRectangle>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      );
 }
 export default RegistrarProducto;
