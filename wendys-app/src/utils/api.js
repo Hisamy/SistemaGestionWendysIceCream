@@ -52,6 +52,22 @@ export const api = {
         }
     },
 
+    postFormData: async (endpoint, formData) => {
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                body: formData, // No establecer Content-Type - FormData lo hace automáticamente
+            });
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return await response.text();
+        } catch (error) {
+            console.error('Error en la solicitud POST FormData:', error);
+            throw error;
+        }
+    },
+
     delete: async (endpoint) => {
         try {
             const response = await fetch(`${API_URL}${endpoint}`, {

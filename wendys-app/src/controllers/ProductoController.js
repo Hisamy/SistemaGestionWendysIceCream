@@ -17,8 +17,11 @@ const productoController = {
         return await api.get(`/gestionarProductos/quedanTamanios/${cantidadVariantesAgregadas}`);
     },
 
-    registrarProducto: async (producto) => {
-        return await api.post('/gestionarProductos/registrar', producto);
+    registrarProducto: async (datosProducto, imagen) => {
+        const formData = new FormData();
+        formData.append('datosProducto', JSON.stringify(datosProducto));
+        formData.append('imagen', imagen);
+        return await api.postFormData('/gestionarProductos/registrar', formData);
     },
 
     obtenerProductos: async () => {
