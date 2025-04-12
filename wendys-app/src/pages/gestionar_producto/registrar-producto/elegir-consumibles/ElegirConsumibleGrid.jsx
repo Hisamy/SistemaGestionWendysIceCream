@@ -7,13 +7,14 @@ import './ElegirConsumibleGrid.css'
 
 
 const ElegirConsumiblesGrid = ({ consumibles }) => {
+  
   return (
     <div className="elegir-consumibles-grid">
       {consumibles.map((consumible) => (
         <div className='elegir-consumible-container'>
             <ConsumibleButton
                 key={consumible.id}
-                label={consumible.name}
+                label={consumible.nombre}
             />
             <AmountConsumibleButton/>
         </div>

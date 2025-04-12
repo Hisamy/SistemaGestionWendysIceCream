@@ -9,10 +9,14 @@ import productoController from '../../../controllers/ProductoController.js'
 
 function RegistrarProducto() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    nombreProducto: '',
+  const tamanioDefault = productoController.obtenerTamanioDefult();
+  const [datosProducto, setDatosProducto] = useState({
+    nombre: '',
     variantes: [
-
+      {
+        tamanio: tamanioDefault,
+        consumibles: []
+      }
     ],
   });
   const [imagenProducto, setImagenProducto] = useState(null);
@@ -22,7 +26,7 @@ function RegistrarProducto() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setDatosProducto(prevData => ({
       ...prevData,
       [name]: name === 'nombreProducto' ? value : Number(value)
     }));
@@ -42,7 +46,7 @@ function RegistrarProducto() {
     setError(null);
 
     try {
-      await productoController.registrarProducto(formData, imagen);
+      await productoController.registrarProducto(datosProducto, imagen);
       Swal.fire({
         icon: 'success',
         title: '¡Producto Registrado!',
@@ -101,7 +105,7 @@ function RegistrarProducto() {
                         type="text"
                         id="nombreProducto"
                         name="nombreProducto"
-                        value={formData.nombreProducto}
+                        value={datosProducto.nombre}
                         onChange={handleChange}
                         required
                         className="form-input-text"
@@ -114,7 +118,7 @@ function RegistrarProducto() {
                             id="imagenProducto"
                             name="imagenProducto"
                             accept="image/*"
-                            onChange={handleImageChange}
+                            onChange={handleImagenProductoChange}
                             className="form-input-image"
                             style={{ display: 'none' }} // 🔹 Esto oculta el input nativo
                           />

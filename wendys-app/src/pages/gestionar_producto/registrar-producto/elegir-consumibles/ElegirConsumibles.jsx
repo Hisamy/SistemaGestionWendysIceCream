@@ -1,32 +1,50 @@
 import NavLeft from "../../../../components/nav_left/NavLeft";
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PinkRectangle from "../../../../components/main_content/PinkRectangle";
 import ElegirConsumiblesGrid from "./ElegirConsumibleGrid";
+import inventarioController from '../../../../controllers/InventarioController.js';
 
 function ElegirConsumibles(){
     const navigate = useNavigate();
     const [consumiblesSeleccionados, setConsumiblesSeleccionados] = useState({});
+    const [consumibles, setConsumibles] = useState([]);
+
+    // Busca por consumibles
+    useEffect(() => {
+        const fetchConsumibles = async () => {
+            try {
+                const consumiblesEncontrados = await inventarioController.obtenerConsumibles();
+                setConsumibles(consumiblesEncontrados);
+            } catch (error) {
+                console.error("Error fetching consumibles:", error);
+                
+            }
+        };
+
+        fetchConsumibles();
+    }, []);
 
     const MOCK_CONSUMIBLES = [
-        { id : '01', name: 'Cuchara mini'},
-        { id : '02', name: 'Cuchara mediana'},
-        { id : '03', name: 'Cuchara grande'},
-        { id : '04', name: 'Popote'},
-        { id : '05', name: 'Servilletas'},
-        { id : '06', name: 'Cono'},
+        { id : '01', nombre: 'Cuchara mini'},
+        { id : '02', nombre: 'Cuchara mediana'},
+        { id : '03', nombre: 'Cuchara grande'},
+        { id : '04', nombre: 'Popote'},
+        { id : '05', nombre: 'Servilletas'},
+        { id : '06', nombre: 'Cono'},
 
     ];
 
 
+    // Aun no se que debe retornar
     const getConsumiblesAmount = () => {
         return Object.entries(consumiblesSeleccionados)
             .filter(([_, cantidad]) => cantidad > 0)
             .map(([id, cantidad]) => {
-                const consumible = MOCK_CONSUMIBLES.find(c => c.id === id);
+                const consumible = consumibles.find(c => c.id === id);
                 return {
                     id,
-                    name: consumible.name,
+                    nombre: consumible.nombre,
                     cantidad
                 };
             });
@@ -70,7 +88,7 @@ function ElegirConsumibles(){
                     <div className="elegir-consumible-content">
                         <PinkRectangle searchable={true}>
                             <ElegirConsumiblesGrid 
-                                consumibles={MOCK_CONSUMIBLES}
+                                consumibles={consumibles}
                             />
                         </PinkRectangle> 
                     </div>

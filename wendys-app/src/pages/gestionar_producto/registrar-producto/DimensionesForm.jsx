@@ -1,15 +1,15 @@
 // components/DimensionesForm/DimensionesForm.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './DimensionesForm.css'; 
+import './DimensionesForm.css';
 
 const FormDimension = ({ onDelete, index }) => {
   const navigate = useNavigate();
-  const [tamano, setTamano] = useState('');
+  const [tamanio, setTamanio] = useState('');
   const [precio, setPrecio] = useState('');
 
   const handleTamanoChange = (e) => {
-    setTamano(e.target.value);
+    setTamanio(e.target.value);
   };
 
   const handlePrecioChange = (e) => {
@@ -27,27 +27,27 @@ const FormDimension = ({ onDelete, index }) => {
       </div>
       <div className="dimension-content">
         <div className="form-field">
-          <select 
-            value={tamano} 
+          <select
+            value={tamanio}
             onChange={handleTamanoChange}
             className="tamano-select"
           >
-            <option value="unico">Tamaño unico</option>
-            <option value="small">Pequeño</option>
-            <option value="medium">Mediano</option>
-            <option value="large">Grande</option>
+            <option value="UNICO">Tamaño unico</option>
+            <option value="CHICO">Pequeño</option>
+            <option value="MEDIANO">Mediano</option>
+            <option value="GRANDE">Grande</option>
           </select>
         </div>
         <div className="form-field ">
-          <input 
-            type="number" 
+          <input
+            type="number"
             value={precio}
             onChange={handlePrecioChange}
             placeholder="Precio"
             className="precio-input"
           />
         </div>
-        <button 
+        <button
           className="consumibles-button"
           onClick={handleConsumiblesClick}
         >
@@ -75,10 +75,10 @@ const DimensionesForm = () => {
   return (
     <div className="dimensiones-container">
       {forms.map((form, index) => (
-        <FormDimension 
-          key={form.id} 
-          index={index} 
-          onDelete={deleteForm} 
+        <FormDimension
+          key={form.id}
+          index={index}
+          onDelete={deleteForm}
         />
       ))}
       <button className="add-form-button" onClick={addForm}>+</button>
