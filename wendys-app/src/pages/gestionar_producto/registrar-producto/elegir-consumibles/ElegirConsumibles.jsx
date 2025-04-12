@@ -1,16 +1,18 @@
 import NavLeft from "../../../../components/nav_left/NavLeft";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useCallback, useEffect } from 'react';
 import PinkRectangle from "../../../../components/main_content/PinkRectangle";
 import ElegirConsumiblesGrid from "./ElegirConsumibleGrid";
 import inventarioController from '../../../../controllers/InventarioController.js';
 
-function ElegirConsumibles(){
+function ElegirConsumibles() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { variantIndex } = location.state || {}; // Recibimos el índice de la variante
     const [consumiblesSeleccionados, setConsumiblesSeleccionados] = useState({});
     const [consumibles, setConsumibles] = useState([]);
 
-    // Busca por consumibles
+    // Obtener consumibles del servidor
     useEffect(() => {
         const fetchConsumibles = async () => {
             try {
@@ -18,50 +20,53 @@ function ElegirConsumibles(){
                 setConsumibles(consumiblesEncontrados);
             } catch (error) {
                 console.error("Error fetching consumibles:", error);
-                
             }
         };
-
         fetchConsumibles();
     }, []);
 
-    const MOCK_CONSUMIBLES = [
-        { id : '01', nombre: 'Cuchara mini'},
-        { id : '02', nombre: 'Cuchara mediana'},
-        { id : '03', nombre: 'Cuchara grande'},
-        { id : '04', nombre: 'Popote'},
-        { id : '05', nombre: 'Servilletas'},
-        { id : '06', nombre: 'Cono'},
+    // Cargar selección previa si existe
+    useEffect(() => {
+        const storedSelection = localStorage.getItem('consumiblesSeleccionados');
+        if (storedSelection) {
+            const { index, consumibles } = JSON.parse(storedSelection);
+            if (index === variantIndex) {
+                const initialSelection = consumibles.reduce((acc, curr) => {
+                    acc[curr.id] = curr.cantidad;
+                    return acc;
+                }, {});
+                setConsumiblesSeleccionados(initialSelection);
+            }
+        }
+    }, [variantIndex]);
 
-    ];
-
-
-    // Aun no se que debe retornar
-    const getConsumiblesAmount = () => {
-        return Object.entries(consumiblesSeleccionados)
-            .filter(([_, cantidad]) => cantidad > 0)
-            .map(([id, cantidad]) => {
-                const consumible = consumibles.find(c => c.id === id);
-                return {
-                    id,
-                    nombre: consumible.nombre,
-                    cantidad
-                };
-            });
+    const handleCantidadChange = (id, cantidad) => {
+        setConsumiblesSeleccionados(prev => ({
+            ...prev,
+            [id]: Math.max(0, cantidad)
+        }));
     };
 
-    
+    const handleAceptar = () => {
+        const consumiblesParaVariante = Object.entries(consumiblesSeleccionados)
+            .filter(([_, cantidad]) => cantidad > 0)
+            .map(([id, cantidad]) => ({
+                id: parseInt(id),
+                cantidad: parseInt(cantidad)
+            }));
 
-    const handleAceptar = () =>{
-        const consumiblesParaProducto = getConsumiblesAmount();
-        console.log('Consumibles seleccionados:', consumiblesParaProducto);
-        localStorage.setItem('consumiblesSeleccionados', JSON.stringify(consumiblesParaProducto));
-        navigate('/registrar-producto');
+        // Guardar con índice de variante
+        localStorage.setItem('consumiblesSeleccionados', JSON.stringify({
+            index: variantIndex,
+            consumibles: consumiblesParaVariante
+        }));
 
-    }
-    const handleCancelar = () =>{
         navigate('/registrar-producto');
-    }
+    };
+
+    const handleCancelar = () => {
+        navigate('/registrar-producto');
+    };
 
     const navLeftButtons = [
         {
@@ -75,29 +80,32 @@ function ElegirConsumibles(){
             variant: 'primary'
         },
     ];
-    return(
+
+    return (
         <div className="container">
             <div className="nav-left">
-            <NavLeft
-                instruction="Selecciona los consumibles a utilizar en el producto."
-                buttons= {navLeftButtons}
-            />
+                <NavLeft
+                    instruction="Selecciona los consumibles a utilizar en el producto."
+                    buttons={navLeftButtons}
+                />
             </div>
             <div className="fit-parent">
                 <div className="content">
                     <div className="elegir-consumible-content">
                         <PinkRectangle searchable={true}>
-                            <ElegirConsumiblesGrid 
+                            <ElegirConsumiblesGrid
                                 consumibles={consumibles}
+                                cantidades={consumiblesSeleccionados}
+                                onCantidadChange={handleCantidadChange}
                             />
-                        </PinkRectangle> 
+                        </PinkRectangle>
                     </div>
                 </div>
-                
+
 
             </div>
-           
-            
+
+
 
         </div>
     );

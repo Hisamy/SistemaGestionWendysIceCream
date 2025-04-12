@@ -208,12 +208,12 @@ class GestionarProductosService {
         }
     }
 
-    async obtenerVarianteJoinConsumiblePorId(idVarianteJoinConsumible) {
+    async obtenerVarianteJoinConsumiblePorVarianteId(varianteId) {
         try {
-            const varianteJoinConsumibleEncontrada = await this.VarianteProductoRepo.obtenerRelacionesConsumiblesPorIdVariante(idVarianteJoinConsumible);
+            const varianteJoinConsumibleEncontrada = await this.varianteJoinConsumibleRepo.obtenerPorVarianteId(varianteId);
             return varianteJoinConsumibleEncontrada;
         } catch (error) {
-            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener la varianteJoinConsumible con id ${idVarianteJoinConsumible}: ${error.message}`, error);
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener la varianteJoinConsumible con con id de variante ${varianteId}: ${error.message}`, error);
         }
     }
 }

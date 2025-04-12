@@ -113,6 +113,8 @@ gestionarProductosRouter.get('/quedanTamanios/:cantidadVariantesAgregadas', asyn
 gestionarProductosRouter.post('/registrar', upload.single('imagen'), async (req, res) => {
     try {
         const datosProducto = JSON.parse(req.body.datosProducto);
+        console.log(datosProducto);
+        
         const imagenFile = req.file;
 
         await service.registrarProducto(datosProducto, imagenFile);
@@ -163,10 +165,10 @@ gestionarProductosRouter.get('/variantesProducto/:idProducto', async (req, res) 
     }
 });
 
-gestionarProductosRouter.get("/variantejoinconsumibles/:id", async (req, res) => {
-    const {id} = req.params;
+gestionarProductosRouter.get("/variantejoinconsumibles/:varianteId", async (req, res) => {
+    const {varianteId} = req.params;
     try {
-        const varianteJoinConsumible = await service.obtenerVarianteJoinConsumiblePorId(id);
+        const varianteJoinConsumible = await service.obtenerVarianteJoinConsumiblePorVarianteId(varianteId);
         res.status(200).json(varianteJoinConsumible);
     } catch (error) {
         mandarRespuestaError(error, res);

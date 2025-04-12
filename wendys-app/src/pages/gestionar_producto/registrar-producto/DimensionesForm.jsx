@@ -1,35 +1,33 @@
 // components/DimensionesForm/DimensionesForm.jsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DimensionesForm.css';
 
-const FormDimension = ({ onDelete, index }) => {
+const FormDimension = ({ index, variant, onUpdate, onRemove, onSelectConsumibles }) => {
   const navigate = useNavigate();
-  const [tamanio, setTamanio] = useState('');
-  const [precio, setPrecio] = useState('');
 
-  const handleTamanoChange = (e) => {
-    setTamanio(e.target.value);
+  const handleChange = (e) => {
+    onUpdate(index, e.target.name, e.target.value);
   };
 
-  const handlePrecioChange = (e) => {
-    setPrecio(e.target.value);
-  };
 
   const handleConsumiblesClick = () => {
-    navigate('/elegir-consumibles');
+    navigate('/elegir-consumibles', { 
+      state: { variantIndex: index } 
+    });
   };
 
   return (
     <div className="dimension-form">
       <div className="dimension-header">
-        <button className="delete-button" onClick={() => onDelete(index)}>X</button>
+        <button className="delete-button" onClick={() => onRemove(index)}>X</button>
       </div>
       <div className="dimension-content">
         <div className="form-field">
           <select
-            value={tamanio}
-            onChange={handleTamanoChange}
+            name='tamanio'
+            value={variant.tamanio}
+            onChange={handleChange}
             className="tamano-select"
           >
             <option value="UNICO">Tamaño unico</option>
@@ -41,47 +39,39 @@ const FormDimension = ({ onDelete, index }) => {
         <div className="form-field ">
           <input
             type="number"
-            value={precio}
-            onChange={handlePrecioChange}
+            name='precio'
+            value={variant.precio || ''}
+            onChange={(e) => onUpdate(index, 'precio', Number(e.target.value))}
             placeholder="Precio"
             className="precio-input"
           />
         </div>
         <button
+          type='button'
           className="consumibles-button"
           onClick={handleConsumiblesClick}
         >
-          Consumibles
+          Consumibles ({variant.consumibles.length})
         </button>
       </div>
     </div>
   );
 };
 
-const DimensionesForm = () => {
-  const [forms, setForms] = useState([{ id: 1 }]);
-
-  const addForm = () => {
-    const newId = forms.length > 0 ? Math.max(...forms.map(form => form.id)) + 1 : 1;
-    setForms([...forms, { id: newId }]);
-  };
-
-  const deleteForm = (index) => {
-    const newForms = [...forms];
-    newForms.splice(index, 1);
-    setForms(newForms);
-  };
+const DimensionesForm = ({ variantes, onUpdateVariant, onAddVariant, onRemoveVariant }) => {
 
   return (
     <div className="dimensiones-container">
-      {forms.map((form, index) => (
+      {variantes.map((variant, index) => (
         <FormDimension
-          key={form.id}
+          key={index}
           index={index}
-          onDelete={deleteForm}
+          variant={variant}
+          onUpdate={onUpdateVariant}
+          onRemove={onRemoveVariant}
         />
       ))}
-      <button className="add-form-button" onClick={addForm}>+</button>
+      <button type="button" onClick={onAddVariant}>+</button>
     </div>
   );
 };

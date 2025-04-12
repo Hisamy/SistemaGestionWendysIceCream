@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
-import './AmountConsumibleButton.css'
+import React from 'react';
+import PropTypes from 'prop-types';
+import './AmountConsumibleButton.css';
 
-
-function AmountConsumibleButton () {
-    const [amount, setAmount] = useState(0);
-
-    const handleIncrement = () => {
-        setAmount(amount + 1);
-      };
-
-      const handleDecrement = () => {
-        if (amount > 0) {
-          setAmount(amount - 1);
-        }
-      };
-
+function AmountConsumibleButton({ quantity, onIncrement, onDecrement }) {
     return(
         <div className='container-amount'>
-            <button onClick={handleDecrement} className='button-decrement'>-</button>
-            <p className='amount'>{amount}</p>
-            <button onClick={handleIncrement} className='button-increment'>+</button>
-
+            <button 
+                onClick={onDecrement} 
+                className='button-decrement'
+                disabled={quantity <= 0}
+            >
+                -
+            </button>
+            <p className='amount'>{quantity}</p>
+            <button 
+                onClick={onIncrement} 
+                className='button-increment'
+            >
+                +
+            </button>
         </div>
     );
-
 }
+
+AmountConsumibleButton.propTypes = {
+    quantity: PropTypes.number.isRequired,
+    onIncrement: PropTypes.func.isRequired,
+    onDecrement: PropTypes.func.isRequired
+};
+
 export default AmountConsumibleButton;
