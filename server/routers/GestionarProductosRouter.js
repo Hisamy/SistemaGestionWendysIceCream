@@ -113,9 +113,9 @@ gestionarProductosRouter.get('/quedanTamanios/:cantidadVariantesAgregadas', asyn
 gestionarProductosRouter.post('/registrar', upload.single('imagen'), async (req, res) => {
     try {
         const datosProducto = JSON.parse(req.body.datosProducto);
-        console.log(datosProducto);
         
         const imagenFile = req.file;
+        
 
         await service.registrarProducto(datosProducto, imagenFile);
         res.status(201).send(`El producto "${datosProducto.nombre}" fue registrado correctamente.`);

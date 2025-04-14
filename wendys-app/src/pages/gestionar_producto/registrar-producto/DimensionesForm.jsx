@@ -39,10 +39,12 @@ const FormDimension = ({ index, variant, onUpdate, onRemove, onSelectConsumibles
         <div className="form-field ">
           <input
             type="number"
-            name='precio'
-            value={variant.precio || ''}
+            name="precio"
+            value={variant.precio}
             onChange={(e) => onUpdate(index, 'precio', Number(e.target.value))}
             placeholder="Precio"
+            step="0.01"
+            min="0"
             className="precio-input"
           />
         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import './ProductosGrid.css'
 import PropTypes from 'prop-types';
 import ProductoButton from './ProductoButton.jsx';
+import { API_URL } from '../../../utils/api.js';
 
 const ProductosGrid = ({ productos, onProductoClick, selectedId = null }) => {
   return (
@@ -9,8 +10,8 @@ const ProductosGrid = ({ productos, onProductoClick, selectedId = null }) => {
       {productos.map((producto) => (
         <ProductoButton
           key={producto.id}
-          label={producto.name}
-          image={producto.image}
+          label={producto.nombre}
+          image={API_URL + '/images/' + producto.imagenPath}
           onClick={() => onProductoClick(producto)} 
           selected={selectedId === producto.id}
         />

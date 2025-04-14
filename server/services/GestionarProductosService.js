@@ -16,6 +16,7 @@ import { promises as fsPromises } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const NOPICTURE = 'productos/default_no_picture.png';
 
 const errorEncabezado = "\nError de servicio en GestionarProductosService:";
 
@@ -112,6 +113,8 @@ class GestionarProductosService {
             let imagenPath = '';
             if (imagenFile) {
                 imagenPath = await this.guardarImagen(imagenFile, datosProducto.nombre);
+            } else {
+                imagenPath = NOPICTURE;
             }
             const nuevoProducto = new Producto(datosProducto.nombre, imagenPath);
 

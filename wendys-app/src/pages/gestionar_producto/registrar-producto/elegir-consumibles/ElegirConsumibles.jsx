@@ -48,6 +48,10 @@ function ElegirConsumibles() {
     };
 
     const handleAceptar = () => {
+        console.log("Consumibles al momento de aceptar consumibles elegidos:");
+        console.log(consumiblesSeleccionados);
+        
+        
         const consumiblesParaVariante = Object.entries(consumiblesSeleccionados)
             .filter(([_, cantidad]) => cantidad > 0)
             .map(([id, cantidad]) => ({
@@ -55,9 +59,9 @@ function ElegirConsumibles() {
                 cantidad: parseInt(cantidad)
             }));
 
-        // Guardar con índice de variante
-        localStorage.setItem('consumiblesSeleccionados', JSON.stringify({
-            index: variantIndex,
+        // Cambiar localStorage por sessionStorage
+        sessionStorage.setItem('selectedConsumibles', JSON.stringify({
+            variantIndex: variantIndex,
             consumibles: consumiblesParaVariante
         }));
 

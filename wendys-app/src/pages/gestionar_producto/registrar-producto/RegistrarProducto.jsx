@@ -29,37 +29,69 @@ function RegistrarProducto() {
   // Cargar datos persistentes
   useEffect(() => {
     const loadPersistedData = () => {
-      // Cargar datos del producto
+      // 1. Cargar datos base del producto
       const savedData = sessionStorage.getItem('productoDraft');
       if (savedData) {
         const { nombre, variantes, imagen } = JSON.parse(savedData);
+
+
+        // Actualizar estado PRINCIPAL primero
         setDatosProducto({ nombre, variantes });
-        
+
         // Cargar imagen si existe
         if (imagen) {
-          const byteString = atob(imagen.data);
-          const ab = new ArrayBuffer(byteString.length);
-          const ia = new Uint8Array(ab);
-          for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
+          try {
+            const binaryString = atob(imagen.data);
+            const bytes = new Uint8Array(binaryString.length);
+
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+
+            const blob = new Blob([bytes], { type: imagen.type });
+            const file = new File([blob], imagen.name, { type: imagen.type });
+            setImagenProducto(file);
+            setNombreImagen(imagen.name);
+
+          } catch (error) {
+            console.error("Error al reconstruir imagen:", error);
           }
-          const blob = new Blob([ab], { type: imagen.type });
-          const file = new File([blob], imagen.name, { type: imagen.type });
-          setImagenProducto(file);
-          setNombreImagen(imagen.name);
         }
       }
 
-      // Cargar consumibles seleccionados
+      // 2. Cargar consumibles DESPUÉS de cargar los datos base
       const storedConsumibles = sessionStorage.getItem('selectedConsumibles');
       if (storedConsumibles) {
         const { variantIndex, consumibles } = JSON.parse(storedConsumibles);
-        setDatosProducto(prev => ({
-          ...prev,
-          variantes: prev.variantes.map((v, i) => 
-            i === variantIndex ? { ...v, consumibles } : v
-          )
-        }));
+
+        setDatosProducto(prev => {
+
+          const nuevasVariantes = prev.variantes.map((v, i) => {
+            if (i === variantIndex) {
+              const nuevosConsumibles = consumibles.map(c => {
+                const consumibleConvertido = {
+                  id: Number(c.id),
+                  cantidad: Number(c.cantidad)
+                };
+                return consumibleConvertido;
+              });
+
+              const varianteActualizada = {
+                ...v,
+                consumibles: nuevosConsumibles
+              };
+              return varianteActualizada;
+            }
+            return v;
+          });
+
+          const nuevoEstado = {
+            ...prev,
+            variantes: nuevasVariantes
+          };
+          return nuevoEstado;
+        });
+
         sessionStorage.removeItem('selectedConsumibles');
       }
     };
@@ -69,12 +101,32 @@ function RegistrarProducto() {
 
   // Guardar datos automáticamente
   useEffect(() => {
-    const saveData = () => {
-      const imagenData = imagenProducto ? {
-        name: imagenProducto.name,
-        type: imagenProducto.type,
-        data: btoa(String.fromCharCode(...new Uint8Array(imagenProducto.arrayBuffer())))
-      } : null;
+    const saveData = async () => {
+      let imagenData = null;
+
+      if (imagenProducto) {
+        try {
+          const arrayBuffer = await imagenProducto.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+
+          // Método optimizado para grandes archivos
+          let binaryString = '';
+          const chunkSize = 32768; // Tamaño de chunk seguro
+
+          for (let i = 0; i < uint8Array.length; i += chunkSize) {
+            const chunk = uint8Array.subarray(i, i + chunkSize);
+            binaryString += String.fromCharCode.apply(null, chunk);
+          }
+
+          imagenData = {
+            name: imagenProducto.name,
+            type: imagenProducto.type,
+            data: btoa(binaryString)
+          };
+        } catch (error) {
+          console.error("Error al procesar imagen:", error);
+        }
+      }
 
       const draftData = {
         nombre: datosProducto.nombre,
@@ -148,7 +200,38 @@ function RegistrarProducto() {
     setLoading(true);
 
     try {
-      await productoController.registrarProducto(datosProducto, imagenProducto);
+      // Validar datos mínimos
+      if (!datosProducto.nombre || datosProducto.variantes.length === 0) {
+        throw new Error('Debe completar todos los campos requeridos');
+      }
+
+      // Crear FormData con estructura correcta
+      const formData = new FormData();
+
+      const productoData = {
+        nombre: datosProducto.nombre,
+        variantes: datosProducto.variantes.map(variante => ({
+          tamanio: variante.tamanio,
+          precio: Number(variante.precio),
+          consumibles: variante.consumibles.map(c => ({
+            id: Number(c.id),
+            cantidad: Number(c.cantidad)
+          }))
+        }))
+      };
+
+      // 2. Adjuntar datos como JSON
+      formData.append('datosProducto', JSON.stringify(productoData));
+
+      // 3. Adjuntar imagen si existe
+      if (imagenProducto) {
+        formData.append('imagen', imagenProducto);
+      }
+
+      // 4. Enviar al servidor
+      await productoController.registrarProducto(formData);
+
+      // Limpiar datos y mostrar éxito
       sessionStorage.clear();
       Swal.fire({
         icon: 'success',

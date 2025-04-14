@@ -17,11 +17,12 @@ const productoController = {
         return await api.get(`/gestionarProductos/quedanTamanios/${cantidadVariantesAgregadas}`);
     },
 
-    registrarProducto: async (datosProducto, imagen) => {
-        const formData = new FormData();
-        formData.append('datosProducto', JSON.stringify(datosProducto));
-        formData.append('imagen', imagen);
-        return await api.postFormData('/gestionarProductos/registrar', formData);
+    registrarProducto: async (formData) => {
+        return await api.postFormData('/gestionarProductos/registrar', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
     },
 
     obtenerProductos: async () => {
