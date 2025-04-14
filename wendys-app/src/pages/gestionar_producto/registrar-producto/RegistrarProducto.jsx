@@ -36,7 +36,13 @@ function RegistrarProducto() {
 
 
         // Actualizar estado PRINCIPAL primero
-        setDatosProducto({ nombre, variantes });
+        setDatosProducto({
+          nombre,
+          variantes: variantes.map(v => ({
+            ...v,
+            consumibles: v.consumibles || [] // Forzar array si es undefined
+          }))
+        });
 
         // Cargar imagen si existe
         if (imagen) {
@@ -59,45 +65,23 @@ function RegistrarProducto() {
         }
       }
 
-      // 2. Cargar consumibles DESPUÉS de cargar los datos base
-      const storedConsumibles = sessionStorage.getItem('selectedConsumibles');
-      if (storedConsumibles) {
-        const { variantIndex, consumibles } = JSON.parse(storedConsumibles);
 
-        setDatosProducto(prev => {
-
-          const nuevasVariantes = prev.variantes.map((v, i) => {
-            if (i === variantIndex) {
-              const nuevosConsumibles = consumibles.map(c => {
-                const consumibleConvertido = {
-                  id: Number(c.id),
-                  cantidad: Number(c.cantidad)
-                };
-                return consumibleConvertido;
-              });
-
-              const varianteActualizada = {
-                ...v,
-                consumibles: nuevosConsumibles
-              };
-              return varianteActualizada;
-            }
-            return v;
-          });
-
-          const nuevoEstado = {
-            ...prev,
-            variantes: nuevasVariantes
-          };
-          return nuevoEstado;
-        });
-
-        sessionStorage.removeItem('selectedConsumibles');
-      }
     };
 
     loadPersistedData();
   }, []);
+
+  // Modificar el efecto de actualización:
+  useEffect(() => {
+    if (location.state?.variantIndex !== undefined && location.state?.consumibles) {
+      setDatosProducto(prev => {
+        const nuevasVariantes = [...prev.variantes];
+        nuevasVariantes[location.state.variantIndex].consumibles = location.state.consumibles;
+        return { ...prev, variantes: nuevasVariantes };
+      });
+    }
+  }, [location.state]);
+
 
   // Guardar datos automáticamente
   useEffect(() => {
@@ -147,10 +131,16 @@ function RegistrarProducto() {
     return () => {
       if (!window.location.pathname.includes('/elegir-consumibles')) {
         sessionStorage.removeItem('productoDraft');
-        sessionStorage.removeItem('selectedConsumibles');
       }
     };
   }, []);
+
+  useEffect(() => {
+    console.log("producto actualizado");
+    console.log(datosProducto);
+
+
+  }, [datosProducto]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -231,8 +221,18 @@ function RegistrarProducto() {
       // 4. Enviar al servidor
       await productoController.registrarProducto(formData);
 
-      // Limpiar datos y mostrar éxito
-      sessionStorage.clear();
+      // Limpieza completa
+      sessionStorage.removeItem('productoDraft');
+      setDatosProducto({
+        nombre: '',
+        variantes: [{
+          tamanio: 'UNICO',
+          precio: 0,
+          consumibles: []
+        }]
+      });
+      setImagenProducto(null);
+      setNombreImagen('Seleccionar imagen');
       Swal.fire({
         icon: 'success',
         title: '¡Producto Registrado!',

@@ -8,8 +8,15 @@ import inventarioController from '../../../../controllers/InventarioController.j
 function ElegirConsumibles() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { variantIndex } = location.state || {}; // Recibimos el índice de la variante
-    const [consumiblesSeleccionados, setConsumiblesSeleccionados] = useState({});
+    const { variantIndex, consumiblesActuales = [] } = location.state || {};
+
+    const [consumiblesSeleccionados, setConsumiblesSeleccionados] = useState(() => {
+        const inicial = {};
+        consumiblesActuales.forEach(c => {
+            inicial[c.id] = c.cantidad;
+        });
+        return inicial;
+    });
     const [consumibles, setConsumibles] = useState([]);
 
     // Obtener consumibles del servidor
@@ -25,21 +32,6 @@ function ElegirConsumibles() {
         fetchConsumibles();
     }, []);
 
-    // Cargar selección previa si existe
-    useEffect(() => {
-        const storedSelection = localStorage.getItem('consumiblesSeleccionados');
-        if (storedSelection) {
-            const { index, consumibles } = JSON.parse(storedSelection);
-            if (index === variantIndex) {
-                const initialSelection = consumibles.reduce((acc, curr) => {
-                    acc[curr.id] = curr.cantidad;
-                    return acc;
-                }, {});
-                setConsumiblesSeleccionados(initialSelection);
-            }
-        }
-    }, [variantIndex]);
-
     const handleCantidadChange = (id, cantidad) => {
         setConsumiblesSeleccionados(prev => ({
             ...prev,
@@ -48,10 +40,6 @@ function ElegirConsumibles() {
     };
 
     const handleAceptar = () => {
-        console.log("Consumibles al momento de aceptar consumibles elegidos:");
-        console.log(consumiblesSeleccionados);
-        
-        
         const consumiblesParaVariante = Object.entries(consumiblesSeleccionados)
             .filter(([_, cantidad]) => cantidad > 0)
             .map(([id, cantidad]) => ({
@@ -59,13 +47,14 @@ function ElegirConsumibles() {
                 cantidad: parseInt(cantidad)
             }));
 
-        // Cambiar localStorage por sessionStorage
-        sessionStorage.setItem('selectedConsumibles', JSON.stringify({
-            variantIndex: variantIndex,
-            consumibles: consumiblesParaVariante
-        }));
-
-        navigate('/registrar-producto');
+        // Navegar enviando los consumibles actualizados
+        navigate('/registrar-producto', {
+            state: {
+                variantIndex,
+                consumibles: consumiblesParaVariante,
+                preserveState: true 
+            }
+        });
     };
 
     const handleCancelar = () => {

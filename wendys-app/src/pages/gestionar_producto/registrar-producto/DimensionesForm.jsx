@@ -12,8 +12,12 @@ const FormDimension = ({ index, variant, onUpdate, onRemove, onSelectConsumibles
 
 
   const handleConsumiblesClick = () => {
+    
     navigate('/elegir-consumibles', { 
-      state: { variantIndex: index } 
+      state: { 
+        variantIndex: index,
+        consumiblesActuales: variant.consumibles
+      } 
     });
   };
 
