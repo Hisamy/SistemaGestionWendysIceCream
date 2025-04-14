@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import DetallesButton from './DetallesButton';
 import './FormDetallesProducto.css';
 
-function FormDetallesProducto({ fields, onValuesChange }) {
+const FormDetallesProducto = forwardRef(({ fields, onValuesChange }, ref) => {
   const [formValues, setFormValues] = useState({});
 
   const handleInputChange = (fieldId, value) => {
@@ -79,15 +79,11 @@ function FormDetallesProducto({ fields, onValuesChange }) {
     }
   };
 
-   // Método para obtener los valores actuales del formulario
-   const getFormValues = () => {
-    return formValues;
-  };
-
   // Exponer el método getFormValues a través de la ref
-  React.useImperativeHandle(fields.formRef, () => ({
-    getFormValues
-  }), [formValues]);
+  useImperativeHandle(ref, () => ({
+    getFormValues: () => formValues
+  }));
+
 
   return (
       <form className='form-detalles-map'>
@@ -95,7 +91,7 @@ function FormDetallesProducto({ fields, onValuesChange }) {
       </form>
 
   );
-}
+});
 
 FormDetallesProducto.propTypes = {
   fields: PropTypes.arrayOf(
@@ -105,7 +101,8 @@ FormDetallesProducto.propTypes = {
       label: PropTypes.string.isRequired,
       options: PropTypes.arrayOf(PropTypes.string)
     })
-  ).isRequired
+  ).isRequired,
+  onValuesChange: PropTypes.func
 };
 
 export default FormDetallesProducto;
