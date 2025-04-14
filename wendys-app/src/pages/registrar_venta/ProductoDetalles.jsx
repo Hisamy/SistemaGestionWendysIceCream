@@ -5,12 +5,16 @@ import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
 import FormDetallesProducto from './form-especificaciones-producto/FormDetallesProducto.jsx';
 import {useProductosVenta } from './registrar-venta-contexto/ProductosVentaContext.jsx'
 import './ProductoDetalles.css'
+import productoController from '../../controllers/ProductoController.js';
 
 function ProductoDetalles() {
     const navigate = useNavigate();
     const location = useLocation();
     const [producto, setProducto] = useState(null);
     const [formValues, setFormValues] = useState({});
+    const [variantes, setVariantes] = useState([]);
+    const [tamanioSeleccionado, setTamanioSeleccionado] = useState(null);
+    const [precioActual, setPrecioActual] = useState(0);
     const formRef = useRef();
 
     const { addProducto } = useProductosVenta();
@@ -25,25 +29,49 @@ function ProductoDetalles() {
     // Manejar cambios en el formulario
     const handleFormValuesChange = (values) => {
         setFormValues(values);
+        
+        // Actualizar el precio basado en el tamaño seleccionado
+        if (values.tamano && variantes.length > 0) {
+            const varianteSeleccionada = variantes.find(v => v.tamanio === values.tamano);
+            if (varianteSeleccionada) {
+                setPrecioActual(varianteSeleccionada.precio);
+                setTamanioSeleccionado(values.tamano);
+            }
+        }
     };
 
-    const formFields = [
-        {
-          id: 'tamano',
-          type: 'buttons',
-          label: 'Tamaño',
-          options: ['Chico', 'Mediano', 'Grande']
-        },
-        {
-          id: 'notas',
-          type: 'textarea',
-          label: 'Notas'
-        },
-      ];
+    // Cargar las variantes del producto
+    const cargarVariantes = async (idProducto) => {
+        try {
+            const response = await productoController.obtenerVariantesPorIdDeProducto(idProducto);
+            if (response && response.length>0) {
+                setVariantes(response);
+                
+                    const primerVariante = response[0];
+                    setPrecioActual(primerVariante.precio);
+                    setTamanioSeleccionado(primerVariante.tamanio);
+                    
+                    // Inicializar los formValues con el primer tamaño
+                    setFormValues(prev => ({
+                        ...prev,
+                        tamano: primerVariante.tamanio
+                    }));
+                
+            }
+        } catch (error) {
+            console.error('Error al cargar variantes:', error);
+        }
+    };
 
       useEffect(() => {
         if (location.state?.productoData) {
-            setProducto(location.state.productoData);
+            const productoActual = location.state.productoData;
+            setProducto(productoActual);
+
+            // Cargar las variantes al recibir el producto
+            if (productoActual.id) {
+                cargarVariantes(productoActual.id);
+            }
         } else {
             navigate('/registrar-venta');
         }
@@ -52,6 +80,26 @@ function ProductoDetalles() {
     if (!producto) {
         return <div>Cargando producto...</div>;
     }
+
+    const opcionesTamanio = variantes.map(variante => variante.tamanio);
+
+    const formFields = [
+        {
+          id: 'tamano',
+          type: 'buttons',
+          label: 'Tamaño',
+          options: opcionesTamanio.length > 0 ? opcionesTamanio : ['Chico', 'Mediano', 'Grande'],
+          formRef: formRef,
+        },
+        {
+          id: 'notas',
+          type: 'textarea',
+          label: 'Notas',
+          formRef: formRef
+        },
+    ];
+
+
 
     const handleAceptar = () => {
         // Obtener los valores del formulario
@@ -63,8 +111,14 @@ function ProductoDetalles() {
             detalles = formValues;
         }
         
+        const varianteSeleccionada = variantes.find(v => v.tamanio === detalles.tamano);
+
         // Agregar el producto al contexto
-        addProducto(producto, detalles);
+        addProducto({
+            ...producto,
+            price: precioActual,
+            varianteId: varianteSeleccionada ? varianteSeleccionada.id : null
+        }, detalles);
         
        
         navigate('/registrar-venta', { 
@@ -103,7 +157,7 @@ function ProductoDetalles() {
                     <hr className="divider" />  
                     <div className='costo-producto'>
                         <h4>COSTO PRODUCTO</h4>
-                        <p>{formatPrice(producto.price)}</p>
+                        <p>{formatPrice(precioActual)}</p>
                     </div>
                 </div>       
             <div className='fit-parent'>
@@ -122,8 +176,11 @@ function ProductoDetalles() {
                         </div>
                         
                         <div className='detalles-container'>
-                            <FormDetallesProducto fields={formFields} />
-
+                            <FormDetallesProducto 
+                            fields={formFields}
+                            onValuesChange={handleFormValuesChange}
+                            ref={formRef} 
+                            />
                         </div>
 
                         </div>

@@ -5,13 +5,15 @@ import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
 import { useProductosVenta } from './registrar-venta-contexto/ProductosVentaContext.jsx';
 import Swal from 'sweetalert2';
 import './RegistrarVentaTotal.css'
+import ventaController from '../../controllers/VentaController.js';
 
 
 function RegistrarVentaTotal(){
     const navigate = useNavigate();
-    const { productosVenta, calculateTotal, cleanProductos, calculateCambio  } = useProductosVenta();
+    const { productosVenta, calculateTotal, cleanProductos, calculateCambio } = useProductosVenta();
     const [dineroRecibido, setDineroRecibido] = useState("");
     const [cambioCalculado, setCambioCalculado] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-MX', {
@@ -43,22 +45,74 @@ function RegistrarVentaTotal(){
             confirmButtonColor: 'rgb(251, 210, 117)',
             confirmButtonText: 'Aceptar'
         }).then(() => {
-            cleanProductos();
-            navigate('/registrar-venta');
+            if (result.isConfirmed) {
+                cleanProductos();
+                navigate('/registrar-venta');
+            }
         });
     };
 
-    const handleConfirmarVenta = () => {
-        Swal.fire({
-            icon: 'success',
-            title: '¡Venta confirmada!',
-            text: 'La venta se ha registrado con éxito.',
-            confirmButtonColor: 'rgb(251, 210, 117)',
-            confirmButtonText: 'Aceptar'
-        }).then(() => {
-            cleanProductos();
-            navigate('/registrar-venta');
-        });
+    // Función para preparar los datos para la API
+    const prepararDatosVenta = () => {
+        // Transformar productosVenta al formato esperado por la API
+        return productosVenta.map(item => ({
+            nombre: item.producto.name,           // Nombre del producto
+            idVariante: item.producto.varianteId, // ID de la variante
+            precio: item.producto.price,          // Precio de la variante
+            tamanio: item.detalles?.tamano || "UNICO", // Tamaño de la variante
+            notas: item.detalles?.notas || ""     // Notas específicas
+        }));
+    };
+
+    const handleConfirmarVenta = async () => {
+        try {
+            setIsLoading(true);
+            
+            // Preparar los datos para enviar a la API
+            const datosVenta = prepararDatosVenta();
+            
+            // Si no hay productos, mostrar error
+            if (datosVenta.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No hay productos en la venta',
+                    confirmButtonColor: 'rgb(251, 210, 117)',
+                    confirmButtonText: 'Aceptar'
+                });
+                setIsLoading(false);
+                return;
+            }
+            
+            // Llamar a la API para registrar la venta
+            const response = await ventaController.registrarVenta({datosVenta});
+            
+            // Si la respuesta es exitosa, mostrar mensaje de éxito
+            Swal.fire({
+                icon: 'success',
+                title: '¡Venta confirmada!',
+                text: 'La venta se ha registrado con éxito.',
+                confirmButtonColor: 'rgb(251, 210, 117)',
+                confirmButtonText: 'Aceptar'
+            }).then(() => {
+                cleanProductos();
+                navigate('/registrar-venta');
+            });
+            
+        } catch (error) {
+            console.error('Error al registrar la venta:', error);
+            
+            // Mostrar mensaje de error
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al registrar la venta. Por favor, inténtelo de nuevo.',
+                confirmButtonColor: 'rgb(251, 210, 117)',
+                confirmButtonText: 'Aceptar'
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const navLeftButtons = [
@@ -68,14 +122,16 @@ function RegistrarVentaTotal(){
             variant: 'primary',
         },
         {
-            label: 'Confirmar Venta',
+            label: isLoading ? 'Procesando...' : 'Confirmar Venta',
             onClick: handleConfirmarVenta,
             variant: 'primary',
+            disabled: isLoading
         },
         {
             label: 'Cancelar Pedido',
             onClick: handleCancelarVenta,
             variant: 'primary',
+            disabled: isLoading
         }
     ];
 
