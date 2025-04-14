@@ -12,12 +12,18 @@ function ProductosRectanguloGrid({
 }) {
   return (
     <PinkRectangle searchable={searchable}>
-      <ProductosGrid
-        productos={productos}
-        onProductoClick={onProductoClick}
-        selectedId={selectedId}
-      />
-      {children}
+      {productos.length === 0 ? (
+        <p>No hay productos aún</p>
+      ) : (
+        <>
+          <ProductosGrid
+            productos={productos}
+            onProductoClick={onProductoClick}
+            selectedId={selectedId}
+          />
+          {children}
+        </>
+      )}
     </PinkRectangle>
   );
 }

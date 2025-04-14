@@ -44,7 +44,7 @@ function RegistrarVenta() {
                 const productosMapeados = data.map(item => ({
                     id: item.id,
                     name: item.nombre,
-                    image: `/images/${item.imagenPath}`
+                    imagenPath: item.imagenPath 
                 }));
                 setProductos(productosMapeados);
                 setLoading(false);

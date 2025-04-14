@@ -5,6 +5,7 @@ import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
 import FormDetallesProducto from './form-especificaciones-producto/FormDetallesProducto.jsx';
 import {useProductosVenta } from './registrar-venta-contexto/ProductosVentaContext.jsx'
 import './ProductoDetalles.css'
+import { API_URL } from '../../utils/api.js';
 import productoController from '../../controllers/ProductoController.js';
 
 function ProductoDetalles() {
@@ -164,17 +165,17 @@ function ProductoDetalles() {
                 <div className="content">
                     <PinkRectangle>
                         <div className='content-detalles'>
-                        <div className='image-name-container'> 
-                            <div className='image-container'>
-                            {producto.image && (
-                                <img 
-                                src={producto.image} 
-                                alt={producto.name} />
-                            )}  
+                            <div className='image-name-container'>
+                                <div className='image-container'>
+                                    {(producto.image || producto.imagenPath) && (
+                                        <img
+                                            src={API_URL + '/images/' + producto.imagenPath} 
+                                            alt={producto.name} />
+                                    )}
+                                </div>
+                                <p>{producto.name}</p>
                             </div>
-                            <p>{producto.name}</p>
-                        </div>
-                        
+
                         <div className='detalles-container'>
                             <FormDetallesProducto 
                             fields={formFields}
