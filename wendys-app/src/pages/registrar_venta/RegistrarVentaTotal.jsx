@@ -85,7 +85,7 @@ function RegistrarVentaTotal(){
             }
             
             // Llamar a la API para registrar la venta
-            const response = await ventaController.registrarVenta({datosVenta});
+            const response = await ventaController.registrarVenta(datosVenta);
             
             // Si la respuesta es exitosa, mostrar mensaje de éxito
             Swal.fire({
