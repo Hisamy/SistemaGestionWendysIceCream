@@ -44,7 +44,7 @@ function RegistrarVentaTotal(){
             text: '¿Desea cancelar esta venta?',
             confirmButtonColor: 'rgb(251, 210, 117)',
             confirmButtonText: 'Aceptar'
-        }).then(() => {
+        }).then((result) => {
             if (result.isConfirmed) {
                 cleanProductos();
                 navigate('/registrar-venta');
