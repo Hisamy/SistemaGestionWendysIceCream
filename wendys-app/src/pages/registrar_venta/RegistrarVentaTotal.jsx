@@ -1,4 +1,4 @@
-import React, { useState } from 'react';s
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
