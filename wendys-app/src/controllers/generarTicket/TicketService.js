@@ -19,12 +19,12 @@ class TicketService {
 
         // Añadir el encabezado
         doc.setFontSize(12);
-        doc.text('Mi Tienda', 40, yPos, { align: 'center' });
+        doc.text('Wendys Ice Cream', 40, yPos, { align: 'center' });
         yPos += 6;
 
         doc.setFontSize(8);
-        doc.text('Dirección de la Tienda', 40, yPos, { align: 'center' });
-        yPos += 4;
+        doc.text('Romualdo Ruiz Payán SN-C, \n Col del Bosque, 81040 Guasave, Sin.', 40, yPos, { align: 'center' });
+        yPos += 8;
         doc.text('Tel: 555-555-5555', 40, yPos, { align: 'center' });
         yPos += 4;
 
@@ -48,24 +48,32 @@ class TicketService {
             this.formatPrice(item.producto.price)
         ]);
 
-        doc.autoTable({
-            startY: yPos,
-            head: headers,
-            body: rows,
-            theme: 'plain',
-            styles: {
-                fontSize: 8,
-                cellPadding: 2
-            },
-            columnStyles: {
-                0: { cellWidth: 50 },
-                1: { cellWidth: 20, halign: 'right' }
-            },
-            margin: { left: 10, right: 10 }
-        });
+        // Verificar si autoTable está disponible
+        if (typeof doc.autoTable !== 'function') {
+            // Si autoTable no está disponible, crear una alternativa simple
+            this.renderSimpleTable(doc, headers, rows, yPos);
+            yPos += (rows.length + 1) * 5 + 5; // Estimar posición Y después de la tabla
+        } else {
+            // Usar autoTable si está disponible
+            doc.autoTable({
+                startY: yPos,
+                head: headers,
+                body: rows,
+                theme: 'plain',
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                columnStyles: {
+                    0: { cellWidth: 50 },
+                    1: { cellWidth: 20, halign: 'right' }
+                },
+                margin: { left: 10, right: 10 }
+            });
 
-        // Actualizar la posición Y después de la tabla
-        yPos = doc.lastAutoTable.finalY + 5;
+            // Actualizar la posición Y después de la tabla
+            yPos = doc.lastAutoTable.finalY + 5;
+        }
 
         // Línea divisoria
         doc.line(10, yPos, 70, yPos);
@@ -88,6 +96,40 @@ class TicketService {
         return doc;
     }
 
+    // Método alternativo para crear una tabla simple sin usar autoTable
+    renderSimpleTable(doc, headers, rows, startY) {
+        let yPos = startY;
+        const cellPadding = 2;
+        const fontSize = 8;
+        const col1Width = 50;
+        const col2Width = 20;
+        const margin = 10;
+
+        // Configurar fuente para la tabla
+        doc.setFontSize(fontSize);
+        doc.setFont('courier', 'bold');
+
+        // Dibujar encabezados
+        doc.text(headers[0][0], margin, yPos + cellPadding);
+        doc.text(headers[0][1], margin + col1Width + col2Width - 5, yPos + cellPadding, { align: 'right' });
+        yPos += 5;
+
+        // Separador después de encabezados
+        doc.setLineWidth(0.1);
+        doc.line(margin, yPos, 70, yPos);
+        yPos += 2;
+
+        // Cambiar a fuente normal para los datos
+        doc.setFont('courier', 'normal');
+
+        // Dibujar filas
+        rows.forEach(row => {
+            doc.text(row[0], margin, yPos + cellPadding);
+            doc.text(row[1], margin + col1Width + col2Width - 5, yPos + cellPadding, { align: 'right' });
+            yPos += 5;
+        });
+    }
+
     formatPrice(price) {
         return new Intl.NumberFormat('es-MX', {
             style: 'currency',
@@ -107,7 +149,9 @@ class TicketService {
         const doc = this.generateTicketPDF(productosVenta, total);
 
         // Abrir el PDF en una nueva ventana e imprimir
-        doc.autoPrint();
+        if (typeof doc.autoPrint === 'function') {
+            doc.autoPrint();
+        }
         window.open(doc.output('bloburl'), '_blank');
     }
 }
