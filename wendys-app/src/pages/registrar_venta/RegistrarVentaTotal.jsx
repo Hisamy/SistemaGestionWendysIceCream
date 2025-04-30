@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react';s
 import { useNavigate, useLocation } from 'react-router-dom';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import PinkRectangle from '../../components/main_content/PinkRectangle.jsx';
@@ -63,57 +63,93 @@ function RegistrarVentaTotal(){
             notas: item.detalles?.notas || ""     // Notas específicas
         }));
     };
+    
+    const handleImprimirTicket = () => {
+      try {
+          const total = calculateTotal();
+          
+          // Usar el servicio para generar y descargar el ticket
+          ticketService.downloadTicket(productosVenta, total);
+          
+          // Opcionalmente, también se puede abrir el diálogo de impresión:
+          // ticketService.printTicket(productosVenta, total);
+          
+          Swal.fire({
+              icon: 'success',
+              title: 'Ticket generado',
+              text: 'El ticket se ha generado correctamente.',
+              confirmButtonColor: 'rgb(251, 210, 117)',
+              confirmButtonText: 'Aceptar'
+          });
+      } catch (error) {
+          console.error('Error al generar el ticket:', error);
+          
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Hubo un problema al generar el ticket. Por favor, inténtelo de nuevo.',
+              confirmButtonColor: 'rgb(251, 210, 117)',
+              confirmButtonText: 'Aceptar'
+          });
+      }
+  };
 
-    const handleConfirmarVenta = async () => {
-        try {
-            setIsLoading(true);
-            
-            // Preparar los datos para enviar a la API
-            const datosVenta = prepararDatosVenta();
-            
-            // Si no hay productos, mostrar error
-            if (datosVenta.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No hay productos en la venta',
-                    confirmButtonColor: 'rgb(251, 210, 117)',
-                    confirmButtonText: 'Aceptar'
-                });
-                setIsLoading(false);
-                return;
-            }
-            
-            // Llamar a la API para registrar la venta
-            const response = await ventaController.registrarVenta(datosVenta);
-            
-            // Si la respuesta es exitosa, mostrar mensaje de éxito
-            Swal.fire({
-                icon: 'success',
-                title: '¡Venta confirmada!',
-                text: 'La venta se ha registrado con éxito.',
-                confirmButtonColor: 'rgb(251, 210, 117)',
-                confirmButtonText: 'Aceptar'
-            }).then(() => {
-                cleanProductos();
-                navigate('/registrar-venta');
-            });
-            
-        } catch (error) {
-            console.error('Error al registrar la venta:', error);
-            
-            // Mostrar mensaje de error
+  const handleConfirmarVenta = async () => {
+    try {
+        setIsLoading(true);
+        
+        // Preparar los datos para enviar a la API
+        const datosVenta = prepararDatosVenta();
+        
+        // Si no hay productos, mostrar error
+        if (datosVenta.length === 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Hubo un problema al registrar la venta. Por favor, inténtelo de nuevo.',
+                text: 'No hay productos en la venta',
                 confirmButtonColor: 'rgb(251, 210, 117)',
                 confirmButtonText: 'Aceptar'
             });
-        } finally {
             setIsLoading(false);
+            return;
         }
-    };
+        
+        // Llamar a la API para registrar la venta
+        const response = await ventaController.registrarVenta(datosVenta);
+        
+        // Si la respuesta es exitosa, mostrar mensaje de éxito
+        Swal.fire({
+            icon: 'success',
+            title: '¡Venta confirmada!',
+            text: 'La venta se ha registrado con éxito.',
+            confirmButtonColor: 'rgb(251, 210, 117)',
+            confirmButtonText: 'Imprimir ticket',
+            showCancelButton: true,
+            cancelButtonText: 'Cerrar',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleImprimirTicket();
+            }
+            cleanProductos();
+            navigate('/registrar-venta');
+        });
+        
+    } catch (error) {
+        console.error('Error al registrar la venta:', error);
+        
+        // Mostrar mensaje de error
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al registrar la venta. Por favor, inténtelo de nuevo.',
+            confirmButtonColor: 'rgb(251, 210, 117)',
+            confirmButtonText: 'Aceptar'
+        });
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     const navLeftButtons = [
         {
@@ -229,3 +265,7 @@ function RegistrarVentaTotal(){
     
 }
 export default RegistrarVentaTotal;
+export const datosTicket = () => {
+
+
+}
