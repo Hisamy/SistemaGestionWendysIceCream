@@ -40,12 +40,7 @@ function RegistrarVenta() {
 
         const cargarProductos = async () => {
             try {
-                const data = await productoController.obtenerProductos();
-                const productosMapeados = data.map(item => ({
-                    id: item.id,
-                    name: item.nombre,
-                    imagenPath: item.imagenPath 
-                }));
+                const productosMapeados = await productoController.obtenerProductos();
                 setProductos(productosMapeados);
                 setLoading(false);
             } catch (error) {
