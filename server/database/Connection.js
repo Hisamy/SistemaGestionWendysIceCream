@@ -23,7 +23,7 @@ export const connection = new DataSource({
     ],
     synchronize: true,
     logging: false,
-
+    
 });
 
 await connection.initialize();
