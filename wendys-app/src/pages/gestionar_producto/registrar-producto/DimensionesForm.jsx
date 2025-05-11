@@ -1,23 +1,27 @@
 // components/DimensionesForm/DimensionesForm.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DimensionesForm.css';
 
 const FormDimension = ({ index, variant, onUpdate, onRemove, onSelectConsumibles }) => {
   const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState(variant.precio.toString());
 
   const handleChange = (e) => {
     onUpdate(index, e.target.name, e.target.value);
   };
 
+  useEffect(() => {
+    setInputValue(variant.precio.toString());
+  }, [variant.precio]);
 
   const handleConsumiblesClick = () => {
-    
-    navigate('/elegir-consumibles', { 
-      state: { 
+
+    navigate('/elegir-consumibles', {
+      state: {
         variantIndex: index,
         consumiblesActuales: variant.consumibles
-      } 
+      }
     });
   };
 
@@ -44,8 +48,14 @@ const FormDimension = ({ index, variant, onUpdate, onRemove, onSelectConsumibles
           <input
             type="number"
             name="precio"
-            value={variant.precio}
-            onChange={(e) => onUpdate(index, 'precio', Number(e.target.value))}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onBlur={() => {
+              const numValue = parseFloat(inputValue);
+              if (!isNaN(numValue)) {
+                onUpdate(index, 'precio', numValue);
+              }
+            }}
             placeholder="Precio"
             step="0.01"
             min="0"
@@ -57,7 +67,7 @@ const FormDimension = ({ index, variant, onUpdate, onRemove, onSelectConsumibles
           className="consumibles-button"
           onClick={handleConsumiblesClick}
         >
-          Consumibles ({variant.consumibles.length})
+          Consumibles
         </button>
       </div>
     </div>
