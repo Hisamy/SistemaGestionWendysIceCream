@@ -19,7 +19,6 @@ class GestionarInventarioRepository {
         this.repo = connection.getRepository(ConsumibleSchema);
     }
 
-    //HECHO
     async guardarConsumible(consumible) {
         try {
             return await this.repo.save(consumible);
@@ -28,7 +27,6 @@ class GestionarInventarioRepository {
         }
     }
 
-    //HECHO
     async obtenerConsumiblePorId(id) {
         try {
             verificarIdValido(id);
@@ -39,9 +37,7 @@ class GestionarInventarioRepository {
             throw new DatabaseError(`${errorEncabezado} Falló al intentar obtener consumible: ${error.message}`, error);
         }
     }
-
-
-    //HECHO    
+ 
     async obtenerTodosLosConsumibles() {
         try {
             const consumibles = await this.repo.find();
@@ -50,8 +46,7 @@ class GestionarInventarioRepository {
             throw new DatabaseError(`${errorEncabezado} Falló al intentar obtener todos los consumibles: ${error.message}`, error);
         }
     }
-
-    //HECHO    
+  
     async obtenerConsumiblePorNombre(nombre) {
         try {
             return await this.repo.findOne({ where: { nombre } });
@@ -60,7 +55,6 @@ class GestionarInventarioRepository {
         }
     }
 
-    //HECHO
     async eliminarConsumible(id) {
         try {
             verificarIdValido(id);
@@ -71,7 +65,6 @@ class GestionarInventarioRepository {
         }
     }
 
-    //HECHO
     async actualizarConsumible(id, consumibleActualizado) {
         try {
             verificarIdValido(id);
