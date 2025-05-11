@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect} from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import NavLeft from '../../components/nav_left/NavLeft.jsx';
 import ProductosRectanguloGrid from '../../components/main_content/productos-grid/ProductosRectanguloGrid.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -42,9 +42,9 @@ function GestionarProducto() {
   }, []);
 
   const handleProductoClick = useCallback((producto) => {
-    setSelectedProducto(producto);
-    console.log('Producto seleccionado:', producto);
-  }, []);
+    setSelectedProducto(producto.id);
+    navigate('/editar-producto', { state: { id: producto.id } });
+  }, [navigate]);
 
   const handleRegistrarProducto = useCallback(() => {
     console.log('Registrando producto...');
