@@ -44,7 +44,7 @@ class TicketService {
         // Tabla de productos
         const headers = [['Producto', 'Precio']];
         const rows = productosVenta.map(item => [
-            item.producto.name,
+            item.producto.nombre,
             this.formatPrice(item.producto.price)
         ]);
 

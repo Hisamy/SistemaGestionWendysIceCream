@@ -139,6 +139,19 @@ gestionarProductosRouter.get('/productos', async (req, res) => {
     }
 });
 
+// SPOILER, con este vamos a trabajar en un momento
+gestionarProductosRouter.put('/actualizar', async (req,res) => {
+    try {
+        const datosVariante = req.body;
+        const imagenFile = req.file;
+        await service.actualizarProducto(datosVariante, imagenFile);
+        return res.status(200).send(`El producto "${datosVariante.nombre}" fue actualizado correctamente.`);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+})
+
+
 /**
  * Ruta GET para obtener las variantes de un producto dado su ID.
  * 

@@ -33,7 +33,7 @@ const MostrarProductosVenta = () => {
                         <div className='producto-venta-container'>
                             <div className='producto-venta'>
                                 <div className='name-producto'>
-                                    <p>{item.producto.name + " - " + item.detalles.tamano}</p>
+                                    <p>{item.producto.nombre + " - " + item.detalles.tamano}</p>
                                 </div>
                                 
                                 <p className='price-product'>{formatPrice(item.producto.price)}</p>

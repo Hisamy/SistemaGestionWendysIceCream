@@ -219,6 +219,7 @@ class GestionarProductosService {
             throw new BusinessError(`${errorEncabezado} Falló al intentar obtener la varianteJoinConsumible con con id de variante ${varianteId}: ${error.message}`, error);
         }
     }
+
 }
 
 export default GestionarProductosService;

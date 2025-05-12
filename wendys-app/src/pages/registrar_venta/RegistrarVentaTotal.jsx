@@ -218,7 +218,7 @@ function RegistrarVentaTotal(){
                                 <div 
                                 className='producto'
                                 key={item.idVenta}>
-                                    <p>{item.producto.name}</p>
+                                    <p>{item.producto.nombre}</p>
                                     <p className='price-product'>{formatPrice(item.producto.price)}</p>
                                 </div>
                                 
