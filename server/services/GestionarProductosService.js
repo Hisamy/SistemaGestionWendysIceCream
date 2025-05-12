@@ -220,6 +220,144 @@ class GestionarProductosService {
         }
     }
 
+    async actualizarProducto(idProducto, datosProducto, imagenFile) {
+        try {
+            const id = parseInt(idProducto, 10);
+            if (isNaN(id) || id <= 0) {
+                throw new ValidationError(`El ID del producto proporcionado no es válido.`);
+            }
+
+            let { nombre, imagenPath } = await this.ProductoRepo.obtenerProductoPorId(id);
+
+            if (datosProducto.nombre) {
+                const productoConMismoNombre = await this.ProductoRepo.obtenerProductosPorNombre(nombre);
+                if (productoConMismoNombre && productoConMismoNombre.id !== id) {
+                    throw new BusinessError(`El nombre "${nombre}" ya existe para otro producto.`);
+                }
+                nombre = datosProducto.nombre;
+            }
+
+            if (imagenFile) {
+                if (imagenPath !== NOPICTURE) {
+                    const rutaImagenAnterior = path.join(__dirname, '../images', imagenPath);
+                    try {
+                        await fsPromises.unlink(rutaImagenAnterior);
+                    } catch (error) {
+                        console.warn(`Error al eliminar la imagen anterior "${imagenPath}": ${error.message}`);
+                    }
+                }
+                imagenPath = await this.guardarImagen(imagenFile, datosProducto.nombre || nombre);
+            }
+
+            const productoExistente = { nombre, imagenPath };
+
+            await this.ProductoRepo.actualizarProducto(idProducto, productoExistente);
+            return productoExistente;
+
+        } catch (error) {
+            if (error instanceof ValidationError || error instanceof BusinessError) {
+                throw error;
+            }
+            throw new BusinessError(`${errorEncabezado} Falló al intentar actualizar el producto con ID "${idProducto}": ${error.message}`, error);
+        }
+    }
+
+    async actualizarVariantesDeProducto(idProducto, variantesData) {
+        try {
+            const productoExistente = await this.ProductoRepo.obtenerProductoPorId(idProducto);
+            if (!productoExistente) {
+                throw new BusinessError(`No se encontró ningún producto con el ID "${idProducto}" para actualizar sus variantes.`);
+            }
+
+            if (variantesData && Array.isArray(variantesData)) {
+                const variantesExistentes = await this.VarianteProductoRepo.obtenerVariantesPorIdDelProducto(idProducto);
+                const idsVariantesRecibidas = new Set();
+                const tamaniosSet = new Set();
+
+                for (const varianteData of variantesData) {
+                    const idVariante = parseInt(varianteData.id, 10);
+
+                    if (idVariante) {
+                        // Actualizar variante existente
+                        const varianteAActualizar = variantesExistentes.find(v => v.id === idVariante);
+                        if (varianteAActualizar) {
+                            if (varianteData.precio) varianteAActualizar.precio = varianteData.precio;
+                            if (varianteData.tamanio) {
+                                if (tamaniosSet.has(varianteData.tamanio)) {
+                                    throw new ValidationError(`No se pueden repetir tamaños en las variantes actualizadas, el tamaño "${varianteData.tamanio}" está repetido.`);
+                                }
+                                varianteAActualizar.tamanio = varianteData.tamanio;
+                                tamaniosSet.add(varianteData.tamanio);
+                            }
+                            await this.VarianteProductoRepo.actualizarVariante(idVariante, varianteAActualizar);
+                            idsVariantesRecibidas.add(idVariante);
+
+                            if (varianteData.consumibles && Array.isArray(varianteData.consumibles)) {
+                                await this.varianteJoinConsumibleRepo.eliminarPorVarianteId(varianteData.id);
+                                for (const consumibleRequerido of varianteData.consumibles) {
+                                    const consumibleEncontrado = await this.GestionarInventarioRepo.obtenerConsumiblePorId(consumibleRequerido.id);
+                                    if (!consumibleEncontrado) {
+                                        throw new ValidationError(`No se encontró el consumible con ID ${consumibleRequerido.id}`);
+                                    }
+                                    const join = new VarianteJoinConsumible(
+                                        varianteData.id,
+                                        consumibleEncontrado.id,
+                                        Number(consumibleRequerido.cantidad)
+                                    );
+                                    await this.varianteJoinConsumibleRepo.agregarConsumibleAVarianteProducto(join);
+                                }
+                            }
+                        } else {
+                            console.warn(`Se proporcionó un ID de variante "${varianteData.id}" que no existe para el producto "${idProducto}". Se ignorará.`);
+                        }
+                    } else {
+                        if (!varianteData.precio || !varianteData.tamanio) {
+                            throw new ValidationError(`Para agregar una nueva variante, se deben proporcionar precio y tamaño.`);
+                        }
+                        if (tamaniosSet.has(varianteData.tamanio)) {
+                            throw new ValidationError(`No se pueden repetir tamaños entre las variantes, el tamaño "${varianteData.tamanio}" está repetido.`);
+                        }
+                        tamaniosSet.add(varianteData.tamanio);
+
+                        const nuevaVariante = new VarianteProducto(
+                            varianteData.precio,
+                            varianteData.tamanio,
+                            productoExistente
+                        );
+                        const varianteGuardada = await this.VarianteProductoRepo.guardarVarianteProducto(nuevaVariante);
+
+                        if (varianteData.consumibles && Array.isArray(varianteData.consumibles)) {
+                            for (const consumibleRequerido of varianteData.consumibles) {
+                                const consumibleEncontrado = await this.GestionarInventarioRepo.obtenerConsumiblePorId(consumibleRequerido.id);
+                                if (!consumibleEncontrado) {
+                                    throw new ValidationError(`No se encontró el consumible con ID ${consumibleRequerido.id}`);
+                                }
+                                const join = new VarianteJoinConsumible(
+                                    varianteGuardada.id,
+                                    consumibleEncontrado.id,
+                                    Number(consumibleRequerido.cantidad)
+                                );
+                                await this.varianteJoinConsumibleRepo.agregarConsumibleAVarianteProducto(join);
+                            }
+                        }
+                    }
+                }
+
+                // Validar que no haya tamaños "unico" si hay más de una variante
+                const todasLasVariantesActualizadas = await this.VarianteProductoRepo.obtenerVariantesPorIdDelProducto(idProducto);
+                const tamaniosActualizadosSet = new Set(todasLasVariantesActualizadas.map(v => v.tamanio));
+                if (todasLasVariantesActualizadas.length > 1 && tamaniosActualizadosSet.has(TAMANIOS.UNICO)) {
+                    throw new ValidationError(`No puede haber tamaños "${TAMANIOS.UNICO}" si hay más de una variante.`);
+                }
+            }
+        } catch (error) {
+            if (error instanceof ValidationError || error instanceof BusinessError) {
+                throw error;
+            }
+            throw new BusinessError(`${errorEncabezado} Falló al intentar actualizar las variantes del producto con ID "${idProducto}": ${error.message}`, error);
+        }
+    }
+
 }
 
 export default GestionarProductosService;

@@ -139,18 +139,44 @@ gestionarProductosRouter.get('/productos', async (req, res) => {
     }
 });
 
-// SPOILER, con este vamos a trabajar en un momento
-gestionarProductosRouter.put('/actualizar', async (req,res) => {
+/**
+ * Ruta GET para obtener un producto específico dado su ID.
+ * 
+ * @name PUT /actualizar/:idProducto
+ * @param {number} idProducto - ID del producto a actualizar.
+ * @param {object} datosProducto - Información actualizada del producto.
+ * @returns {string} - Mensaje indicando si el producto fue actualizado correctamente.
+ */
+gestionarProductosRouter.put('/actualizarProducto/:idProducto', upload.single('imagen'), async (req, res) => {
+    const { idProducto } = req.params;
     try {
-        const datosVariante = req.body;
+        const datosProducto = JSON.parse(req.body.datosProducto);
         const imagenFile = req.file;
-        await service.actualizarProducto(datosVariante, imagenFile);
-        return res.status(200).send(`El producto "${datosVariante.nombre}" fue actualizado correctamente.`);
+        await service.actualizarProducto(idProducto, datosProducto, imagenFile);
+        return res.status(200).send(`El producto con ID "${idProducto}" fue actualizado correctamente.`);
     } catch (error) {
         mandarRespuestaError(error, res);
     }
-})
+});
 
+/**
+ * Ruta PUT para actualizar las variantes de un producto dado su ID.
+ *  
+ * @name PUT /actualizarVariantes/:idProducto
+ * @param {number} idProducto - ID del producto cuyas variantes se actualizarán.
+ * @param {array} datosVariantes - Información actualizada de las variantes.
+ * @returns {string} - Mensaje indicando si las variantes fueron actualizadas correctamente.
+ * */
+gestionarProductosRouter.put('/actualizarVariantes/:idProducto', async (req, res) => {
+    const { idProducto } = req.params;
+    try {
+        const datosVariantes = req.body;
+        await service.actualizarVariantesDeProducto(idProducto, datosVariantes);
+        return res.status(200).send(`Las variantes del producto con ID "${idProducto}" fueron actualizadas correctamente.`);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+});
 
 /**
  * Ruta GET para obtener las variantes de un producto dado su ID.
