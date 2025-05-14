@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavLeft from "../../../../components/nav_left/NavLeft";
-import productoController from "../../../../controllers/ProductoController";
+import productoController from '../../../../controllers/ProductoController';
 import PinkRectangle from '../../../../components/main_content/PinkRectangle';
 import { API_URL } from '../../../../utils/api';
 import './EditarProducto.css'
@@ -78,29 +78,79 @@ const EditarProducto = () => {
     }, [imagenPreview]);
 
     const handleGuardarCambios = async () => {
-        if (!producto) {
-            setError('No hay producto para guardar.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('id', producto.id);
-        formData.append('nombre', nombre);
-        if (nuevaImagen) {
-            formData.append('imagen', nuevaImagen);
-        }
-
         try {
-            const response = await productoController.actualizarProducto(formData);
-            if (response && response.data) {
-                alert('Producto actualizado exitosamente!');
-                navigate('/gestionar-producto');
-            } else {
-                setError('Error al guardar los cambios.');
+            // Validación de datos iniciales
+            if (!productoRecibido) {
+                throw new Error('No se recibieron datos del producto');
             }
+
+            // Validación de cambios
+            const nombreOriginal = productoRecibido.nombre || productoRecibido.name;
+            const imagenOriginal = productoRecibido.imagenPath || productoRecibido.imagenUrl;
+
+            if (nombre === nombreOriginal && !nuevaImagen && imagenPreview === imagenOriginal) {
+                Swal.fire({
+                    title: 'Sin cambios',
+                    text: 'No se detectaron modificaciones para guardar',
+                    icon: 'info',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#A2576C'
+                });
+                return;
+            }
+
+            // Validación de nombre
+            if (!nombre.trim()) {
+                Swal.fire({
+                    title: 'Campo requerido',
+                    text: 'El nombre del producto no puede estar vacío',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#A2576C'
+                });
+                return;
+            }
+
+            // Preparar datos
+            const formData = new FormData();
+            formData.append('id', productoRecibido.id);
+            formData.append('nombre', nombre);
+
+            if (nuevaImagen) {
+                formData.append('imagen', nuevaImagen);
+            }
+
+            // Verificar que el controlador exista
+            if (!productoController?.actualizarProducto) {
+                throw new Error('Error en el servidor, vuelvalo a intentar más tarde.');
+            }
+
+            // Ejecutar actualización
+            const response = await productoController.actualizarProducto(formData);
+
+            if (response?.data) {
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Producto actualizado correctamente',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#A2576C'
+                }).then(() => {
+                    navigate('/gestionar-producto');
+                });
+            } else {
+                throw new Error('Respuesta inválida del servidor');
+            }
+
         } catch (error) {
-            console.error('Error al actualizar el producto:', error);
-            setError('Error al guardar los cambios.');
+            console.error('Error en handleGuardarCambios:', error);
+            Swal.fire({
+                title: 'Error',
+                text: error.message || 'Error al guardar los cambios',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#A2576C'
+            });
         }
     };
 
@@ -130,6 +180,11 @@ const EditarProducto = () => {
             onClick: handleModificarVariables,
             variant: 'secondary'
         },
+        {
+            label: 'Cancelar',
+            onClick: () => navigate('/gestionar-producto'),
+            variant: 'secondary'
+        }
     ];
 
     if (error) {

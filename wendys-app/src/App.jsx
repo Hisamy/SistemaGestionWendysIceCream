@@ -11,6 +11,7 @@ import RegistrarVenta from './pages/registrar_venta/RegistrarVenta.jsx';
 import ProductoDetalles from './pages/registrar_venta/ProductoDetalles.jsx';
 import RegistrarVentaTotal from './pages/registrar_venta/RegistrarVentaTotal.jsx';
 import EditarProducto from './pages/gestionar_producto/registrar-producto/editar-producto/EditarProducto.jsx';
+import ModificarConsumibles from './pages/gestionar_producto/registrar-producto/editar-producto/ModificarConsumibles.jsx';
 import ModificarVariablesProducto from './pages/gestionar_producto/registrar-producto/editar-producto/ModificarVariablesProducto.jsx';
 import Inicio from './pages/inicio/inicio.jsx';
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/gestionar-consumible" element={<GestionarConsumible />} />
             <Route path="/registrar-producto" element={<RegistrarProducto />} />
             <Route path="/modificar-variable" element={<ModificarVariablesProducto />} />
+            <Route path="/modificar-consumibles" element={<ModificarConsumibles />} />
             <Route path="/editar-producto" element={<EditarProducto />} />
             <Route path="/elegir-consumibles" element={<ElegirConsumibles />} />
 

@@ -19,7 +19,15 @@ function ElegirConsumibles() {
     });
     const [consumibles, setConsumibles] = useState([]);
 
-    // Obtener consumibles del servidor
+    useEffect(() => {
+        const nuevosSeleccionados = {};
+        (consumiblesActuales || []).forEach(c => {
+            const id = typeof c.id === 'string' ? parseInt(c.id, 10) : c.id;
+            nuevosSeleccionados[id] = c.cantidad;
+        });
+        setConsumiblesSeleccionados(nuevosSeleccionados);
+    }, [consumiblesActuales]);
+
     useEffect(() => {
         const fetchConsumibles = async () => {
             try {
@@ -52,7 +60,7 @@ function ElegirConsumibles() {
             state: {
                 variantIndex,
                 consumibles: consumiblesParaVariante,
-                preserveState: true 
+                preserveState: true
             }
         });
     };

@@ -38,16 +38,16 @@ const ModificarVariablesProducto = () => {
                     precio: 30.0,
                     tamanio: 'CHICO',
                     consumibles: [
-                        { nombre: 'vaso', cantidad: 1 },
-                        { nombre: 'cuchara', cantidad: 1 }
+                        { id: 1, nombre: 'vaso', cantidad: 1 },
+                        { id: 2, nombre: 'cuchara', cantidad: 1 }
                     ]
                 },
                 {
                     precio: 60.0,
                     tamanio: 'MEDIANO',
                     consumibles: [
-                        { nombre: 'vasoMediano', cantidad: 1 },
-                        { nombre: 'cucharaMediana', cantidad: 1 }
+                        { id: 3, nombre: 'vasoMediano', cantidad: 1 },
+                        { id: 4, nombre: 'cucharaMediana', cantidad: 1 }
                     ]
                 }
             ]
@@ -109,13 +109,17 @@ const ModificarVariablesProducto = () => {
         }));
     };
 
-    const handleSelectConsumibles = (index, variant) => {
-        // Navegar a la pantalla de consumibles con los datos de la variante
+    const handleSelectConsumibles = (index) => {
+        const variant = datosProducto.variantes[index];
+
         navigate('/modificar-consumibles', {
             state: {
                 productId: datosProducto.id,
                 variantIndex: index,
-                variant: variant
+                variant: {
+                    tamanio: variant.tamanio,
+                    consumibles: variant.consumibles || {}
+                }
             }
         });
     };
@@ -246,7 +250,10 @@ const ModificarVariablesProducto = () => {
                                             <DimensionesFormEditable
                                                 key={index}
                                                 index={index}
-                                                variant={variant}
+                                                variant={{
+                                                    ...variant,
+                                                    productId: datosProducto.id
+                                                }}
                                                 onUpdate={updateVariantData}
                                                 onRemove={removeVariant}
                                                 onSelectConsumibles={handleSelectConsumibles}

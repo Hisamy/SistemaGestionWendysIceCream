@@ -3,12 +3,6 @@ import { useState } from 'react';
 const DimensionesFormEditable = ({ index, variant, onUpdate, onRemove, onSelectConsumibles }) => {
   const [inputValue, setInputValue] = useState(variant.precio || '');
 
-  // Función para manejar el clic en el botón de consumibles
-  const handleConsumiblesClick = () => {
-    if (onSelectConsumibles) {
-      onSelectConsumibles(index);
-    }
-  };
 
   // Manejar cambios en el select (para actualizar inmediatamente)
   const handleSelectChange = (e) => {
@@ -29,7 +23,7 @@ const DimensionesFormEditable = ({ index, variant, onUpdate, onRemove, onSelectC
             className="tamano-select"
           >
             <option value="UNICO">Tamaño unico</option>
-            <option value="CHICO">Pequeño</option>
+            <option value="CHICO">Chico</option>
             <option value="MEDIANO">Mediano</option>
             <option value="GRANDE">Grande</option>
           </select>
@@ -55,7 +49,7 @@ const DimensionesFormEditable = ({ index, variant, onUpdate, onRemove, onSelectC
         <button
           type='button'
           className="consumibles-button"
-          onClick={handleConsumiblesClick}
+          onClick={() => onSelectConsumibles(index)}
         >
           Consumibles
         </button>
