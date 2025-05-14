@@ -4,7 +4,6 @@ header {
   gap: 2em;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   background-color: var(--background);
@@ -13,7 +12,7 @@ header {
 .header-logo {
   height: 7em;
   width: auto;
-  margin-left: 3em;
+
 }
 
 .header-nav ul {

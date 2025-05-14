@@ -35,6 +35,10 @@ const productoController = {
 
     obtenerJoinsDeVarianteYConsumiblesPorId: async (id) => {
         return await api.get(`/gestionarProductos/variantejoinconsumibles/${id}`)
+    },
+
+    obtenerProductoPorId: async (idProducto) => {
+        return await api.get(`/gestionarProductos/producto/${idProducto}`)
     }
 }
 
