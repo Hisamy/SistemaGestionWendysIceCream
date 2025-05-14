@@ -57,7 +57,8 @@ const EditarProducto = () => {
                     title: 'Formato no válido',
                     text: 'Solo se aceptan imágenes en formato JPG, JPEG o PNG',
                     icon: 'error',
-                    confirmButtonText: 'Entendido'
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#A2576C'
                 });
                 return;
             }
@@ -103,6 +104,21 @@ const EditarProducto = () => {
         }
     };
 
+    const handleModificarVariables = () => {
+        if (producto && producto.id) {
+            navigate('/modificar-variable', { state: { productId: producto.id } });
+        } else {
+            console.warn('No se puede navegar a modificar-variable porque no se tiene el ID del producto.');
+            Swal.fire({
+                title: 'Advertencia',
+                text: 'No se puede ir a modificar variables porque no se ha cargado la información del producto.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#A2576C'
+            });
+        }
+    };
+
     const navLeftButtons = [
         {
             label: 'Guardar Cambios',
@@ -111,7 +127,7 @@ const EditarProducto = () => {
         },
         {
             label: 'Modificar Variables',
-            onClick: () => console.log('Modificar Variables'),
+            onClick: handleModificarVariables,
             variant: 'secondary'
         },
     ];
