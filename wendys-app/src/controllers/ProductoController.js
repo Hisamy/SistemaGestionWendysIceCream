@@ -25,6 +25,14 @@ const productoController = {
         });
     },
 
+    actualizarProducto: async (idProducto, formData) => {
+        return await api.put(`/gestionarProductos/actualizarProducto/${idProducto}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    },
+
     obtenerProductos: async () => {
         return await api.get('/gestionarProductos/productos');
     },

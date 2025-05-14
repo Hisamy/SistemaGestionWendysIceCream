@@ -79,6 +79,9 @@ const EditarProducto = () => {
 
     const handleGuardarCambios = async () => {
         try {
+            // Inicializar formData primero
+            const formData = new FormData();
+
             // Validación de datos iniciales
             if (!productoRecibido) {
                 throw new Error('No se recibieron datos del producto');
@@ -111,10 +114,9 @@ const EditarProducto = () => {
                 return;
             }
 
-            // Preparar datos
-            const formData = new FormData();
-            formData.append('id', productoRecibido.id);
-            formData.append('nombre', nombre);
+            // Adjuntar datos al formData
+            const datosProducto = { nombre: nombre };
+            formData.append('datosProducto', JSON.stringify(datosProducto));
 
             if (nuevaImagen) {
                 formData.append('imagen', nuevaImagen);
@@ -126,7 +128,10 @@ const EditarProducto = () => {
             }
 
             // Ejecutar actualización
-            const response = await productoController.actualizarProducto(formData);
+            const response = await productoController.actualizarProducto(
+                productoRecibido.id,
+                formData
+            );
 
             if (response?.data) {
                 Swal.fire({
