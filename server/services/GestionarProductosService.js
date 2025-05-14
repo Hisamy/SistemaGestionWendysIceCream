@@ -358,6 +358,18 @@ class GestionarProductosService {
         }
     }
 
+    async obtenerProductoPorId(id) {
+        try {
+            const producto = await this.ProductoRepo.obtenerProductoPorId(id);
+            if (!producto) {
+                throw new BusinessError(`No se encontró ningún producto con el ID "${id}".`);
+            }
+            return producto;
+        } catch (error) {
+            throw new BusinessError(`${errorEncabezado} Falló al intentar obtener el producto con ID "${id}": ${error.message}`, error);
+        }
+    }
+
 }
 
 export default GestionarProductosService;

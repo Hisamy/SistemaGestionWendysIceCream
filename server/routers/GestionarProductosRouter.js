@@ -215,6 +215,16 @@ gestionarProductosRouter.get("/variantejoinconsumibles/:varianteId", async (req,
 });
 
 
+gestionarProductosRouter.get("/producto/:idProducto", async (req, res) => {
+    const {idProducto} = req.params;
+    try {
+        const producto = await service.obtenerProductoPorId(idProducto);
+        res.status(200).json(producto);
+    } catch (error) {
+        mandarRespuestaError(error, res);
+    }
+});
+
 /**
  * Función para manejar los errores y enviar una respuesta adecuada al cliente.
  * 
