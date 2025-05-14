@@ -37,12 +37,18 @@ const ModificarVariablesProducto = () => {
                 {
                     precio: 30.0,
                     tamanio: 'CHICO',
-                    consumibles: { vaso: 1, cuchara: 1 }
+                    consumibles: [
+                        { nombre: 'vaso', cantidad: 1 },
+                        { nombre: 'cuchara', cantidad: 1 }
+                    ]
                 },
                 {
                     precio: 60.0,
                     tamanio: 'MEDIANO',
-                    consumibles: { vasoMediano: 1, cucharaMediana: 1 }
+                    consumibles: [
+                        { nombre: 'vasoMediano', cantidad: 1 },
+                        { nombre: 'cucharaMediana', cantidad: 1 }
+                    ]
                 }
             ]
         };
