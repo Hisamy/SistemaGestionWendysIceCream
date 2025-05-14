@@ -11,6 +11,7 @@ import RegistrarVenta from './pages/registrar_venta/RegistrarVenta.jsx';
 import ProductoDetalles from './pages/registrar_venta/ProductoDetalles.jsx';
 import RegistrarVentaTotal from './pages/registrar_venta/RegistrarVentaTotal.jsx';
 import EditarProducto from './pages/gestionar_producto/registrar-producto/editar-producto/EditarProducto.jsx';
+import Inicio from './pages/inicio/inicio.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <main className="main-content">
         <ProductosVentaProvider>
           <Routes>
+            <Route path="/" element={<Inicio />} />
             <Route path="/gestionar-producto" element={<GestionarProducto />} />
             <Route path="/registrar-venta" element={<RegistrarVenta />} />
             <Route path="/producto-detalles" element={<ProductoDetalles />} />
