@@ -65,47 +65,43 @@ const ModificarVariablesProducto = () => {
     }, []);
 
     const handleSelectConsumibles = useCallback((index) => {
-        const variant = datosProducto.variantes[index];
+         const variant = datosProducto.variantes[index];
         navigate('/modificar-consumibles', {
             state: {
-                productId: datosProducto.id,
-                variantIndex: index,
-                variant: {
-                    tamanio: variant.tamanio,
-                    consumibles: variant.consumibles || {},
-                },
+                variantId: variant.id, 
+                productId: datosProducto.id, 
             },
         });
     }, [navigate, datosProducto]);
 
     const handleGuardarCambiosVariantes = useCallback(async () => {
         if (datosProducto.variantes.length === 0) {
-        Swal.fire({ title: 'Error', text: 'Debe agregar al menos una variante', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
-        return;
-    }
+            Swal.fire({ title: 'Error', text: 'Debe agregar al menos una variante', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
+            return;
+        }
 
-    const variantesInvalidas = datosProducto.variantes.some(v => !v.tamanio || v.precio === null || v.precio === undefined);
-    if (variantesInvalidas) {
-        Swal.fire({ title: 'Error', text: 'Todas las variantes deben tener tamaño y precio', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
-        return;
-    }
+        const variantesInvalidas = datosProducto.variantes.some(v => !v.tamanio || v.precio === null || v.precio === undefined);
+        if (variantesInvalidas) {
+            Swal.fire({ title: 'Error', text: 'Todas las variantes deben tener tamaño y precio', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
+            return;
+        }
 
-    setIsLoading(true);
-    setError(null);
+        setIsLoading(true);
+        setError(null);
 
-    try {
-     
-                await productoController.actualizarVariantes(datosProducto.id, datosProducto.variantes);
+        try {
+
+            await productoController.actualizarVariantes(datosProducto.id, datosProducto.variantes);
 
 
-        // Hacer un nuevo fetch de los datos actualizados
-        const newData = datosProducto.variantes;
-        setDatosProducto({ id: datosProducto.id, variantes: Array.isArray(newData) ? newData : [newData] });
+            // Hacer un nuevo fetch de los datos actualizados
+            const newData = datosProducto.variantes;
+            setDatosProducto({ id: datosProducto.id, variantes: Array.isArray(newData) ? newData : [newData] });
 
-        
-        // Si la petición fue exitosa (no lanzó un error), mostramos el SweetAlert de éxito
-        Swal.fire({ title: 'Éxito', text: 'Cambios guardados correctamente', icon: 'success', confirmButtonText: 'Volver', confirmButtonColor: '#A2576C' })
-            .then(() => navigate(-1));
+
+            // Si la petición fue exitosa (no lanzó un error), mostramos el SweetAlert de éxito
+            Swal.fire({ title: 'Éxito', text: 'Cambios guardados correctamente', icon: 'success', confirmButtonText: 'Volver', confirmButtonColor: '#A2576C' })
+                .then(() => navigate(-1));
         } catch (error) {
             console.error('Error al guardar cambios:', error);
             setError('No se pudieron guardar los cambios');
