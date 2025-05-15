@@ -153,7 +153,7 @@ gestionarProductosRouter.put('/actualizarProducto/:idProducto', upload.single('i
         const datosProducto = JSON.parse(req.body.datosProducto);
         const imagenFile = req.file;
         await service.actualizarProducto(idProducto, datosProducto, imagenFile);
-        return res.status(200).send(`El producto con ID "${idProducto}" fue actualizado correctamente.`);
+        return res.status(200).send(`El producto fue actualizado correctamente.`);
     } catch (error) {
         mandarRespuestaError(error, res);
     }

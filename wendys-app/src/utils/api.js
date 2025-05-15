@@ -52,6 +52,22 @@ export const api = {
         }
     },
 
+    putFormData: async (endpoint, formData) => {
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: 'PUT',
+                body: formData, // No establecer Content-Type - FormData lo hace automáticamente
+            });
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return await response.text();
+        } catch (error) {
+            console.error('Error en la solicitud PUT FormData:', error);
+            throw error;
+        }
+    },
+
     postFormData: async (endpoint, formData) => {
         try {
             const response = await fetch(`${API_URL}${endpoint}`, {

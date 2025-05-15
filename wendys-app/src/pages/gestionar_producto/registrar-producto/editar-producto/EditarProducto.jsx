@@ -127,16 +127,17 @@ const EditarProducto = () => {
                 throw new Error('Error en el servidor, vuelvalo a intentar más tarde.');
             }
 
-            // Ejecutar actualización
-            const response = await productoController.actualizarProducto(
-                productoRecibido.id,
-                formData
-            );
+             console.log("FormData antes de enviar:", formData.entries ? Array.from(formData.entries()) : formData);
 
-            if (response?.data) {
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: 'Producto actualizado correctamente',
+        const response = await productoController.actualizarProducto(
+            productoRecibido.id,
+            formData
+        );
+ // Verificamos si la respuesta contiene una parte del mensaje de éxito esperado
+        if (response.includes("actualizado correctamente")) {
+            Swal.fire({
+                title: '¡Éxito!',
+                text: response, // Muestra el mensaje del backend
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                     confirmButtonColor: '#A2576C'

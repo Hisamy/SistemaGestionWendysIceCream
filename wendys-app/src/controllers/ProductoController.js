@@ -26,11 +26,7 @@ const productoController = {
     },
 
     actualizarProducto: async (idProducto, formData) => {
-        return await api.put(`/gestionarProductos/actualizarProducto/${idProducto}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        return await api.putFormData(`/gestionarProductos/actualizarProducto/${idProducto}`, formData, )
     },
 
     obtenerProductos: async () => {
