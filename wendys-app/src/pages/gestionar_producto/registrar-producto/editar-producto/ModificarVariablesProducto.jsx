@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import NavLeft from '../../../../components/nav_left/NavLeft';
 import PinkRectangle from '../../../../components/main_content/PinkRectangle';
 import DimensionesFormEditable from './DimensionesFormEditable';
+import productoController from '../../../../controllers/ProductoController';
 
 /**
  * @module ModificarVariablesProducto
@@ -61,56 +62,33 @@ const ModificarVariablesProducto = () => {
             });
             return;
         }
-        const mockProductData = {
-            id: productId,
-            variantes: [
-                {
-                    precio: 30.0,
-                    tamanio: 'CHICO',
-                    consumibles: [
-                        { id: 1, nombre: 'vaso', cantidad: 1 },
-                        { id: 2, nombre: 'cuchara', cantidad: 1 }
-                    ]
-                },
-                {
-                    precio: 60.0,
-                    tamanio: 'MEDIANO',
-                    consumibles: [
-                        { id: 3, nombre: 'vasoMediano', cantidad: 1 },
-                        { id: 4, nombre: 'cucharaMediana', cantidad: 1 }
-                    ]
-                }
-            ]
-        };
 
-        setDatosProducto(mockProductData);
         setIsLoading(false);
 
-        // Implementación real debería ser algo como:
-        /*
+
         const fetchProductData = async () => {
-          try {
-            setIsLoading(true);
-            const response = await fetch(`/api/productos/${productId}`);
-            if (!response.ok) throw new Error('Error al cargar el producto');
-            const data = await response.json();
-            setDatosProducto(data);
-          } catch (error) {
-            console.error('Error:', error);
-            Swal.fire({
-              title: 'Error',
-              text: 'No se pudo cargar la información del producto',
-              icon: 'error',
-              confirmButtonText: 'Reintentar',
-              confirmButtonColor: '#A2576C'
-            });
-          } finally {
-            setIsLoading(false);
-          }
+            try {
+                setIsLoading(true);
+                const response = await productoController.obtenerVariantesPorIdDeProducto(productId);
+                if (!response.ok) throw new Error('Error al cargar el producto');
+                const data = await response.json();
+                setDatosProducto(data);
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo cargar la información del producto',
+                    icon: 'error',
+                    confirmButtonText: 'Reintentar',
+                    confirmButtonColor: '#A2576C'
+                });
+            } finally {
+                setIsLoading(false);
+            }
         };
-        
+
         fetchProductData();
-        */
+
     }, [productId, navigate]);
     const updateVariantData = (index, field, value) => {
         const updatedVariantes = [...datosProducto.variantes];
