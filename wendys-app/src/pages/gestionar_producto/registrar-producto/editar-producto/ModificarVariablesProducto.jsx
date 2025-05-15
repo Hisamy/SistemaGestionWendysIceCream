@@ -5,18 +5,48 @@ import NavLeft from '../../../../components/nav_left/NavLeft';
 import PinkRectangle from '../../../../components/main_content/PinkRectangle';
 import DimensionesFormEditable from './DimensionesFormEditable';
 
-
+/**
+ * @module ModificarVariablesProducto
+ * @description Componente funcional para la modificación de las variables (dimensiones, precios, consumibles)
+ * de un producto específico. Recibe el ID del producto a través del estado de la ubicación (`location.state`)
+ * y permite al usuario editar, agregar y eliminar variantes del producto.
+ * Utiliza React Hooks para la gestión del estado y efectos secundarios, React Router para la navegación,
+ * y SweetAlert2 para la presentación de alertas y confirmaciones al usuario.
+ *
+ * @requires react
+ * @requires react-router-dom
+ * @requires sweetalert2
+ * @requires components/NavLeft
+ * @requires components/PinkRectangle
+ * @requires components/DimensionesFormEditable
+ * @requires ./ModificarVariablesProducto.css
+ */
 const ModificarVariablesProducto = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const productId = location.state?.productId;
 
+    /**
+     * Estado local para almacenar los datos del producto, incluyendo su ID y un array de variantes.
+     * Inicialmente, el array de variantes está vacío.
+     * @state {object} datosProducto
+     * @property {string | undefined} id - ID del producto a modificar.
+     * @property {Array<object>} variantes - Array de objetos representando las diferentes variantes del producto.
+     * @default { id: productId, variantes: [] }
+     */
     const [datosProducto, setDatosProducto] = useState({
         id: productId,
         variantes: []
     });
 
+    /**
+     * Estado local para indicar si los datos del producto se están cargando.
+     * Se utiliza para mostrar un indicador de carga al usuario.
+     * @state {boolean} isLoading
+     * @default true
+     */
     const [isLoading, setIsLoading] = useState(true);
+
 
     useEffect(() => {
         if (!productId) {
