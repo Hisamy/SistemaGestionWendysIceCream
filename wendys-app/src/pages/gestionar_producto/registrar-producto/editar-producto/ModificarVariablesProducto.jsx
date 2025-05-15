@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import NavLeft from '../../../../components/nav_left/NavLeft';
@@ -6,245 +6,141 @@ import PinkRectangle from '../../../../components/main_content/PinkRectangle';
 import DimensionesFormEditable from './DimensionesFormEditable';
 import productoController from '../../../../controllers/ProductoController';
 
-/**
- * @module ModificarVariablesProducto
- * @description Componente funcional para la modificación de las variables (dimensiones, precios, consumibles)
- * de un producto específico. Recibe el ID del producto a través del estado de la ubicación (`location.state`)
- * y permite al usuario editar, agregar y eliminar variantes del producto.
- * Utiliza React Hooks para la gestión del estado y efectos secundarios, React Router para la navegación,
- * y SweetAlert2 para la presentación de alertas y confirmaciones al usuario.
- *
- * @requires react
- * @requires react-router-dom
- * @requires sweetalert2
- * @requires components/NavLeft
- * @requires components/PinkRectangle
- * @requires components/DimensionesFormEditable
- * @requires ./ModificarVariablesProducto.css
- */
 const ModificarVariablesProducto = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const productId = location.state?.productId;
 
-    /**
-     * Estado local para almacenar los datos del producto, incluyendo su ID y un array de variantes.
-     * Inicialmente, el array de variantes está vacío.
-     * @state {object} datosProducto
-     * @property {string | undefined} id - ID del producto a modificar.
-     * @property {Array<object>} variantes - Array de objetos representando las diferentes variantes del producto.
-     * @default { id: productId, variantes: [] }
-     */
-    const [datosProducto, setDatosProducto] = useState({
-        id: productId,
-        variantes: []
-    });
-
-    /**
-     * Estado local para indicar si los datos del producto se están cargando.
-     * Se utiliza para mostrar un indicador de carga al usuario.
-     * @state {boolean} isLoading
-     * @default true
-     */
+    const [datosProducto, setDatosProducto] = useState({ id: productId, variantes: [] });
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-
-    useEffect(() => {
-        if (!productId) {
-            Swal.fire({
-                title: 'Error',
-                text: 'No se recibió el ID del producto a modificar',
-                icon: 'error',
-                confirmButtonText: 'Volver',
-                confirmButtonColor: '#A2576C'
-            }).then(() => {
-                navigate(-1);
-            });
+    // Utilizamos useCallback para memoizar la función de fetch
+    const fetchProductData = useCallback(async (id) => {
+        if (!id) {
+            setError('No se recibió el ID del producto a modificar');
+            setIsLoading(false);
             return;
         }
 
-        setIsLoading(false);
+        setIsLoading(true);
+        setError(null);
 
+        try {
+            const data = await productoController.obtenerVariantesPorIdDeProducto(id);
+            setDatosProducto({ id: id, variantes: Array.isArray(data) ? data : [data] });
+            setIsLoading(false);
+        } catch (err) {
+            console.error('Error al cargar las variantes del producto:', err);
+            setError('No se pudo cargar la información del producto');
+            setIsLoading(false);
+        }
+    }, [productoController]);
 
-        const fetchProductData = async () => {
-            try {
-                setIsLoading(true);
-                const response = await productoController.obtenerVariantesPorIdDeProducto(productId);
-                if (!response.ok) throw new Error('Error al cargar el producto');
-                const data = await response.json();
-                setDatosProducto(data);
-            } catch (error) {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'No se pudo cargar la información del producto',
-                    icon: 'error',
-                    confirmButtonText: 'Reintentar',
-                    confirmButtonColor: '#A2576C'
-                });
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    useEffect(() => {
+        fetchProductData(productId);
+    }, [fetchProductData, productId]);
 
-        fetchProductData();
-
-    }, [productId, navigate]);
-    const updateVariantData = (index, field, value) => {
-        const updatedVariantes = [...datosProducto.variantes];
-        updatedVariantes[index] = {
-            ...updatedVariantes[index],
-            [field]: value
-        };
+    const updateVariantData = useCallback((index, field, value) => {
         setDatosProducto(prev => ({
             ...prev,
-            variantes: updatedVariantes
+            variantes: prev.variantes.map((variant, i) =>
+                i === index ? { ...variant, [field]: value } : variant
+            ),
         }));
-    };
+    }, []);
 
-    const addVariant = (newVariant) => {
+    const addVariant = useCallback((newVariant) => {
         setDatosProducto(prev => ({
             ...prev,
-            variantes: [...prev.variantes, newVariant]
+            variantes: [...prev.variantes, newVariant],
         }));
-    };
+    }, []);
 
-    const removeVariant = (index) => {
-        const updatedVariantes = datosProducto.variantes.filter((_, i) => i !== index);
+    const removeVariant = useCallback((index) => {
         setDatosProducto(prev => ({
             ...prev,
-            variantes: updatedVariantes
+            variantes: prev.variantes.filter((_, i) => i !== index),
         }));
-    };
+    }, []);
 
-    const handleSelectConsumibles = (index) => {
+    const handleSelectConsumibles = useCallback((index) => {
         const variant = datosProducto.variantes[index];
-
         navigate('/modificar-consumibles', {
             state: {
                 productId: datosProducto.id,
                 variantIndex: index,
                 variant: {
                     tamanio: variant.tamanio,
-                    consumibles: variant.consumibles || {}
-                }
-            }
+                    consumibles: variant.consumibles || {},
+                },
+            },
         });
-    };
+    }, [navigate, datosProducto]);
 
-    const handleGuardar = async () => {
-        // Validaciones básicas
+    const handleGuardarCambiosVariantes = useCallback(async () => {
         if (datosProducto.variantes.length === 0) {
-            Swal.fire({
-                title: 'Error',
-                text: 'Debe agregar al menos una variante',
-                icon: 'error',
-                confirmButtonText: 'Entendido',
-                confirmButtonColor: '#A2576C'
-            });
-            return;
-        }
+        Swal.fire({ title: 'Error', text: 'Debe agregar al menos una variante', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
+        return;
+    }
 
-        // Validar que todas las variantes tengan precio y tamaño
-        const variantesInvalidas = datosProducto.variantes.some(
-            v => !v.tamanio || v.precio === null || v.precio === undefined
-        );
+    const variantesInvalidas = datosProducto.variantes.some(v => !v.tamanio || v.precio === null || v.precio === undefined);
+    if (variantesInvalidas) {
+        Swal.fire({ title: 'Error', text: 'Todas las variantes deben tener tamaño y precio', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
+        return;
+    }
 
-        if (variantesInvalidas) {
-            Swal.fire({
-                title: 'Error',
-                text: 'Todas las variantes deben tener tamaño y precio',
-                icon: 'error',
-                confirmButtonText: 'Entendido',
-                confirmButtonColor: '#A2576C'
-            });
-            return;
-        }
+    setIsLoading(true);
+    setError(null);
 
-        try {
-            // Aquí iría el código para enviar los datos al servidor
-            console.log('Datos a guardar:', datosProducto);
+    try {
+     
+                await productoController.actualizarVariantes(datosProducto.id, datosProducto.variantes);
 
-            // Simular éxito
-            Swal.fire({
-                title: 'Éxito',
-                text: 'Variables del producto actualizadas correctamente',
-                icon: 'success',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#A2576C'
-            }).then(() => {
-                navigate(-1); // Volver a la pantalla anterior
-            });
+
+        // Hacer un nuevo fetch de los datos actualizados
+        const newData = datosProducto.variantes;
+        setDatosProducto({ id: datosProducto.id, variantes: Array.isArray(newData) ? newData : [newData] });
+
+        
+        // Si la petición fue exitosa (no lanzó un error), mostramos el SweetAlert de éxito
+        Swal.fire({ title: 'Éxito', text: 'Cambios guardados correctamente', icon: 'success', confirmButtonText: 'Volver', confirmButtonColor: '#A2576C' })
+            .then(() => navigate(-1));
         } catch (error) {
-            console.error('Error al guardar:', error);
-            Swal.fire({
-                title: 'Error',
-                text: 'No se pudieron guardar los cambios',
-                icon: 'error',
-                confirmButtonText: 'Entendido',
-                confirmButtonColor: '#A2576C'
-            });
+            console.error('Error al guardar cambios:', error);
+            setError('No se pudieron guardar los cambios');
+            Swal.fire({ title: 'Error', text: 'No se pudieron guardar los cambios', icon: 'error', confirmButtonText: 'Entendido', confirmButtonColor: '#A2576C' });
+        } finally {
+            setIsLoading(false); // Ocultar carga después de la operación
         }
-    };
+    }, [navigate, productoController, datosProducto]); // Dependencias importantes: navigate, productoController, datosProducto
 
-    const handleGuardarCambiosVariantes = () => {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Guardar Cambios en las variantes del producto',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Guardar cambios',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#A2576C'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                navigate(-1);
-            }
-        });
-    };
-
-
-    const handleCancelar = () => {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Perderás todos los cambios realizados',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Cancelar',
-            cancelButtonText: 'No, continuar editando',
-            confirmButtonColor: '#A2576C'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                navigate(-1);
-            }
-        });
-    };
+    const handleCancelar = useCallback(() => {
+        Swal.fire({ title: '¿Estás seguro?', text: 'Perderás todos los cambios realizados', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sí, cancelar', cancelButtonText: 'No, continuar editando', confirmButtonColor: '#A2576C' })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    navigate(-1);
+                }
+            });
+    }, [navigate]);
 
     const navLeftButtons = [
-        {
-            label: 'Guardar Cambios',
-            onClick: handleGuardarCambiosVariantes,
-            variant: 'primary'
-        },
-        {
-            label: 'Cancelar',
-            onClick: handleCancelar,
-            variant: 'primary'
-        },
-
+        { label: 'Guardar Cambios', onClick: handleGuardarCambiosVariantes, variant: 'primary' },
+        { label: 'Cancelar', onClick: handleCancelar, variant: 'primary' },
     ];
 
     if (isLoading) {
         return <div className="loading">Cargando datos del producto...</div>;
     }
 
+    if (error) {
+        return <div className="error">Error: {error}</div>;
+    }
+
     return (
         <div className="container">
             <div className='nav-left'>
-                <NavLeft
-                    instruction="Modificar las variables del producto"
-                    buttons={navLeftButtons}
-                />
+                <NavLeft instruction="Modificar las variables del producto" buttons={navLeftButtons} />
             </div>
             <div className="fit-parent">
                 <div className="modificar-variables-content">
@@ -253,32 +149,21 @@ const ModificarVariablesProducto = () => {
                             <form id="modificar-form" className="producto-form">
                                 <label className="section-label">Dimensiones</label>
                                 <div className="dimensiones-container">
-                                    {datosProducto.variantes && datosProducto.variantes.length > 0 ? (
-                                        datosProducto.variantes.map((variant, index) => (
-                                            <DimensionesFormEditable
-                                                key={index}
-                                                index={index}
-                                                variant={{
-                                                    ...variant,
-                                                    productId: datosProducto.id
-                                                }}
-                                                onUpdate={updateVariantData}
-                                                onRemove={removeVariant}
-                                                onSelectConsumibles={handleSelectConsumibles}
-                                            />
-                                        ))
-                                    ) : (
-                                        <p className="no-variants-message">No hay variantes agregadas</p>
-                                    )}
+                                    {datosProducto.variantes.map((variant, index) => (
+                                        <DimensionesFormEditable
+                                            key={index}
+                                            index={index}
+                                            variant={{ ...variant, productId: datosProducto.id }}
+                                            onUpdate={updateVariantData}
+                                            onRemove={removeVariant}
+                                            onSelectConsumibles={handleSelectConsumibles}
+                                        />
+                                    ))}
                                     <div className="add-button-container">
                                         <button
                                             type="button"
                                             className="add-variant-button"
-                                            onClick={() => addVariant({
-                                                tamanio: '',
-                                                precio: 0,
-                                                consumibles: {}
-                                            })}
+                                            onClick={() => addVariant({ tamanio: '', precio: 0, consumibles: {} })}
                                         >
                                             +
                                         </button>
@@ -292,6 +177,5 @@ const ModificarVariablesProducto = () => {
         </div>
     );
 };
-
 
 export default ModificarVariablesProducto;

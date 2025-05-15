@@ -29,6 +29,10 @@ const productoController = {
         return await api.putFormData(`/gestionarProductos/actualizarProducto/${idProducto}`, formData, )
     },
 
+    actualizarVariantes: async (idProducto, formData) => {
+        return await api.put(`/gestionarProductos/actualizarVariantes/${idProducto}`, formData, )
+    },
+
     obtenerProductos: async () => {
         return await api.get('/gestionarProductos/productos');
     },
