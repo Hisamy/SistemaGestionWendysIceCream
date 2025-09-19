@@ -1,5 +1,5 @@
 # Wendy's Ice Cream Management System
-This project is a mobile-first management system designed to streamline operations for a small ice cream shop. It provides a digital solution to replace inefficient paper-based processes, offering real-time tracking of inventory, sales, and employee data.
+This project is a web-based management system designed to streamline operations for a small ice cream shop. It provides a digital solution to replace inefficient paper-based processes, offering real-time tracking of inventory, sales, and employee data.
 
 # Key Features
 
@@ -32,7 +32,7 @@ Securely manage employee accounts with specific roles, ensuring appropriate acce
 
 ---
 
-* **Frontend:** React Native
+* **Frontend:** React 
 * **Backend:** Node.js with Express.js
 * **Database:** SQLite
 * **ORM:** TypeORM
